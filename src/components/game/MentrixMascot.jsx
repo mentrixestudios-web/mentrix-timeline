@@ -59,7 +59,7 @@ export default function MentrixMascot({
         <div className="relative shrink-0 flex items-center justify-center">
           <div className="absolute inset-0 bg-amber-500/15 rounded-full blur-xl scale-125" />
           <motion.img
-            src="./mentrix-mascot.png"
+            src="/mentrix-mascot.png"
             alt="Menti Viajero del Tiempo"
             className="w-28 h-28 sm:w-32 sm:h-32 object-contain relative z-10 filter drop-shadow-[0_8px_16px_rgba(234,179,8,0.25)]"
             animate={{ y: [0, -4, 0] }}
@@ -97,7 +97,7 @@ export default function MentrixMascot({
       <div className="w-14 h-14 shrink-0 relative flex items-center justify-center">
         <div className="absolute inset-0 bg-amber-500/10 rounded-full blur-md" />
         <img
-          src="./mentrix-mascot.png"
+          src="/mentrix-mascot.png"
           alt="Menti"
           className="w-full h-full object-contain relative z-10 filter drop-shadow-[0_4px_8px_rgba(245,158,11,0.2)]"
         />
