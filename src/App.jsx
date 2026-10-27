@@ -8,6 +8,7 @@ import Categorias from "@/pages/Categorias";
 import DesafioDiario from "@/pages/DesafioDiario";
 import Estadisticas from "@/pages/Estadisticas";
 import Perfil from "@/pages/Perfil";
+import TiendaMonedas from "@/pages/TiendaMonedas";
 import { scheduleTimelineNotifications } from "@/utils/notificationSystem";
 
 export default function App() {
@@ -25,6 +26,8 @@ export default function App() {
           <Route path="/desafio" element={<DesafioDiario />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/tienda" element={<TiendaMonedas />} />
+          <Route path="/TiendaMonedas" element={<TiendaMonedas />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Layout>
