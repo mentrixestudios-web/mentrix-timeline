@@ -1,3 +1,5 @@
+import { LEARNING_CARDS } from "@/data/learningCards";
+
 const KEYS = {
   COINS: "mt_coins",
   STREAK: "mt_streak",
@@ -12,6 +14,8 @@ const KEYS = {
   POWERUPS: "mt_powerups",
   DAILY_GIFT_LAST: "mt_daily_gift_last",
   STARTER_PACK_CLAIMED: "mt_starter_pack_claimed",
+  UNLOCKED_CARDS: "mt_unlocked_cards",
+  CLAIMED_ACHIEVEMENTS: "mt_claimed_achievements",
 };
 
 const INITIAL_COINS = 1000;
@@ -347,10 +351,94 @@ export function recordGameResult({ won, cardsPlaced, category }) {
   addXp(xpEarned);
   if (coinsEarned > 0) addCoins(coinsEarned);
 
+  // Si ganó la partida, intentar desbloquear una nueva carta coleccionable de aprendizaje
+  let newlyUnlockedCard = null;
+  if (won) {
+    newlyUnlockedCard = unlockNextCardForCategory(category);
+  }
+
   emitStorageUpdate();
-  return next;
+  return {
+    ...next,
+    newlyUnlockedCard,
+  };
 }
 
 export function getHighScore() {
   return parseInt(localStorage.getItem(KEYS.HIGH_SCORE) || "0", 10);
+}
+
+// ============================================
+// CÓDICE DE CARTAS HISTÓRICAS COLECCIONABLES
+// ============================================
+export function getUnlockedCardIds() {
+  try {
+    const raw = localStorage.getItem(KEYS.UNLOCKED_CARDS);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  // Carta inicial de regalo de bienvenida al códice
+  return ["lc-imprenta"];
+}
+
+export function isCardUnlocked(cardId) {
+  return getUnlockedCardIds().includes(cardId);
+}
+
+export function unlockCard(cardId) {
+  const current = getUnlockedCardIds();
+  if (!current.includes(cardId)) {
+    const next = [...current, cardId];
+    localStorage.setItem(KEYS.UNLOCKED_CARDS, JSON.stringify(next));
+    const card = LEARNING_CARDS.find((c) => c.id === cardId);
+    if (card && card.recompensaMonedas) {
+      addCoins(card.recompensaMonedas);
+    }
+    emitStorageUpdate();
+    return true;
+  }
+  return false;
+}
+
+export function unlockNextCardForCategory(category = null) {
+  const unlocked = getUnlockedCardIds();
+
+  // 1. Buscar en la categoría actual
+  let candidate = LEARNING_CARDS.find(
+    (c) => (category && category !== "caos" ? c.category === category : true) && !unlocked.includes(c.id)
+  );
+
+  // 2. Si ya completó esa categoría o es caos, buscar en cualquier categoría
+  if (!candidate) {
+    candidate = LEARNING_CARDS.find((c) => !unlocked.includes(c.id));
+  }
+
+  if (candidate) {
+    unlockCard(candidate.id);
+    return candidate;
+  }
+
+  return null;
+}
+
+// ============================================
+// LOGROS Y MISIONES
+// ============================================
+export function getClaimedAchievementIds() {
+  try {
+    const raw = localStorage.getItem(KEYS.CLAIMED_ACHIEVEMENTS);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [];
+}
+
+export function claimAchievement(achievementId, rewardCoins = 100) {
+  const current = getClaimedAchievementIds();
+  if (!current.includes(achievementId)) {
+    const next = [...current, achievementId];
+    localStorage.setItem(KEYS.CLAIMED_ACHIEVEMENTS, JSON.stringify(next));
+    if (rewardCoins > 0) addCoins(rewardCoins);
+    emitStorageUpdate();
+    return true;
+  }
+  return false;
 }

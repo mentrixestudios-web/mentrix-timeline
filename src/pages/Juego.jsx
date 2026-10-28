@@ -57,6 +57,7 @@ export default function Juego() {
   const [mascotStatus, setMascotStatus] = useState("idle");
   const [lastFeedback, setLastFeedback] = useState(null);
   const [justPlacedId, setJustPlacedId] = useState(null);
+  const [unlockedPrizeCard, setUnlockedPrizeCard] = useState(null);
 
   // Estados de poderes activos en la carta actual
   const [lupaActive, setLupaActive] = useState(false);
@@ -101,6 +102,10 @@ export default function Juego() {
             setGameState("victory");
             setMascotStatus("victory");
             playSfx("victory");
+            const res = recordGameResult({ won: true, cardsPlaced: score, category: categoryId });
+            if (res?.newlyUnlockedCard) {
+              setUnlockedPrizeCard(res.newlyUnlockedCard);
+            }
           } else {
             setGameState("gameover");
             setMascotStatus("gameover");
@@ -207,6 +212,7 @@ export default function Juego() {
     setLastFeedback(null);
     setLupaActive(false);
     setFrozenSlots([]);
+    setUnlockedPrizeCard(null);
   };
 
   const handleUseLupa = () => {
@@ -293,7 +299,10 @@ export default function Juego() {
         setGameState("victory");
         setMascotStatus("victory");
         playSfx("victory");
-        recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
+        const res = recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
+        if (res?.newlyUnlockedCard) {
+          setUnlockedPrizeCard(res.newlyUnlockedCard);
+        }
         addCoins(50);
         confetti({ particleCount: 130, spread: 100, origin: { y: 0.5 } });
         return;
@@ -315,7 +324,10 @@ export default function Juego() {
         setGameState("victory");
         setMascotStatus("victory");
         playSfx("victory");
-        recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
+        const res = recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
+        if (res?.newlyUnlockedCard) {
+          setUnlockedPrizeCard(res.newlyUnlockedCard);
+        }
       }
     } else {
       playSfx("wrong");
@@ -592,6 +604,46 @@ export default function Juego() {
                   : `Colocaste ${score} cartas correctamente en su siglo.`}
               </p>
             </div>
+
+            {/* Carta de Aprendizaje Desbloqueada como Recompensa */}
+            {gameState === "victory" && unlockedPrizeCard && (
+              <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/20 via-[#102048] to-[#0c1630] border-2 border-amber-400 text-left space-y-2 shadow-xl animate-fade-in">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    ¡RELIQUIA COLECCIONADA!
+                  </span>
+                  <span className="text-xs font-black text-amber-300">
+                    +{unlockedPrizeCard.recompensaMonedas} 🪙
+                  </span>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <div className="w-11 h-11 rounded-xl bg-black/40 border border-amber-400/50 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+                    {unlockedPrizeCard.icono}
+                  </div>
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-black text-white leading-tight">
+                      {unlockedPrizeCard.title}
+                    </h4>
+                    <p className="text-[10px] text-amber-300 font-bold mt-0.5">
+                      {unlockedPrizeCard.yearFormatted} · {unlockedPrizeCard.personajeClave}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-2 rounded-xl bg-black/35 border border-white/10 text-[11px] text-amber-100/90 leading-snug">
+                  💡 <strong>¿Sabías que?</strong> {unlockedPrizeCard.sabiasQue}
+                </div>
+
+                <Link
+                  to="/estadisticas?tab=codice"
+                  className="block text-center py-1.5 px-3 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 text-[11px] font-black uppercase tracking-wider transition-colors"
+                >
+                  Abrir Ficha en el Códice 📖
+                </Link>
+              </div>
+            )}
 
             <div className="space-y-2 pt-2">
               {/* Opción de revivir en Game Over */}
