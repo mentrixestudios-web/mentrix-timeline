@@ -300,11 +300,15 @@ export default function Juego() {
         setGameState("victory");
         setMascotStatus("victory");
         playSfx("victory");
+        if (modo === "desafio") {
+          const todayKey = new Date().toISOString().slice(0, 10);
+          localStorage.setItem(`timeline_daily_done_${todayKey}`, "true");
+        }
         const res = recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId, mode: modo });
         if (res?.newlyUnlockedCard) {
           setUnlockedPrizeCard(res.newlyUnlockedCard);
         }
-        addCoins(50);
+        addCoins(modo === "desafio" ? 100 : 50);
         confetti({ particleCount: 130, spread: 100, origin: { y: 0.5 } });
         return;
       }
