@@ -56,6 +56,7 @@ export default function Juego() {
   const [gameState, setGameState] = useState("playing"); // 'playing' | 'revealing' | 'victory' | 'gameover'
   const [mascotStatus, setMascotStatus] = useState("idle");
   const [lastFeedback, setLastFeedback] = useState(null);
+  const [justPlacedId, setJustPlacedId] = useState(null);
 
   // Estados de poderes activos en la carta actual
   const [lupaActive, setLupaActive] = useState(false);
@@ -122,6 +123,8 @@ export default function Juego() {
             }
             const nextTl = [...currTimeline];
             nextTl.splice(insertIdx, 0, mentiCard);
+            setJustPlacedId(mentiCard.id);
+            setTimeout(() => setJustPlacedId(null), 2500);
 
             setMentiScore((prevMenti) => {
               const nextM = prevMenti + 1;
@@ -265,6 +268,8 @@ export default function Juego() {
       const nextTimeline = [...timeline];
       nextTimeline.splice(slotIndex, 0, currentCard);
       setTimeline(nextTimeline);
+      setJustPlacedId(currentCard.id);
+      setTimeout(() => setJustPlacedId(null), 2500);
 
       const nextScore = score + 1;
       setScore(nextScore);
@@ -505,44 +510,55 @@ export default function Juego() {
       )}
 
       {/* ========================================================
-          LA LÍNEA DE TIEMPO INTERACTIVA
+          TABLERO CRONOLÓGICO: EL CONDUCTO TEMPORAL INTERACTIVO
          ======================================================== */}
-      <div className="relative py-2">
+      <div className="relative py-3">
+        {/* Marcador Cósmico de Antigüedad */}
         <div className="flex items-center justify-center mb-3">
-          <span className="text-[11px] font-black text-amber-300/60 uppercase tracking-widest flex items-center gap-2">
-            <span>Antigüedad</span>
-            <span className="text-amber-400">━━━━ ⏳ ━━━━</span>
-            <span>Época Actual</span>
-          </span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+            <span>🏛️</span>
+            <span>COMIENZO DE LA HISTORIA · PASADO REMOTO</span>
+            <Hourglass className="w-3.5 h-3.5 text-amber-400" />
+          </div>
         </div>
 
-        <div className="space-y-1.5 relative">
+        <div className="space-y-2 relative">
           {/* Ranura 0 (Antes del primer evento) */}
-          <div className="flex justify-center">
-            <TimelineSlot
-              onSelect={() => handleInsert(0)}
-              disabled={gameState !== "playing" || turnoDuelo === "menti"}
-              isFrozen={frozenSlots.includes(0)}
-              label="Antes de todo"
-            />
-          </div>
+          <TimelineSlot
+            onSelect={() => handleInsert(0)}
+            disabled={gameState !== "playing" || turnoDuelo === "menti"}
+            isFrozen={frozenSlots.includes(0)}
+            nextYear={timeline[0]?.yearFormatted}
+          />
 
           {/* Renderizado de eventos en orden */}
           {timeline.map((event, idx) => (
             <React.Fragment key={event.id}>
-              <TimelineCard event={event} index={idx} />
+              <TimelineCard 
+                event={event} 
+                index={idx} 
+                status={justPlacedId === event.id ? "justPlaced" : "default"}
+              />
 
               {/* Ranura entre eventos o al final */}
-              <div className="flex justify-center">
-                <TimelineSlot
-                  onSelect={() => handleInsert(idx + 1)}
-                  disabled={gameState !== "playing" || turnoDuelo === "menti"}
-                  isFrozen={frozenSlots.includes(idx + 1)}
-                  label={idx === timeline.length - 1 ? "Después de todo" : "En medio"}
-                />
-              </div>
+              <TimelineSlot
+                onSelect={() => handleInsert(idx + 1)}
+                disabled={gameState !== "playing" || turnoDuelo === "menti"}
+                isFrozen={frozenSlots.includes(idx + 1)}
+                prevYear={event.yearFormatted}
+                nextYear={timeline[idx + 1]?.yearFormatted}
+              />
             </React.Fragment>
           ))}
+        </div>
+
+        {/* Marcador Cósmico del Futuro / Presente */}
+        <div className="flex items-center justify-center mt-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+            <span>ÉPOCA ACTUAL · PRESENTE HISTÓRICO</span>
+            <span>⚡</span>
+          </div>
         </div>
       </div>
 

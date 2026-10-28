@@ -627,36 +627,43 @@ export default function DueloAmigos() {
               LÍNEA DE TIEMPO INTERACTIVA COMPARTIDA
           ══════════════════════════════════════════════════════════ */}
           <div className="relative py-2">
+            {/* Marcador Cósmico de Antigüedad */}
             <div className="flex items-center justify-center mb-3">
-              <span className="text-[11px] font-black text-amber-300/60 uppercase tracking-widest flex items-center gap-2">
-                <span>Antigüedad</span>
-                <span className="text-amber-400">━━━━ ⏳ ━━━━</span>
-                <span>Época Actual</span>
-              </span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                <span>🏛️</span>
+                <span>COMIENZO DE LA HISTORIA · PASADO REMOTO</span>
+                <Hourglass className="w-3.5 h-3.5 text-amber-400" />
+              </div>
             </div>
 
-            <div className="space-y-1.5 relative">
-              <div className="flex justify-center">
-                <TimelineSlot
-                  onSelect={() => handlePlaceCard(0)}
-                  disabled={Boolean(feedback)}
-                  label="Antes de todo"
-                />
-              </div>
+            <div className="space-y-2 relative">
+              <TimelineSlot
+                onSelect={() => handlePlaceCard(0)}
+                disabled={Boolean(feedback)}
+                nextYear={timeline[0]?.yearFormatted}
+              />
 
               {timeline.map((event, idx) => (
                 <React.Fragment key={event.id}>
                   <TimelineCard event={event} index={idx} />
 
-                  <div className="flex justify-center">
-                    <TimelineSlot
-                      onSelect={() => handlePlaceCard(idx + 1)}
-                      disabled={Boolean(feedback)}
-                      label={idx === timeline.length - 1 ? "Después de todo" : "En medio"}
-                    />
-                  </div>
+                  <TimelineSlot
+                    onSelect={() => handlePlaceCard(idx + 1)}
+                    disabled={Boolean(feedback)}
+                    prevYear={event.yearFormatted}
+                    nextYear={timeline[idx + 1]?.yearFormatted}
+                  />
                 </React.Fragment>
               ))}
+            </div>
+
+            {/* Marcador Cósmico del Futuro */}
+            <div className="flex items-center justify-center mt-4">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                <span>ÉPOCA ACTUAL · PRESENTE HISTÓRICO</span>
+                <span>⚡</span>
+              </div>
             </div>
           </div>
 
