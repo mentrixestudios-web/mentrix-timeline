@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { 
@@ -11,9 +11,11 @@ import {
   Play, 
   Users, 
   Check, 
+  CheckCircle2,
   AlertCircle,
   Sparkles,
-  Hourglass
+  Hourglass,
+  Layers
 } from "lucide-react";
 import { getEventsByCategory } from "@/data/eventsData";
 import { CATEGORIES } from "@/data/categories";
@@ -23,6 +25,58 @@ import CurrentCardHand from "@/components/game/CurrentCardHand";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import { playSfx } from "@/utils/soundSystem";
 import { addCoins } from "@/utils/gameStorage";
+
+// Misma configuración visual premium estilo TCG que ConfigRonda
+const DECK_CONFIG = {
+  caos: {
+    iconoEmoji: "⏳",
+    tagline: "Todas las Épocas",
+    temaColor: "from-amber-600 via-yellow-600 to-amber-950",
+    bordeActivo: "border-amber-400 ring-2 ring-amber-400/60 shadow-amber-500/30",
+    iconoBg: "bg-amber-500/30 text-amber-200 border-amber-400/50",
+    resumen: "El mazo maestro con todos los acontecimientos universales cruzados.",
+  },
+  historia: {
+    iconoEmoji: "🏛️",
+    tagline: "Imperios y Guerras",
+    temaColor: "from-blue-600 via-indigo-700 to-slate-950",
+    bordeActivo: "border-blue-400 ring-2 ring-blue-400/60 shadow-blue-500/30",
+    iconoBg: "bg-blue-500/30 text-blue-200 border-blue-400/50",
+    resumen: "Desde Egipto y Roma hasta la Revolución y el siglo XX.",
+  },
+  biblia: {
+    iconoEmoji: "📜",
+    tagline: "Génesis al Evangelio",
+    temaColor: "from-emerald-600 via-teal-700 to-slate-950",
+    bordeActivo: "border-emerald-400 ring-2 ring-emerald-400/60 shadow-emerald-500/30",
+    iconoBg: "bg-emerald-500/30 text-emerald-200 border-emerald-400/50",
+    resumen: "Profetas, reyes, éxodo y la línea histórica de las Escrituras.",
+  },
+  ciencia: {
+    iconoEmoji: "🚀",
+    tagline: "Inventos y Espacio",
+    temaColor: "from-purple-600 via-fuchsia-700 to-slate-950",
+    bordeActivo: "border-purple-400 ring-2 ring-purple-400/60 shadow-purple-500/30",
+    iconoBg: "bg-purple-500/30 text-purple-200 border-purple-400/50",
+    resumen: "Hitos científicos, exploración estelar y medicina.",
+  },
+  musica: {
+    iconoEmoji: "🎨",
+    tagline: "Obras y Maestros",
+    temaColor: "from-pink-600 via-rose-700 to-slate-950",
+    bordeActivo: "border-pink-400 ring-2 ring-pink-400/60 shadow-pink-500/30",
+    iconoBg: "bg-pink-500/30 text-pink-200 border-pink-400/50",
+    resumen: "Música clásica, rock, pintura y corrientes artísticas.",
+  },
+  cine: {
+    iconoEmoji: "🎬",
+    tagline: "Cine y Cultura Pop",
+    temaColor: "from-orange-600 via-amber-700 to-slate-950",
+    bordeActivo: "border-orange-400 ring-2 ring-orange-400/60 shadow-orange-500/30",
+    iconoBg: "bg-orange-500/30 text-orange-200 border-orange-400/50",
+    resumen: "Películas de culto, consolas legendarias y cultura pop.",
+  },
+};
 
 export default function DueloAmigos() {
   const navigate = useNavigate();
@@ -44,6 +98,10 @@ export default function DueloAmigos() {
   const [vidasP2, setVidasP2] = useState(3);
   const [feedback, setFeedback] = useState(null);
   const [ganador, setGanador] = useState(null);
+
+  const activeCategory = CATEGORIES.find((c) => c.id === catSeleccionada) || CATEGORIES[0];
+  const activeDeckStyle = DECK_CONFIG[catSeleccionada] || DECK_CONFIG.caos;
+  const eventCount = getEventsByCategory(catSeleccionada).length;
 
   // Iniciar partida local
   const iniciarPartida = () => {
@@ -70,7 +128,6 @@ export default function DueloAmigos() {
   const handlePlaceCard = (slotIndex) => {
     if (!currentCard || feedback) return;
 
-    // Validar si la posición es cronológicamente correcta
     let isCorrect = true;
     if (slotIndex > 0 && currentCard.year < timeline[slotIndex - 1].year) isCorrect = false;
     if (slotIndex < timeline.length && currentCard.year > timeline[slotIndex].year) isCorrect = false;
@@ -86,7 +143,7 @@ export default function DueloAmigos() {
 
       setFeedback({
         type: "correct",
-        mensaje: `¡Acierto de ${turno === 1 ? nombreP1 : nombreP2}! (${currentCard.yearFormatted})`,
+        mensaje: `¡Correcto! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}.`,
       });
     } else {
       playSfx("wrong");
@@ -110,11 +167,11 @@ export default function DueloAmigos() {
 
       setFeedback({
         type: "wrong",
-        mensaje: `¡Fallo! Ocurrió en ${currentCard.yearFormatted}.`,
+        mensaje: `¡Fallo! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}.`,
       });
     }
 
-    // Pasar turno tras 1.5 segundos
+    // Pasar turno tras 1.4 segundos
     setTimeout(() => {
       setFeedback(null);
       if (pool.length > 0) {
@@ -122,7 +179,6 @@ export default function DueloAmigos() {
         setPool(pool.slice(1));
         setTurno((prev) => (prev === 1 ? 2 : 1));
       } else {
-        // Fin por mazo agotado: gana quien tenga más puntos
         const g = puntosP1 >= puntosP2 ? 1 : 2;
         finalizarPartida(g);
       }
@@ -138,9 +194,9 @@ export default function DueloAmigos() {
   };
 
   return (
-    <div className="space-y-4 select-none pb-12">
+    <div className="space-y-4 select-none pb-28 relative">
       
-      {/* ── HEADER ── */}
+      {/* ── HEADER SUPERIOR ── */}
       <div className="flex items-center justify-between">
         <motion.button
           whileTap={{ scale: 0.9 }}
@@ -155,13 +211,13 @@ export default function DueloAmigos() {
           <span>{fase === "playing" ? "Rendirse" : "Volver"}</span>
         </motion.button>
 
-        <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border bg-white/5 border-blue-400/40 text-blue-300">
-          1 DISPOSITIVO · PASS & PLAY 📱
+        <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border bg-blue-500/20 text-blue-300 border-blue-400/40">
+          PASS & PLAY · 1 DISPOSITIVO 📱
         </span>
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          FASE 1: SETUP (ELEGIR NOMBRES Y MAZO)
+          FASE 1: SETUP (VITRINA TCG DE ALTA GAMA)
       ══════════════════════════════════════════════════════════ */}
       {fase === "setup" && (
         <motion.div
@@ -169,27 +225,9 @@ export default function DueloAmigos() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          {/* Banner de Bienvenida */}
-          <div className="rounded-3xl bg-gradient-to-r from-blue-950/80 via-[#101b3b] to-indigo-950/80 border-2 border-blue-400/50 p-4 shadow-xl flex items-center justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-blue-300" />
-                <h1 className="text-base sm:text-lg font-black text-white">
-                  Duelo en un Solo Dispositivo
-                </h1>
-              </div>
-              <p className="text-xs text-blue-200/80 font-medium mt-0.5">
-                2 Jugadores cara a cara compartiendo el mismo teléfono
-              </p>
-            </div>
-            <div className="w-12 h-12 shrink-0">
-              <MentrixMascot size="xs" showBubble={false} position="center" />
-            </div>
-          </div>
-
-          {/* Configuración de Jugadores */}
+          {/* Nombres de Jugadores Arcade */}
           <div className="grid grid-cols-2 gap-2.5">
-            <div className="rounded-2xl p-3 bg-blue-950/60 border border-blue-400/40 space-y-1.5">
+            <div className="rounded-2xl p-3 bg-blue-950/70 border-2 border-blue-400/50 space-y-1 shadow-md">
               <span className="text-[9px] font-black uppercase tracking-wider text-blue-300">
                 🔵 JUGADOR 1
               </span>
@@ -202,7 +240,7 @@ export default function DueloAmigos() {
               />
             </div>
 
-            <div className="rounded-2xl p-3 bg-amber-950/60 border border-amber-400/40 space-y-1.5">
+            <div className="rounded-2xl p-3 bg-amber-950/70 border-2 border-amber-400/50 space-y-1 shadow-md">
               <span className="text-[9px] font-black uppercase tracking-wider text-amber-300">
                 🟡 JUGADOR 2
               </span>
@@ -216,64 +254,151 @@ export default function DueloAmigos() {
             </div>
           </div>
 
-          {/* Selección de Mazo */}
+          {/* SHOWCASE DEL MAZO ACTIVO (VITRINA 3D) */}
+          <motion.div
+            key={catSeleccionada}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className={`relative overflow-hidden rounded-3xl p-4 border bg-gradient-to-br ${activeDeckStyle.temaColor} shadow-xl`}
+          >
+            <div className="flex items-center justify-between gap-3 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 rounded-2xl bg-black/40 border border-white/30 flex items-center justify-center text-3xl shadow-lg shrink-0">
+                  {activeDeckStyle.iconoEmoji}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/30">
+                      Mazo de Batalla
+                    </span>
+                    <span className="text-[9px] font-black text-amber-300 bg-black/40 px-2 py-0.5 rounded-full border border-amber-400/30">
+                      {eventCount} Cartas 🃏
+                    </span>
+                  </div>
+                  <h2 className="text-lg sm:text-xl font-black text-white leading-tight">
+                    {activeCategory.name}
+                  </h2>
+                  <p className="text-xs text-white/80 font-medium">
+                    {activeDeckStyle.tagline}
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-11 h-11 shrink-0 hidden sm:block">
+                <MentrixMascot size="xs" showBubble={false} position="center" />
+              </div>
+            </div>
+
+            <p className="text-[11px] text-white/80 mt-2.5 pt-2 border-t border-white/20 font-medium leading-relaxed">
+              {activeDeckStyle.resumen}
+            </p>
+          </motion.div>
+
+          {/* VITRINA DE MAZOS DE CARTAS (CUADRÍCULA 2x3 TIPO BARAJA COLECCIONABLE) */}
           <div className="space-y-2">
-            <span className="text-xs font-black text-white uppercase tracking-wider px-1">
-              Elige el Mazo de Batalla
-            </span>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-4 bg-amber-400 rounded-full" />
+                <h3 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+                  Elige el Mazo del Duelo
+                </h3>
+              </div>
+              <span className="text-[10px] text-amber-300 font-bold">
+                Toca para equipar
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5">
               {CATEGORIES.map((cat) => {
                 const isSelected = catSeleccionada === cat.id;
+                const deckStyle = DECK_CONFIG[cat.id] || DECK_CONFIG.caos;
+                const count = getEventsByCategory(cat.id).length;
+
                 return (
-                  <button
+                  <motion.div
                     key={cat.id}
-                    type="button"
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => {
                       playSfx("tap");
                       setCatSeleccionada(cat.id);
                     }}
-                    className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between ${
+                    className={`cursor-pointer rounded-2xl p-3 border transition-all duration-200 relative flex flex-col justify-between text-center overflow-hidden shadow-lg ${
                       isSelected
-                        ? "bg-gradient-to-br from-amber-500/25 to-yellow-500/10 border-amber-400 text-white shadow-md ring-1 ring-amber-400"
-                        : "bg-[#0b1328]/90 border-white/10 text-white/70 hover:text-white"
+                        ? `${deckStyle.bordeActivo} bg-[#111c38]`
+                        : "bg-[#0b1328]/95 border-white/10 hover:border-amber-400/40"
                     }`}
                   >
-                    <div>
-                      <p className="text-xs font-black">{cat.name}</p>
-                      <p className="text-[9px] text-white/50">{cat.subtitle}</p>
+                    <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${cat.color}`} />
+
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[9px] font-black text-white/70 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-md">
+                        {count} 🃏
+                      </span>
+                      {isSelected ? (
+                        <span className="text-[9px] font-black text-slate-950 bg-amber-400 px-2 py-0.5 rounded-full shadow-sm flex items-center gap-0.5">
+                          <Check className="w-2.5 h-2.5" />
+                          LISTO
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold text-white/30">
+                          Equipar
+                        </span>
+                      )}
                     </div>
-                    {isSelected && <span className="text-amber-400 font-black">✓</span>}
-                  </button>
+
+                    <div className="my-1">
+                      <div className={`w-12 h-12 mx-auto rounded-2xl ${deckStyle.iconoBg} border flex items-center justify-center text-2xl shadow-md transition-transform ${isSelected ? "scale-110" : ""}`}>
+                        {deckStyle.iconoEmoji}
+                      </div>
+                      <h4 className={`text-xs sm:text-sm font-black mt-2 leading-tight ${isSelected ? "text-amber-300" : "text-white"}`}>
+                        {cat.name}
+                      </h4>
+                      <p className="text-[10px] text-white/60 font-semibold line-clamp-1 mt-0.5">
+                        {deckStyle.tagline}
+                      </p>
+                    </div>
+
+                    <div className="mt-2 pt-1.5 border-t border-white/10">
+                      <span className={`text-[10px] font-black uppercase tracking-wider block ${isSelected ? "text-amber-400" : "text-white/40"}`}>
+                        {isSelected ? "★ SELECCIONADO" : "Elegir Mazo"}
+                      </span>
+                    </div>
+                  </motion.div>
                 );
               })}
             </div>
           </div>
 
-          {/* Botón de Inicio */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={iniciarPartida}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 hover:from-blue-400 hover:to-amber-400 text-white font-black text-sm uppercase tracking-wider shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
-          >
-            <Swords className="w-4 h-4" />
-            <span>¡Comenzar Duelo Cara a Cara!</span>
-          </motion.button>
+          {/* BARRA FLOTANTE FIJA INFERIOR PARA INICIAR DUELO */}
+          <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-slate-950 via-[#091024]/95 to-transparent z-40 backdrop-blur-md border-t border-white/10">
+            <div className="max-w-md mx-auto">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={iniciarPartida}
+                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-amber-500/30 flex items-center justify-center gap-2.5 cursor-pointer transition-all animate-pulse"
+              >
+                <Swords className="w-5 h-5 fill-slate-950" />
+                <span>¡Iniciar Duelo Cara a Cara!</span>
+              </motion.button>
+            </div>
+          </div>
         </motion.div>
       )}
 
       {/* ══════════════════════════════════════════════════════════
-          FASE 2: GAMEPLAY (BATALLA POR TURNOS)
+          FASE 2: GAMEPLAY (CARTAS Y LÍNEA DE TIEMPO IDÉNTICAS A JUEGO.JSX)
       ══════════════════════════════════════════════════════════ */}
       {fase === "playing" && (
-        <div className="space-y-3.5">
-          {/* Marcador Superior de Jugadores */}
+        <div className="space-y-3.5 pb-16">
+          
+          {/* Marcador Superior de Jugadores con Glow de Turno Activo */}
           <div className="grid grid-cols-2 gap-2">
             {/* Jugador 1 */}
             <div
               className={`p-2.5 rounded-2xl border transition-all ${
                 turno === 1
-                  ? "bg-blue-900/50 border-blue-400 shadow-md shadow-blue-500/30 ring-2 ring-blue-400/50"
+                  ? "bg-blue-900/60 border-blue-400 shadow-lg shadow-blue-500/40 ring-2 ring-blue-400"
                   : "bg-white/5 border-white/10 opacity-70"
               }`}
             >
@@ -281,7 +406,7 @@ export default function DueloAmigos() {
                 <span className="text-xs font-black text-blue-300 truncate">
                   🔵 {nombreP1}
                 </span>
-                <span className="text-xs font-black text-white bg-blue-500/30 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-black text-white bg-blue-500/30 px-2 py-0.5 rounded-full border border-blue-400/30">
                   {puntosP1} pts
                 </span>
               </div>
@@ -301,7 +426,7 @@ export default function DueloAmigos() {
             <div
               className={`p-2.5 rounded-2xl border transition-all ${
                 turno === 2
-                  ? "bg-amber-900/50 border-amber-400 shadow-md shadow-amber-500/30 ring-2 ring-amber-400/50"
+                  ? "bg-amber-900/60 border-amber-400 shadow-lg shadow-amber-500/40 ring-2 ring-amber-400"
                   : "bg-white/5 border-white/10 opacity-70"
               }`}
             >
@@ -309,7 +434,7 @@ export default function DueloAmigos() {
                 <span className="text-xs font-black text-amber-300 truncate">
                   🟡 {nombreP2}
                 </span>
-                <span className="text-xs font-black text-white bg-amber-500/30 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-black text-white bg-amber-500/30 px-2 py-0.5 rounded-full border border-amber-400/30">
                   {puntosP2} pts
                 </span>
               </div>
@@ -326,60 +451,97 @@ export default function DueloAmigos() {
             </div>
           </div>
 
-          {/* Banner de Turno Activo */}
-          <div
-            className={`py-2 px-3 rounded-2xl text-center text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm ${
+          {/* Banner Gigante de Turno Activo */}
+          <motion.div
+            key={turno}
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className={`py-2 px-3 rounded-2xl text-center text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-md ${
               turno === 1
-                ? "bg-blue-500/20 text-blue-300 border border-blue-400/40"
-                : "bg-amber-500/20 text-amber-300 border border-amber-400/40"
+                ? "bg-gradient-to-r from-blue-600/30 to-indigo-600/30 text-blue-200 border-2 border-blue-400/60"
+                : "bg-gradient-to-r from-amber-600/30 to-yellow-600/30 text-amber-200 border-2 border-amber-400/60"
             }`}
           >
-            <Swords className="w-3.5 h-3.5 animate-spin" />
-            <span>👉 Pasa el teléfono a: {turno === 1 ? nombreP1 : nombreP2}</span>
-          </div>
+            <Swords className="w-3.5 h-3.5" />
+            <span>👉 Turno de: {turno === 1 ? nombreP1 : nombreP2} (Pasa el celular)</span>
+          </motion.div>
 
-          {/* Feedback temporal */}
+          {/* Feedback de Acierto / Fallo */}
           {feedback && (
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className={`py-2 px-3 rounded-xl text-xs font-black text-center ${
+              className={`p-3 rounded-2xl border text-xs font-black flex items-center justify-center gap-2 ${
                 feedback.type === "correct"
-                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                  : "bg-rose-500/20 text-rose-300 border border-rose-500/40"
+                  ? "bg-emerald-950/80 border-emerald-500 text-emerald-200 shadow-lg shadow-emerald-500/20"
+                  : "bg-red-950/80 border-red-500 text-red-200 shadow-lg shadow-red-500/20"
               }`}
             >
-              {feedback.mensaje}
+              {feedback.type === "correct" ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              ) : (
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+              )}
+              <span>{feedback.mensaje}</span>
             </motion.div>
           )}
 
-          {/* Carta en Mano */}
+          {/* Carta en Mano Activa (Idéntica a Juego.jsx) */}
           {currentCard && (
-            <CurrentCardHand currentCard={currentCard} />
+            <div className="sticky top-2 z-20 py-1 bg-[#0a0e1a]/95 backdrop-blur-md">
+              <CurrentCardHand
+                event={currentCard}
+                cardsPlaced={timeline.length - 1}
+                targetGoal={15}
+                lupaActive={false}
+              />
+            </div>
           )}
 
-          {/* Línea de Tiempo Compartida */}
-          <div className="space-y-1.5 pt-1">
-            <span className="text-[10px] font-black uppercase tracking-wider text-amber-300/80 px-1">
-              Línea Temporal Compartida ({timeline.length} cartas)
-            </span>
+          {/* ══════════════════════════════════════════════════════════
+              LÍNEA DE TIEMPO INTERACTIVA COMPARTIDA
+          ══════════════════════════════════════════════════════════ */}
+          <div className="relative py-2">
+            <div className="flex items-center justify-center mb-3">
+              <span className="text-[11px] font-black text-amber-300/60 uppercase tracking-widest flex items-center gap-2">
+                <span>Antigüedad</span>
+                <span className="text-amber-400">━━━━ ⏳ ━━━━</span>
+                <span>Época Actual</span>
+              </span>
+            </div>
 
-            <div className="flex flex-col items-center gap-2">
-              <TimelineSlot index={0} onPlace={handlePlaceCard} />
+            <div className="space-y-1.5 relative">
+              {/* Ranura 0 (Antes del primer evento) */}
+              <div className="flex justify-center">
+                <TimelineSlot
+                  onSelect={() => handlePlaceCard(0)}
+                  disabled={Boolean(feedback)}
+                  label="Antes de todo"
+                />
+              </div>
 
+              {/* Renderizado de cartas colocadas */}
               {timeline.map((event, idx) => (
                 <React.Fragment key={event.id}>
-                  <TimelineCard event={event} isPlaced={true} />
-                  <TimelineSlot index={idx + 1} onPlace={handlePlaceCard} />
+                  <TimelineCard event={event} index={idx} />
+
+                  <div className="flex justify-center">
+                    <TimelineSlot
+                      onSelect={() => handlePlaceCard(idx + 1)}
+                      disabled={Boolean(feedback)}
+                      label={idx === timeline.length - 1 ? "Después de todo" : "En medio"}
+                    />
+                  </div>
                 </React.Fragment>
               ))}
             </div>
           </div>
+
         </div>
       )}
 
       {/* ══════════════════════════════════════════════════════════
-          FASE 3: VICTORIA / PODIO
+          FASE 3: VICTORIA / PODIO FINAL
       ══════════════════════════════════════════════════════════ */}
       {fase === "victory" && (
         <motion.div
@@ -387,12 +549,15 @@ export default function DueloAmigos() {
           animate={{ opacity: 1, scale: 1 }}
           className="rounded-3xl bg-gradient-to-b from-[#101b3b] to-[#0b1328] border-2 border-amber-400 p-6 text-center space-y-4 shadow-2xl"
         >
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-400 mx-auto flex items-center justify-center text-3xl">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-400 mx-auto flex items-center justify-center text-3xl shadow-lg">
             🏆
           </div>
 
           <div>
-            <h2 className="text-xl font-black text-amber-300">
+            <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
+              ¡DUELO FINALIZADO!
+            </span>
+            <h2 className="text-2xl font-black text-amber-300 mt-2">
               ¡{ganador === 1 ? nombreP1 : nombreP2} es el Ganador!
             </h2>
             <p className="text-xs text-white/70 mt-1">
@@ -400,14 +565,14 @@ export default function DueloAmigos() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 bg-white/5 rounded-2xl p-3 border border-white/10 text-xs">
-            <div>
+          <div className="grid grid-cols-2 gap-2.5 bg-white/5 rounded-2xl p-3 border border-white/10 text-xs">
+            <div className={`p-2 rounded-xl ${ganador === 1 ? "bg-blue-500/20 border border-blue-400/40" : ""}`}>
               <p className="text-blue-300 font-bold">{nombreP1}</p>
-              <p className="text-base font-black text-white">{puntosP1} pts</p>
+              <p className="text-lg font-black text-white">{puntosP1} pts</p>
             </div>
-            <div>
+            <div className={`p-2 rounded-xl ${ganador === 2 ? "bg-amber-500/20 border border-amber-400/40" : ""}`}>
               <p className="text-amber-300 font-bold">{nombreP2}</p>
-              <p className="text-base font-black text-white">{puntosP2} pts</p>
+              <p className="text-lg font-black text-white">{puntosP2} pts</p>
             </div>
           </div>
 
@@ -420,7 +585,7 @@ export default function DueloAmigos() {
             </button>
             <button
               onClick={() => navigate("/")}
-              className="flex-1 py-3 rounded-xl bg-amber-500 text-slate-950 font-black text-xs uppercase cursor-pointer"
+              className="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs uppercase cursor-pointer shadow-lg"
             >
               Menú Principal
             </button>
