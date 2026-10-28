@@ -14,6 +14,8 @@ import {
 import { CATEGORIES } from "@/data/categories";
 import { getEventsByCategory } from "@/data/eventsData";
 
+import MentrixMascot from "@/components/game/MentrixMascot";
+
 const ICON_MAP = {
   Sparkles,
   Globe,
@@ -27,11 +29,11 @@ export default function Categorias() {
   const navigate = useNavigate();
 
   const handleSelect = (catId) => {
-    navigate(`/juego?cat=${catId}`);
+    navigate(`/config-ronda?modo=clasico&cat=${catId}`);
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 select-none pb-8">
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link
@@ -47,6 +49,14 @@ export default function Categorias() {
           </h2>
           <p className="text-xs text-amber-200/60 font-medium">Elige la temática de acontecimientos para tu viaje en el tiempo</p>
         </div>
+      </div>
+
+      {/* Menti Asesor Temporal */}
+      <div className="w-full">
+        <MentrixMascot
+          layout="default"
+          customMessage="Selecciona uno de nuestros mazos de historia, ciencia, arte o la Biblia para configurar tu partida y dificultad."
+        />
       </div>
 
       {/* Grid de Categorías */}

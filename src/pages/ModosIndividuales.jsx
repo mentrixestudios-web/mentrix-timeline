@@ -83,28 +83,30 @@ export default function ModosIndividuales() {
         </span>
       </div>
 
-      {/* ── BANNER HEROICO CON MENTI ── */}
+      {/* ── BANNER HEROICO ── */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-3xl bg-gradient-to-r from-purple-950/70 via-[#12193b] to-slate-900 border-2 border-purple-400/50 p-4 shadow-xl flex items-center justify-between gap-3"
+        className="rounded-3xl bg-gradient-to-r from-purple-950/70 via-[#12193b] to-slate-900 border-2 border-purple-400/50 p-4 shadow-xl"
       >
-        <div className="space-y-1">
-          <div className="flex items-center gap-1.5">
-            <Brain className="w-4 h-4 text-purple-400" />
-            <h1 className="text-base sm:text-lg font-black text-white">
-              Duelos & Desafíos Solitario
-            </h1>
-          </div>
-          <p className="text-xs text-purple-200/80 font-medium">
-            Entrena tu mente, supera récords y desafía a la IA
-          </p>
+        <div className="flex items-center gap-1.5 mb-1">
+          <Brain className="w-4 h-4 text-purple-400" />
+          <h1 className="text-base sm:text-lg font-black text-white">
+            Duelos & Desafíos Solitario
+          </h1>
         </div>
-
-        <div className="w-12 h-12 shrink-0">
-          <MentrixMascot size="xs" showBubble={false} position="center" />
-        </div>
+        <p className="text-xs text-purple-200/80 font-medium">
+          Entrena tu mente, supera récords y desafía a la IA
+        </p>
       </motion.div>
+
+      {/* ── MENTI ASESOR TEMPORAL CON BURBUJA ACTIVA ── */}
+      <div className="w-full">
+        <MentrixMascot
+          layout="default"
+          customMessage="¿Listo para desafiar el tiempo? Elige tu reto: un duelo contra mí, el frenesí contrarreloj de 60s o la supervivencia extrema a 1 sola vida."
+        />
+      </div>
 
       {/* ── LISTADO DE MODOS INDIVIDUALES ARCADE ── */}
       <div className="space-y-3 pt-1">

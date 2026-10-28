@@ -158,6 +158,14 @@ export default function ConfigRonda() {
         </span>
       </div>
 
+      {/* ── MENTI ASESOR TEMPORAL CON BURBUJA ACTIVA ── */}
+      <div className="w-full">
+        <MentrixMascot
+          layout="default"
+          customMessage={modoData.mensajeMenti}
+        />
+      </div>
+
       {/* ── SHOWCASE DEL MAZO ACTIVO (VITRINA 3D) ── */}
       <motion.div
         key={selectedCat}
@@ -186,10 +194,6 @@ export default function ConfigRonda() {
                 {activeDeckStyle.tagline}
               </p>
             </div>
-          </div>
-
-          <div className="w-11 h-11 shrink-0 hidden sm:block">
-            <MentrixMascot size="xs" showBubble={false} position="center" />
           </div>
         </div>
 
@@ -320,32 +324,17 @@ export default function ConfigRonda() {
         </div>
       )}
 
-      {/* ── BOTÓN DIRECTO EN PANTALLA PARA INICIAR PARTIDA ── */}
-      <div className="pt-3">
+      {/* ── BOTÓN ÚNICO PARA INICIAR PARTIDA ── */}
+      <div className="pt-2 pb-6">
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleStartGame}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-base uppercase tracking-wider shadow-2xl shadow-amber-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-all"
+          className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-base uppercase tracking-wider shadow-2xl shadow-amber-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-all active:scale-95"
         >
           <Play className="w-5 h-5 fill-slate-950" />
-          <span>¡Iniciar Partida Ahora!</span>
+          <span>¡Jugar con {activeCategory.name}!</span>
         </motion.button>
-      </div>
-
-      {/* ── BARRA FLOTANTE FIJA INFERIOR (STICKY ACTION BAR) ── */}
-      <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-[#091024]/95 backdrop-blur-xl border-t border-amber-500/30 z-50">
-        <div className="max-w-md mx-auto">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={handleStartGame}
-            className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-amber-500/40 flex items-center justify-center gap-2 cursor-pointer transition-all"
-          >
-            <Play className="w-5 h-5 fill-slate-950" />
-            <span>¡Jugar con {activeCategory.name}!</span>
-          </motion.button>
-        </div>
       </div>
 
     </div>

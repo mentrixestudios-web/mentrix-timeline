@@ -43,6 +43,14 @@ export default function Juego() {
   const [timeline, setTimeline] = useState([]);
   const [currentCard, setCurrentCard] = useState(null);
   const [lives, setLives] = useState(maxLives);
+  const [score, setScore] = useState(0);
+
+  // Estados específicos para Duelo vs Menti (IA)
+  const [mentiScore, setMentiScore] = useState(0);
+  const [turnoDuelo, setTurnoDuelo] = useState("jugador"); // 'jugador' | 'menti'
+  const [mentiThinking, setMentiThinking] = useState(false);
+  const [mentiCustomMsg, setMentiCustomMsg] = useState(null);
+
   const cartasParam = parseInt(searchParams.get("cartas"));
   const [targetGoal] = useState(!isNaN(cartasParam) && cartasParam > 0 ? cartasParam : (modo === "supervivencia" ? 25 : 10));
   const [gameState, setGameState] = useState("playing"); // 'playing' | 'revealing' | 'victory' | 'gameover'
@@ -81,6 +89,88 @@ export default function Juego() {
     return () => clearInterval(timer);
   }, [modo, gameState, timeLeft, score, categoryId]);
 
+  // Turno de la IA en Modo Duelo contra Menti
+  useEffect(() => {
+    if (modo !== "duelo" || turnoDuelo !== "menti" || gameState !== "playing") return;
+
+    const timer = setTimeout(() => {
+      setPool((currentPool) => {
+        if (!currentPool || currentPool.length === 0) {
+          if (score >= mentiScore) {
+            setGameState("victory");
+            setMascotStatus("victory");
+            playSfx("victory");
+          } else {
+            setGameState("gameover");
+            setMascotStatus("gameover");
+            playSfx("wrong");
+          }
+          return currentPool;
+        }
+
+        const mentiCard = currentPool[0];
+        const remaining = currentPool.slice(1);
+
+        // Menti acierta con 80% de probabilidad
+        const acierta = Math.random() < 0.80;
+
+        setTimeline((currTimeline) => {
+          if (acierta) {
+            let insertIdx = 0;
+            while (insertIdx < currTimeline.length && currTimeline[insertIdx].year < mentiCard.year) {
+              insertIdx++;
+            }
+            const nextTl = [...currTimeline];
+            nextTl.splice(insertIdx, 0, mentiCard);
+
+            setMentiScore((prevMenti) => {
+              const nextM = prevMenti + 1;
+              if (nextM >= targetGoal) {
+                setGameState("gameover");
+                setMascotStatus("gameover");
+                playSfx("wrong");
+                recordGameResult({ won: false, cardsPlaced: score, category: categoryId });
+              }
+              return nextM;
+            });
+
+            playSfx("correct");
+            setMascotStatus("victory");
+            setLastFeedback({
+              type: "correct",
+              message: `🤖 Menti colocó correctamente: "${mentiCard.title}" (${mentiCard.yearFormatted})`,
+            });
+            setMentiCustomMsg(`¡Punto para mí! "${mentiCard.title}" encaja en ${mentiCard.yearFormatted}. ¡Tu turno, crononauta! 🧠`);
+            return nextTl;
+          } else {
+            playSfx("wrong");
+            setMascotStatus("wrong");
+            setLastFeedback({
+              type: "wrong",
+              message: `🤖 ¡Menti falló con "${mentiCard.title}"! Perdió su turno.`,
+            });
+            setMentiCustomMsg(`¡Rayos! Me fallaron los cronocircuitos con "${mentiCard.title}". ¡Aprovecha mi tropiezo! 😅`);
+            return currTimeline;
+          }
+        });
+
+        // Entregar siguiente carta al jugador
+        if (remaining.length > 0) {
+          setCurrentCard(remaining[0]);
+          return remaining.slice(1);
+        } else {
+          setCurrentCard(null);
+          return [];
+        }
+      });
+
+      setTurnoDuelo("jugador");
+      setMentiThinking(false);
+    }, 1800);
+
+    return () => clearTimeout(timer);
+  }, [modo, turnoDuelo, gameState, score, mentiScore, targetGoal, categoryId]);
+
   const startNewGame = () => {
     const rawEvents = getEventsByCategory(categoryId);
     const shuffled = [...rawEvents].sort(() => Math.random() - 0.5);
@@ -100,6 +190,14 @@ export default function Juego() {
     setPool(remainingPool);
     setLives(maxLives);
     setScore(0);
+    setMentiScore(0);
+    setTurnoDuelo("jugador");
+    setMentiThinking(false);
+    setMentiCustomMsg(
+      modo === "duelo"
+        ? "¡Acepto el duelo! Tú comienzas: ubica tu carta en la época correcta. ⚔️"
+        : null
+    );
     setTimeLeft(60);
     setGameState("playing");
     setMascotStatus("idle");
@@ -139,7 +237,7 @@ export default function Juego() {
   };
 
   const handleInsert = (slotIndex) => {
-    if (gameState !== "playing" || !currentCard) return;
+    if (gameState !== "playing" || !currentCard || turnoDuelo === "menti") return;
     if (frozenSlots.includes(slotIndex)) {
       toast.error("Esa ranura está congelada porque es incorrecta");
       return;
@@ -196,6 +294,14 @@ export default function Juego() {
         return;
       }
 
+      // Si estamos en Duelo contra Menti, ceder el turno a Menti
+      if (modo === "duelo") {
+        setTurnoDuelo("menti");
+        setMentiThinking(true);
+        setMentiCustomMsg("¡Buen movimiento! Ahora es mi turno de calcular la historia... 🤖");
+        return;
+      }
+
       if (pool.length > 0) {
         const nextCard = pool[0];
         setCurrentCard(nextCard);
@@ -226,12 +332,21 @@ export default function Juego() {
         setGameState("gameover");
         setMascotStatus("gameover");
         recordGameResult({ won: false, cardsPlaced: score, category: categoryId });
-      } else {
-        if (pool.length > 0) {
-          const nextCard = pool[0];
-          setCurrentCard(nextCard);
-          setPool(pool.slice(1));
-        }
+        return;
+      }
+
+      // Si estamos en Duelo contra Menti, ceder el turno a Menti aunque fallemos
+      if (modo === "duelo") {
+        setTurnoDuelo("menti");
+        setMentiThinking(true);
+        setMentiCustomMsg("¡Ese fallo te costó caro! Menti toma su turno... 🤖");
+        return;
+      }
+
+      if (pool.length > 0) {
+        const nextCard = pool[0];
+        setCurrentCard(nextCard);
+        setPool(pool.slice(1));
       }
     }
   };
@@ -264,7 +379,7 @@ export default function Juego() {
   };
 
   return (
-    <div className="space-y-4 max-w-xl mx-auto select-none">
+    <div className="space-y-3.5 max-w-xl mx-auto select-none pb-12">
       {/* Barra superior de control */}
       <div className="flex items-center justify-between gap-3">
         <Link
@@ -279,9 +394,24 @@ export default function Juego() {
           <span className="text-[11px] font-black text-amber-400 uppercase tracking-widest block flex items-center justify-center gap-1">
             <span>{getModeTitle()}</span>
           </span>
-          <span className="text-sm font-black text-white">
-            {score} / {targetGoal} cartas
-          </span>
+          {modo === "duelo" ? (
+            <div className="flex items-center gap-2 mt-0.5 justify-center">
+              <span className="text-xs font-black px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40">
+                Tú: {score}
+              </span>
+              <span className="text-[10px] text-white/50">VS</span>
+              <span className="text-xs font-black px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/40">
+                Menti: {mentiScore}
+              </span>
+              <span className="text-[10px] text-amber-300 font-bold">
+                (Meta: {targetGoal})
+              </span>
+            </div>
+          ) : (
+            <span className="text-sm font-black text-white">
+              {score} / {targetGoal} cartas
+            </span>
+          )}
         </div>
 
         {/* Contador de tiempo o vidas */}
@@ -295,9 +425,34 @@ export default function Juego() {
         )}
       </div>
 
-      {/* Menti Mascot reactivo */}
-      <div className="flex justify-center">
-        <MentrixMascot status={mascotStatus} size="sm" />
+      {/* Indicador de turno en Duelo contra Menti */}
+      {modo === "duelo" && gameState === "playing" && (
+        <div className={`p-2.5 rounded-2xl border text-center text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all ${
+          turnoDuelo === "jugador"
+            ? "bg-blue-950/80 border-blue-400/60 text-blue-200 shadow-blue-500/20"
+            : "bg-purple-950/80 border-purple-400/60 text-purple-200 shadow-purple-500/20 animate-pulse"
+        }`}>
+          {turnoDuelo === "jugador" ? (
+            <>
+              <Swords className="w-4 h-4 text-blue-400" />
+              <span>👉 Tu Turno: Ubica la carta en su época histórica</span>
+            </>
+          ) : (
+            <>
+              <Hourglass className="w-4 h-4 text-purple-400 animate-spin" />
+              <span>🤖 Turno de Menti: Analizando coordenadas temporales...</span>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Menti Mascot reactivo y activo */}
+      <div className="w-full flex justify-center">
+        <MentrixMascot
+          status={mascotStatus}
+          layout="default"
+          customMessage={mentiCustomMsg}
+        />
       </div>
 
       {/* Feedback de última acción */}
@@ -321,23 +476,31 @@ export default function Juego() {
       {/* Carta en mano activa */}
       {gameState === "playing" && currentCard && (
         <div className="sticky top-2 z-20 py-1 space-y-2 bg-[#0a0e1a]/95 backdrop-blur-md">
-          <CurrentCardHand
-            event={currentCard}
-            cardsPlaced={score}
-            targetGoal={targetGoal}
-            lupaActive={lupaActive}
-          />
+          {turnoDuelo === "menti" ? (
+            <div className="p-4 rounded-3xl bg-purple-950/60 border border-purple-400/40 text-center text-xs font-black text-purple-200 animate-pulse">
+              🤖 Esperando la jugada de Menti...
+            </div>
+          ) : (
+            <>
+              <CurrentCardHand
+                event={currentCard}
+                cardsPlaced={score}
+                targetGoal={targetGoal}
+                lupaActive={lupaActive}
+              />
 
-          {/* Barra de Poderes y Facultades */}
-          <PowerupsBar
-            onUseLupa={handleUseLupa}
-            onUseCongelador={handleUseCongelador}
-            onUseCorazon={handleUseCorazon}
-            lupaActive={lupaActive}
-            congeladorActive={frozenSlots.length > 0}
-            lives={lives}
-            maxLives={maxLives}
-          />
+              {/* Barra de Poderes y Facultades */}
+              <PowerupsBar
+                onUseLupa={handleUseLupa}
+                onUseCongelador={handleUseCongelador}
+                onUseCorazon={handleUseCorazon}
+                lupaActive={lupaActive}
+                congeladorActive={frozenSlots.length > 0}
+                lives={lives}
+                maxLives={maxLives}
+              />
+            </>
+          )}
         </div>
       )}
 
@@ -358,7 +521,7 @@ export default function Juego() {
           <div className="flex justify-center">
             <TimelineSlot
               onSelect={() => handleInsert(0)}
-              disabled={gameState !== "playing"}
+              disabled={gameState !== "playing" || turnoDuelo === "menti"}
               isFrozen={frozenSlots.includes(0)}
               label="Antes de todo"
             />
@@ -373,7 +536,7 @@ export default function Juego() {
               <div className="flex justify-center">
                 <TimelineSlot
                   onSelect={() => handleInsert(idx + 1)}
-                  disabled={gameState !== "playing"}
+                  disabled={gameState !== "playing" || turnoDuelo === "menti"}
                   isFrozen={frozenSlots.includes(idx + 1)}
                   label={idx === timeline.length - 1 ? "Después de todo" : "En medio"}
                 />
@@ -395,10 +558,20 @@ export default function Juego() {
 
             <div className="space-y-1.5">
               <h3 className="text-2xl font-black text-amber-100">
-                {gameState === "victory" ? "¡VICTORIA TEMPORAL!" : "FIN DE LA PARTIDA"}
+                {modo === "duelo"
+                  ? gameState === "victory"
+                    ? "¡LE GANASTE A MENTI!"
+                    : "MENTI GANÓ EL DUELO"
+                  : gameState === "victory"
+                  ? "¡VICTORIA TEMPORAL!"
+                  : "FIN DE LA PARTIDA"}
               </h3>
               <p className="text-xs text-amber-200/70 font-medium">
-                {gameState === "victory"
+                {modo === "duelo"
+                  ? gameState === "victory"
+                    ? `Lograste ${score} cartas antes de que Menti alcanzara la meta. ¡Eres un verdadero maestro crononauta!`
+                    : `Menti logró ${mentiScore} cartas superando tus ${score}. ¡Entrena y tómate la revancha!`
+                  : gameState === "victory"
                   ? "Lograste posicionar las cartas sin quebrar el curso de la historia."
                   : `Colocaste ${score} cartas correctamente en su siglo.`}
               </p>
@@ -406,7 +579,7 @@ export default function Juego() {
 
             <div className="space-y-2 pt-2">
               {/* Opción de revivir en Game Over */}
-              {gameState === "gameover" && modo !== "contrarreloj" && (
+              {gameState === "gameover" && modo !== "contrarreloj" && modo !== "duelo" && (
                 <button
                   type="button"
                   onClick={handleRevive}

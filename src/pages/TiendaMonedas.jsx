@@ -272,7 +272,7 @@ export default function TiendaMonedas() {
           </div>
         </div>
 
-        {/* ── BANNER VISUAL COMPACTO CON MENTI ── */}
+        {/* ── BANNER VISUAL ── */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-950/40 via-[#0f1936] to-slate-900 border border-amber-500/30 p-2.5 flex items-center justify-between shadow-lg">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shrink-0">
@@ -288,10 +288,14 @@ export default function TiendaMonedas() {
               </p>
             </div>
           </div>
+        </div>
 
-          <div className="w-10 h-10 shrink-0">
-            <MentrixMascot size="xs" showBubble={false} position="center" />
-          </div>
+        {/* ── MENTI ASESOR TEMPORAL CON BURBUJA ACTIVA ── */}
+        <div className="w-full">
+          <MentrixMascot
+            layout="default"
+            customMessage="¡Bienvenido a la Bóveda de Poderes! Canjea tus monedas por vidas extra, comodines de lupa y congeladores de ranuras erróneas."
+          />
         </div>
 
         {/* ── SELECTOR DE PESTAÑAS (TABS ARCADE) ── */}

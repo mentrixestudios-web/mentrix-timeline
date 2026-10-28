@@ -253,7 +253,7 @@ export default function DueloAmigos() {
   };
 
   return (
-    <div className="space-y-4 select-none pb-32 relative">
+    <div className="space-y-4 select-none pb-8 relative">
       
       {/* ── HEADER SUPERIOR ── */}
       <div className="flex items-center justify-between">
@@ -284,6 +284,14 @@ export default function DueloAmigos() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
+          {/* Menti Asesor Temporal */}
+          <div className="w-full">
+            <MentrixMascot
+              layout="default"
+              customMessage="¡Duelo en un solo celular! Elijan entre 2 y 4 jugadores, tomen turnos y vayan pasando el dispositivo para ver quién conoce mejor la historia."
+            />
+          </div>
+
           {/* 1. SELECCIÓN DE CANTIDAD DE JUGADORES */}
           <div className="space-y-2">
             <div className="flex items-center justify-between px-1">
@@ -503,32 +511,17 @@ export default function DueloAmigos() {
             </div>
           </div>
 
-          {/* BOTÓN EN PANTALLA VISIBLE PARA INICIAR PARTIDA */}
-          <div className="pt-3">
+          {/* BOTÓN ÚNICO EN PANTALLA PARA INICIAR PARTIDA */}
+          <div className="pt-2 pb-6">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
               onClick={iniciarPartida}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 hover:from-blue-400 hover:to-amber-400 text-white font-black text-base uppercase tracking-wider shadow-2xl shadow-blue-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-all"
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 hover:from-blue-400 hover:to-amber-400 text-white font-black text-base uppercase tracking-wider shadow-2xl shadow-blue-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-all active:scale-95"
             >
               <Swords className="w-5 h-5" />
               <span>¡Iniciar Duelo ({cantJugadores} Jugadores)!</span>
             </motion.button>
-          </div>
-
-          {/* BARRA FLOTANTE FIJA INFERIOR */}
-          <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-[#091024]/95 backdrop-blur-xl border-t border-blue-500/30 z-50">
-            <div className="max-w-md mx-auto">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={iniciarPartida}
-                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 text-white font-black text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-blue-500/30 flex items-center justify-center gap-2 cursor-pointer transition-all animate-pulse"
-              >
-                <Swords className="w-5 h-5" />
-                <span>¡Comenzar Duelo con Amigos!</span>
-              </motion.button>
-            </div>
           </div>
         </motion.div>
       )}

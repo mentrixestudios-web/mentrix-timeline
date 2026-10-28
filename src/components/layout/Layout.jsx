@@ -36,15 +36,8 @@ export default function Layout({ children }) {
     };
   }, []);
 
-  const isFullFlowPage = 
-    pathname === "/juego" || 
-    pathname === "/config-ronda" || 
-    pathname === "/configronda" || 
-    pathname === "/duelo-amigos" || 
-    pathname === "/modos-online" || 
-    pathname === "/tienda" || 
-    pathname === "/tiendamonedas";
-  const showNav = !isFullFlowPage;
+  const isGamePage = pathname === "/juego";
+  const showNav = !isGamePage;
 
   const navItems = [
     { label: "Jugar", path: "/", icon: Play },
@@ -148,7 +141,7 @@ export default function Layout({ children }) {
       {/* =========================================
           MAIN CONTENT AREA
          ========================================= */}
-      <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-20 md:pb-8" : "pb-4"} overflow-x-hidden relative`}>
+      <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-28 md:pb-8" : "pb-4"} overflow-x-hidden relative`}>
         {/* Glow de fondo cósmico / dorado */}
         <div className="fixed top-0 right-0 w-80 md:w-96 h-80 md:h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none overflow-hidden" />
         <div className="fixed bottom-0 left-0 md:left-64 w-64 md:w-80 h-64 md:h-80 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none overflow-hidden" />

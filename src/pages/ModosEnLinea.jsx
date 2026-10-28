@@ -92,22 +92,25 @@ export default function ModosEnLinea() {
         </span>
       </div>
 
-      {/* ── BANNER MULTIJUGADOR CON MENTI ── */}
-      <div className="rounded-3xl bg-gradient-to-r from-blue-950/80 via-[#102047] to-indigo-950/80 border-2 border-blue-400/50 p-4 shadow-xl flex items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-1.5">
-            <Globe className="w-4 h-4 text-blue-300" />
-            <h1 className="text-base sm:text-lg font-black text-white">
-              Salas de Duelo en Línea 1v1
-            </h1>
-          </div>
-          <p className="text-xs text-blue-200/80 font-medium mt-0.5">
-            Invita a amigos por WhatsApp o código directo
-          </p>
+      {/* ── BANNER MULTIJUGADOR ── */}
+      <div className="rounded-3xl bg-gradient-to-r from-blue-950/80 via-[#102047] to-indigo-950/80 border-2 border-blue-400/50 p-4 shadow-xl">
+        <div className="flex items-center gap-1.5 mb-1">
+          <Globe className="w-4 h-4 text-blue-300" />
+          <h1 className="text-base sm:text-lg font-black text-white">
+            Salas de Duelo en Línea 1v1
+          </h1>
         </div>
-        <div className="w-12 h-12 shrink-0">
-          <MentrixMascot size="xs" showBubble={false} position="center" />
-        </div>
+        <p className="text-xs text-blue-200/80 font-medium">
+          Invita a amigos por WhatsApp o código directo
+        </p>
+      </div>
+
+      {/* ── MENTI ASESOR TEMPORAL CON BURBUJA ACTIVA ── */}
+      <div className="w-full">
+        <MentrixMascot
+          layout="default"
+          customMessage="¡Crea una sala de batalla multijugador y comparte el enlace por WhatsApp para retar a tus amigos en tiempo real!"
+        />
       </div>
 
       {!enSalaEspera ? (
