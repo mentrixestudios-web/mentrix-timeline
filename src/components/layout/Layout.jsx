@@ -36,9 +36,15 @@ export default function Layout({ children }) {
     };
   }, []);
 
-  const isGamePage = pathname === "/juego";
-  const isShopPage = pathname === "/tienda" || pathname === "/tiendamonedas";
-  const showNav = !isGamePage && !isShopPage;
+  const isFullFlowPage = 
+    pathname === "/juego" || 
+    pathname === "/config-ronda" || 
+    pathname === "/configronda" || 
+    pathname === "/duelo-amigos" || 
+    pathname === "/modos-online" || 
+    pathname === "/tienda" || 
+    pathname === "/tiendamonedas";
+  const showNav = !isFullFlowPage;
 
   const navItems = [
     { label: "Jugar", path: "/", icon: Play },

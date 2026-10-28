@@ -12,7 +12,8 @@ import {
   Check,
   Zap,
   Flame,
-  Layers
+  Layers,
+  ShieldAlert
 } from "lucide-react";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import { CATEGORIES } from "@/data/categories";
@@ -26,7 +27,7 @@ const MODOS_INFO = {
     icono: "⏳",
     colorBadge: "bg-amber-500/20 text-amber-300 border-amber-400/40",
     badge: "MODO ESTRELLA ⭐",
-    mensajeMenti: "Selecciona el mazo con el que pondrás a prueba tu conocimiento temporal.",
+    mensajeMenti: "Selecciona el mazo y la dificultad para poner a prueba tu conocimiento temporal.",
   },
   duelo: {
     nombre: "Duelo vs Menti",
@@ -34,7 +35,7 @@ const MODOS_INFO = {
     icono: "⚔️",
     colorBadge: "bg-purple-500/20 text-purple-300 border-purple-400/40",
     badge: "VS IA 🤖",
-    mensajeMenti: "¡Acepto el reto! Escoge el mazo y veamos quién domina los siglos.",
+    mensajeMenti: "¡Acepto el reto! Escoge el mazo y dificultad. Veamos quién domina los siglos.",
   },
   contrarreloj: {
     nombre: "Contrarreloj",
@@ -42,7 +43,7 @@ const MODOS_INFO = {
     icono: "⏱️",
     colorBadge: "bg-cyan-500/20 text-cyan-300 border-cyan-400/40",
     badge: "FRENESÍ 60s ⚡",
-    mensajeMenti: "¡El reloj corre! Escoge tu mazo favorito para pensar a toda velocidad.",
+    mensajeMenti: "¡El reloj corre! Escoge tu mazo y prepárate para pensar a toda velocidad.",
   },
   supervivencia: {
     nombre: "Supervivencia",
@@ -54,14 +55,12 @@ const MODOS_INFO = {
   },
 };
 
-// Detalles visuales premium estilo TCG / Baraja de cartas para cada mazo
 const DECK_CONFIG = {
   caos: {
     iconoEmoji: "⏳",
     tagline: "Todas las Épocas",
     temaColor: "from-amber-600 via-yellow-600 to-amber-950",
     bordeActivo: "border-amber-400 ring-2 ring-amber-400/60 shadow-amber-500/30",
-    resplandor: "bg-amber-500/20",
     iconoBg: "bg-amber-500/30 text-amber-200 border-amber-400/50",
     resumen: "El mazo maestro con todos los acontecimientos universales cruzados.",
   },
@@ -70,7 +69,6 @@ const DECK_CONFIG = {
     tagline: "Imperios y Guerras",
     temaColor: "from-blue-600 via-indigo-700 to-slate-950",
     bordeActivo: "border-blue-400 ring-2 ring-blue-400/60 shadow-blue-500/30",
-    resplandor: "bg-blue-500/20",
     iconoBg: "bg-blue-500/30 text-blue-200 border-blue-400/50",
     resumen: "Desde Egipto y Roma hasta la Revolución y el siglo XX.",
   },
@@ -79,7 +77,6 @@ const DECK_CONFIG = {
     tagline: "Génesis al Evangelio",
     temaColor: "from-emerald-600 via-teal-700 to-slate-950",
     bordeActivo: "border-emerald-400 ring-2 ring-emerald-400/60 shadow-emerald-500/30",
-    resplandor: "bg-emerald-500/20",
     iconoBg: "bg-emerald-500/30 text-emerald-200 border-emerald-400/50",
     resumen: "Profetas, reyes, éxodo y la línea histórica de las Escrituras.",
   },
@@ -88,7 +85,6 @@ const DECK_CONFIG = {
     tagline: "Inventos y Espacio",
     temaColor: "from-purple-600 via-fuchsia-700 to-slate-950",
     bordeActivo: "border-purple-400 ring-2 ring-purple-400/60 shadow-purple-500/30",
-    resplandor: "bg-purple-500/20",
     iconoBg: "bg-purple-500/30 text-purple-200 border-purple-400/50",
     resumen: "Hitos científicos, exploración estelar y medicina.",
   },
@@ -97,7 +93,6 @@ const DECK_CONFIG = {
     tagline: "Obras y Maestros",
     temaColor: "from-pink-600 via-rose-700 to-slate-950",
     bordeActivo: "border-pink-400 ring-2 ring-pink-400/60 shadow-pink-500/30",
-    resplandor: "bg-pink-500/20",
     iconoBg: "bg-pink-500/30 text-pink-200 border-pink-400/50",
     resumen: "Música clásica, rock, pintura y corrientes artísticas.",
   },
@@ -106,7 +101,6 @@ const DECK_CONFIG = {
     tagline: "Cine y Cultura Pop",
     temaColor: "from-orange-600 via-amber-700 to-slate-950",
     bordeActivo: "border-orange-400 ring-2 ring-orange-400/60 shadow-orange-500/30",
-    resplandor: "bg-orange-500/20",
     iconoBg: "bg-orange-500/30 text-orange-200 border-orange-400/50",
     resumen: "Películas de culto, consolas legendarias y cultura pop.",
   },
@@ -122,21 +116,28 @@ export default function ConfigRonda() {
   // Mazo seleccionado por defecto: "caos"
   const [selectedCat, setSelectedCat] = useState("caos");
 
-  // Dificultad / Longitud: 5, 10 o 15 cartas
-  const [cartasMeta, setCartasMeta] = useState(10);
+  // Dificultad: "facil" (5 cartas), "medio" (10 cartas), "dificil" (15 cartas)
+  const [dificultad, setDificultad] = useState("medio");
 
   const activeCategory = CATEGORIES.find((c) => c.id === selectedCat) || CATEGORIES[0];
   const activeDeckStyle = DECK_CONFIG[selectedCat] || DECK_CONFIG.caos;
   const eventCount = getEventsByCategory(selectedCat).length;
 
+  const getTargetCartas = () => {
+    if (modo === "supervivencia") return 25;
+    if (dificultad === "facil") return 5;
+    if (dificultad === "dificil") return 15;
+    return 10;
+  };
+
   const handleStartGame = () => {
     playSfx("victory");
-    const target = modo === "supervivencia" ? 25 : cartasMeta;
-    navigate(`/juego?modo=${modo}&cat=${selectedCat}&cartas=${target}`);
+    const target = getTargetCartas();
+    navigate(`/juego?modo=${modo}&cat=${selectedCat}&cartas=${target}&dif=${dificultad}`);
   };
 
   return (
-    <div className="space-y-4 select-none pb-28 relative">
+    <div className="space-y-4 select-none pb-32 relative">
       
       {/* ── HEADER SUPERIOR ── */}
       <div className="flex items-center justify-between">
@@ -149,7 +150,7 @@ export default function ConfigRonda() {
           className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center gap-1.5 text-xs font-black tracking-wide border border-white/10 cursor-pointer shadow-sm"
         >
           <ArrowLeft className="w-4 h-4 text-amber-400" />
-          <span>Volver</span>
+          <span>Volver al Menú</span>
         </motion.button>
 
         <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${modoData.colorBadge}`}>
@@ -162,7 +163,6 @@ export default function ConfigRonda() {
         key={selectedCat}
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.2 }}
         className={`relative overflow-hidden rounded-3xl p-4 border bg-gradient-to-br ${activeDeckStyle.temaColor} shadow-xl`}
       >
         <div className="flex items-center justify-between gap-3 relative z-10">
@@ -198,21 +198,20 @@ export default function ConfigRonda() {
         </p>
       </motion.div>
 
-      {/* ── VITRINA DE MAZOS DE CARTAS (CUADRÍCULA 2x3 TIPO BARAJA COLECCIONABLE) ── */}
+      {/* ── PASO 1: VITRINA DE MAZOS DE CARTAS (CUADRÍCULA 2x3 TIPO BARAJA COLECCIONABLE) ── */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-4 bg-amber-400 rounded-full" />
             <h3 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
-              Elige tu Mazo de Juego
+              1. Selecciona el Mazo Temático
             </h3>
           </div>
           <span className="text-[10px] text-amber-300 font-bold">
-            Toca para equipar
+            Toca para elegir
           </span>
         </div>
 
-        {/* Cuadrícula 2 columnas estilo cajas de baraja arcade */}
         <div className="grid grid-cols-2 gap-2.5">
           {CATEGORIES.map((cat) => {
             const isSelected = selectedCat === cat.id;
@@ -233,10 +232,8 @@ export default function ConfigRonda() {
                     : "bg-[#0b1328]/95 border-white/10 hover:border-amber-400/40"
                 }`}
               >
-                {/* Resplandor superior metálico */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${cat.color}`} />
 
-                {/* Badge superior de cartas */}
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[9px] font-black text-white/70 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-md">
                     {count} 🃏
@@ -248,12 +245,11 @@ export default function ConfigRonda() {
                     </span>
                   ) : (
                     <span className="text-[9px] font-bold text-white/30">
-                      Equipar
+                      Elegir
                     </span>
                   )}
                 </div>
 
-                {/* Ícono central 3D grande */}
                 <div className="my-1">
                   <div className={`w-12 h-12 mx-auto rounded-2xl ${deckStyle.iconoBg} border flex items-center justify-center text-2xl shadow-md transition-transform ${isSelected ? "scale-110" : ""}`}>
                     {deckStyle.iconoEmoji}
@@ -266,10 +262,9 @@ export default function ConfigRonda() {
                   </p>
                 </div>
 
-                {/* Indicador de selección */}
                 <div className="mt-2 pt-1.5 border-t border-white/10">
                   <span className={`text-[10px] font-black uppercase tracking-wider block ${isSelected ? "text-amber-400" : "text-white/40"}`}>
-                    {isSelected ? "★ SELECCIONADO" : "Elegir Mazo"}
+                    {isSelected ? "★ SELECCIONADO" : "Tocar para Cambiar"}
                   </span>
                 </div>
               </motion.div>
@@ -278,45 +273,46 @@ export default function ConfigRonda() {
         </div>
       </div>
 
-      {/* ── SELECTOR DE LONGITUD DE RONDA (EXCEPTO EN SUPERVIVENCIA) ── */}
+      {/* ── PASO 2: SELECTOR DE DIFICULTAD (EXCEPTO EN SUPERVIVENCIA) ── */}
       {modo !== "supervivencia" && (
         <div className="space-y-2 pt-2">
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-4 bg-purple-400 rounded-full" />
               <h3 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
-                Cartas por Partida
+                2. Nivel de Dificultad
               </h3>
             </div>
             <span className="text-[10px] text-purple-300 font-bold">
-              Objetivo de victoria
+              Modifica cartas y margen
             </span>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
             {[
-              { cartas: 5, label: "Rápida", badge: "5 Cartas", emoji: "⚡" },
-              { cartas: 10, label: "Estándar", badge: "10 Cartas", emoji: "⭐" },
-              { cartas: 15, label: "Desafío", badge: "15 Cartas", emoji: "👑" },
+              { id: "facil", label: "Fácil", badge: "5 Cartas", desc: "Más margen", emoji: "🟢" },
+              { id: "medio", label: "Media", badge: "10 Cartas", desc: "Equilibrado", emoji: "🟡" },
+              { id: "dificil", label: "Difícil", badge: "15 Cartas", desc: "Erudito", emoji: "🔴" },
             ].map((d) => {
-              const active = cartasMeta === d.cartas;
+              const active = dificultad === d.id;
               return (
                 <button
-                  key={d.cartas}
+                  key={d.id}
                   type="button"
                   onClick={() => {
                     playSfx("tap");
-                    setCartasMeta(d.cartas);
+                    setDificultad(d.id);
                   }}
-                  className={`py-2 px-1 rounded-2xl border text-center transition-all cursor-pointer ${
+                  className={`py-2.5 px-1.5 rounded-2xl border text-center transition-all cursor-pointer ${
                     active
-                      ? "bg-gradient-to-b from-amber-500/25 to-yellow-500/10 border-amber-400 text-white shadow-md shadow-amber-500/20 ring-1 ring-amber-400/50"
+                      ? "bg-gradient-to-b from-amber-500/25 to-yellow-500/10 border-amber-400 text-white shadow-md shadow-amber-500/20 ring-2 ring-amber-400"
                       : "bg-[#0b1328]/90 border-white/10 text-white/60 hover:text-white"
                   }`}
                 >
-                  <span className="text-sm">{d.emoji}</span>
-                  <p className="text-xs font-black text-white">{d.label}</p>
-                  <p className="text-[9px] text-amber-300 font-bold">{d.badge}</p>
+                  <span className="text-base">{d.emoji}</span>
+                  <p className="text-xs font-black text-white mt-0.5">{d.label}</p>
+                  <p className="text-[10px] text-amber-300 font-bold">{d.badge}</p>
+                  <p className="text-[8px] text-white/40">{d.desc}</p>
                 </button>
               );
             })}
@@ -324,14 +320,27 @@ export default function ConfigRonda() {
         </div>
       )}
 
-      {/* ── BARRA FLOTANTE FIJA INFERIOR (STICKY ACTION BAR ARCADE) ── */}
-      <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-slate-950 via-[#091024]/95 to-transparent z-40 backdrop-blur-md border-t border-white/10">
+      {/* ── BOTÓN DIRECTO EN PANTALLA PARA INICIAR PARTIDA ── */}
+      <div className="pt-3">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
+          onClick={handleStartGame}
+          className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-base uppercase tracking-wider shadow-2xl shadow-amber-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-all"
+        >
+          <Play className="w-5 h-5 fill-slate-950" />
+          <span>¡Iniciar Partida Ahora!</span>
+        </motion.button>
+      </div>
+
+      {/* ── BARRA FLOTANTE FIJA INFERIOR (STICKY ACTION BAR) ── */}
+      <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 bg-[#091024]/95 backdrop-blur-xl border-t border-amber-500/30 z-50">
         <div className="max-w-md mx-auto">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
             onClick={handleStartGame}
-            className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-amber-500/30 flex items-center justify-center gap-2.5 cursor-pointer transition-all animate-pulse"
+            className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-amber-500/40 flex items-center justify-center gap-2 cursor-pointer transition-all"
           >
             <Play className="w-5 h-5 fill-slate-950" />
             <span>¡Jugar con {activeCategory.name}!</span>
