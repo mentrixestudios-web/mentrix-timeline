@@ -1,8 +1,25 @@
 import React from "react";
-import { HelpCircle, Sparkles, Hourglass } from "lucide-react";
-import { motion } from "framer-motion";
+import { Sparkles, Hourglass, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function CurrentCardHand({ event, cardsPlaced = 0, targetGoal = 10 }) {
+function getCenturyHint(year) {
+  if (year < 0) {
+    const c = Math.ceil(Math.abs(year) / 100);
+    return `Siglo ${c} a.C. (Época Antigua)`;
+  }
+  const c = Math.ceil(year / 100);
+  if (c <= 5) return `Siglo ${c} d.C. (Edad Antigua)`;
+  if (c <= 15) return `Siglo ${c} d.C. (Edad Media)`;
+  if (c <= 18) return `Siglo ${c} d.C. (Edad Moderna)`;
+  return `Siglo ${c} d.C. (Edad Contemporánea)`;
+}
+
+export default function CurrentCardHand({
+  event,
+  cardsPlaced = 0,
+  targetGoal = 10,
+  lupaActive = false,
+}) {
   if (!event) return null;
 
   return (
@@ -28,6 +45,21 @@ export default function CurrentCardHand({ event, cardsPlaced = 0, targetGoal = 1
       <h2 className="text-white font-black text-base sm:text-lg leading-snug">
         {event.title}
       </h2>
+
+      {/* Pista de Lupa si está activa */}
+      <AnimatePresence>
+        {lupaActive && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-2.5 p-2 rounded-xl bg-amber-500/20 border border-amber-400/60 flex items-center gap-2 text-xs text-amber-200 font-extrabold shadow-sm"
+          >
+            <Search className="w-4 h-4 text-amber-300 shrink-0" />
+            <span>Pista Revelada: {getCenturyHint(event.year)}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Reseña o pista histórica */}
       {event.description && (

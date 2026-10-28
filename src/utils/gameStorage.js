@@ -9,12 +9,16 @@ const KEYS = {
   ADS_WATCHED: "mt_ads_watched_today",
   ADS_DATE: "mt_ads_date",
   LAST_AD_TIME: "mt_last_ad_time",
+  POWERUPS: "mt_powerups",
+  DAILY_GIFT_LAST: "mt_daily_gift_last",
+  STARTER_PACK_CLAIMED: "mt_starter_pack_claimed",
 };
 
 const INITIAL_COINS = 1000;
 const AD_REWARD = 30;
 const MAX_ADS_PER_DAY = 5;
 const AD_COOLDOWN_MS = 2 * 60 * 1000; // 2 minutos
+const DAILY_GIFT_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 horas
 
 function emitStorageUpdate() {
   if (typeof window !== "undefined") {
@@ -51,6 +55,122 @@ export function spendCoins(amount) {
 }
 
 // ============================================
+// INVENTARIO DE PODERES Y FACULTADES
+// ============================================
+export function getPowerups() {
+  try {
+    const raw = localStorage.getItem(KEYS.POWERUPS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        escudos: parsed.escudos || 0,
+        lupas: parsed.lupas || 0,
+        corazones: parsed.corazones || 0,
+        congeladores: parsed.congeladores || 0,
+      };
+    }
+  } catch {}
+  return {
+    escudos: 1, // 1 escudo de regalo de inicio
+    lupas: 2,   // 2 lupas de regalo de inicio
+    corazones: 1,
+    congeladores: 1,
+  };
+}
+
+export function savePowerups(powerups) {
+  localStorage.setItem(KEYS.POWERUPS, JSON.stringify(powerups));
+  emitStorageUpdate();
+  return powerups;
+}
+
+export function addPowerup(type, count = 1) {
+  const current = getPowerups();
+  current[type] = (current[type] || 0) + count;
+  return savePowerups(current);
+}
+
+export function usePowerup(type) {
+  const current = getPowerups();
+  if ((current[type] || 0) > 0) {
+    current[type] -= 1;
+    savePowerups(current);
+    return true;
+  }
+  return false;
+}
+
+export function buyPowerupWithCoins(type, priceInCoins) {
+  if (spendCoins(priceInCoins)) {
+    addPowerup(type, 1);
+    return true;
+  }
+  return false;
+}
+
+// ============================================
+// COFRE DE REGALO DIARIO (CADA 24 HORAS)
+// ============================================
+export function getDailyGiftInfo() {
+  const lastClaim = parseInt(localStorage.getItem(KEYS.DAILY_GIFT_LAST) || "0", 10);
+  const now = Date.now();
+  const elapsed = now - lastClaim;
+  const cooldownRemaining = Math.max(0, DAILY_GIFT_COOLDOWN_MS - elapsed);
+  const canClaim = cooldownRemaining === 0;
+
+  const hours = Math.floor(cooldownRemaining / (1000 * 60 * 60));
+  const mins = Math.floor((cooldownRemaining % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((cooldownRemaining % (1000 * 60)) / 1000);
+
+  const formattedTime = `${hours}h ${mins}m ${secs}s`;
+
+  return {
+    canClaim,
+    cooldownRemaining,
+    formattedTime,
+    lastClaim,
+  };
+}
+
+export function claimDailyGift() {
+  const info = getDailyGiftInfo();
+  if (!info.canClaim) return null;
+
+  // Recompensa aleatoria: entre 40 y 100 monedas
+  const bonusCoins = Math.floor(Math.random() * 61) + 40; // 40-100 🪙
+  addCoins(bonusCoins);
+
+  // Además, un poder al azar de regalo
+  const poderes = ["escudos", "lupas", "corazones", "congeladores"];
+  const randomPoder = poderes[Math.floor(Math.random() * poderes.length)];
+  addPowerup(randomPoder, 1);
+
+  localStorage.setItem(KEYS.DAILY_GIFT_LAST, String(Date.now()));
+  emitStorageUpdate();
+
+  return {
+    coins: bonusCoins,
+    powerup: randomPoder,
+  };
+}
+
+// ============================================
+// OFERTA DE BIENVENIDA (STARTER PACK)
+// ============================================
+export function isStarterPackClaimed() {
+  return localStorage.getItem(KEYS.STARTER_PACK_CLAIMED) === "true";
+}
+
+export function claimStarterPack() {
+  addCoins(1000);
+  addPowerup("escudos", 2);
+  addPowerup("lupas", 3);
+  localStorage.setItem(KEYS.STARTER_PACK_CLAIMED, "true");
+  emitStorageUpdate();
+  return true;
+}
+
+// ============================================
 // NIVEL Y EXPERIENCIA (XP)
 // ============================================
 export function getLevel() {
@@ -84,7 +204,6 @@ export function addXp(amount) {
   const nextXp = currentXp + amount;
   localStorage.setItem(KEYS.XP, String(nextXp));
 
-  // Calcular si subió de nivel
   let nivel = getLevel();
   let xpReq = nivel * 100;
   let subioNivel = false;
@@ -118,6 +237,13 @@ export function getStreakInfo() {
 
   if (lastPlay === today || lastPlay === yesterday) {
     return { racha: streak, rachaHoy };
+  }
+
+  // Si tiene un escudo de racha disponible, podemos salvar la racha
+  const powerups = getPowerups();
+  if (powerups.escudos > 0 && streak > 0) {
+    // Racha salvada por escudo
+    return { racha: streak, rachaHoy: false, escudoProtegiendo: true };
   }
 
   return { racha: 0, rachaHoy: false };
@@ -198,11 +324,9 @@ export function recordGameResult({ won, cardsPlaced, category }) {
   };
   localStorage.setItem(KEYS.STATS, JSON.stringify(next));
 
-  // High Score
   const high = Math.max(parseInt(localStorage.getItem(KEYS.HIGH_SCORE) || "0", 10), cardsPlaced);
   localStorage.setItem(KEYS.HIGH_SCORE, String(high));
 
-  // Racha
   const today = new Date().toISOString().slice(0, 10);
   const lastPlay = localStorage.getItem(KEYS.LAST_PLAY_DATE);
   let streak = parseInt(localStorage.getItem(KEYS.STREAK) || "0", 10);
@@ -218,7 +342,6 @@ export function recordGameResult({ won, cardsPlaced, category }) {
     localStorage.setItem(KEYS.LAST_PLAY_DATE, today);
   }
 
-  // Experiencia ganada
   const xpEarned = cardsPlaced * 15 + (won ? 50 : 10);
   const coinsEarned = cardsPlaced * 5 + (won ? 25 : 0);
   addXp(xpEarned);

@@ -12,7 +12,8 @@ import {
   Layers,
   Sparkles,
   HelpCircle,
-  Hourglass
+  Hourglass,
+  ShoppingBag
 } from "lucide-react";
 import { getEventsByCategory } from "@/data/eventsData";
 import { CATEGORIES } from "@/data/categories";
@@ -21,7 +22,9 @@ import TimelineSlot from "@/components/game/TimelineSlot";
 import CurrentCardHand from "@/components/game/CurrentCardHand";
 import LivesDisplay from "@/components/game/LivesDisplay";
 import MentrixMascot from "@/components/game/MentrixMascot";
-import { addCoins, recordGameResult } from "@/utils/gameStorage";
+import PowerupsBar from "@/components/game/PowerupsBar";
+import { addCoins, recordGameResult, getPowerups, usePowerup, spendCoins } from "@/utils/gameStorage";
+import { playSfx } from "@/utils/soundSystem";
 
 export default function Juego() {
   const [searchParams] = useSearchParams();
@@ -40,6 +43,10 @@ export default function Juego() {
   const [mascotStatus, setMascotStatus] = useState("idle");
   const [lastFeedback, setLastFeedback] = useState(null);
 
+  // Estados de poderes activos en la carta actual
+  const [lupaActive, setLupaActive] = useState(false);
+  const [frozenSlots, setFrozenSlots] = useState([]);
+
   // Iniciar partida
   useEffect(() => {
     startNewGame();
@@ -47,7 +54,6 @@ export default function Juego() {
 
   const startNewGame = () => {
     const rawEvents = getEventsByCategory(categoryId);
-    // Shuffle array
     const shuffled = [...rawEvents].sort(() => Math.random() - 0.5);
 
     if (shuffled.length < 2) {
@@ -68,31 +74,69 @@ export default function Juego() {
     setGameState("playing");
     setMascotStatus("idle");
     setLastFeedback(null);
+    setLupaActive(false);
+    setFrozenSlots([]);
+  };
+
+  const handleUseLupa = () => {
+    setLupaActive(true);
+    playSfx("tap");
+  };
+
+  const handleUseCongelador = () => {
+    if (!currentCard) return;
+    // Encontrar qué ranuras son incorrectas
+    const wrongSlots = [];
+    const totalSlots = timeline.length + 1;
+
+    for (let slot = 0; slot < totalSlots; slot++) {
+      let isCorrect = true;
+      if (slot > 0 && currentCard.year < timeline[slot - 1].year) isCorrect = false;
+      if (slot < timeline.length && currentCard.year > timeline[slot].year) isCorrect = false;
+
+      if (!isCorrect) {
+        wrongSlots.push(slot);
+      }
+    }
+
+    // Congelar hasta 2 ranuras incorrectas al azar
+    const toFreeze = wrongSlots.sort(() => Math.random() - 0.5).slice(0, 2);
+    setFrozenSlots(toFreeze);
+    playSfx("tap");
+  };
+
+  const handleUseCorazon = () => {
+    setLives((prev) => Math.min(3, prev + 1));
+    playSfx("victory");
   };
 
   const handleInsert = (slotIndex) => {
     if (gameState !== "playing" || !currentCard) return;
+    if (frozenSlots.includes(slotIndex)) {
+      toast.error("Esa ranura está congelada porque es incorrecta");
+      return;
+    }
 
     // Validar orden cronológico
     let isCorrect = true;
 
-    // Debe ser >= que el elemento anterior (si existe)
+    // Debe ser >= que el elemento anterior
     if (slotIndex > 0 && currentCard.year < timeline[slotIndex - 1].year) {
       isCorrect = false;
     }
 
-    // Debe ser <= que el elemento posterior (si existe)
+    // Debe ser <= que el elemento posterior
     if (slotIndex < timeline.length && currentCard.year > timeline[slotIndex].year) {
       isCorrect = false;
     }
 
     if (isCorrect) {
-      // ÉXITO
+      playSfx("correct");
       confetti({
         particleCount: 50,
         spread: 70,
         origin: { y: 0.65 },
-        colors: ["#f59e0b", "#eab308", "#3b82f6", "#10b981"]
+        colors: ["#f59e0b", "#eab308", "#3b82f6", "#10b981"],
       });
 
       const nextTimeline = [...timeline];
@@ -104,17 +148,22 @@ export default function Juego() {
       addCoins(10);
       setMascotStatus("correct");
 
+      // Reset de poderes para la siguiente carta
+      setLupaActive(false);
+      setFrozenSlots([]);
+
       setLastFeedback({
         type: "correct",
-        message: `¡Correcto! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}.`
+        message: `¡Correcto! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}.`,
       });
 
       // Verificar Victoria
       if (nextScore >= targetGoal) {
         setGameState("victory");
         setMascotStatus("victory");
+        playSfx("victory");
         recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
-        addCoins(50); // Bonus por victoria
+        addCoins(50);
         confetti({ particleCount: 130, spread: 100, origin: { y: 0.5 } });
         return;
       }
@@ -125,22 +174,27 @@ export default function Juego() {
         setCurrentCard(nextCard);
         setPool(pool.slice(1));
       } else {
-        // Pool agotado = victoria
         setGameState("victory");
         setMascotStatus("victory");
+        playSfx("victory");
         recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
       }
     } else {
       // ERROR
+      playSfx("wrong");
       if (navigator?.vibrate) navigator.vibrate([100, 50, 100]);
 
       const nextLives = lives - 1;
       setLives(nextLives);
       setMascotStatus("wrong");
 
+      // Reset poderes
+      setLupaActive(false);
+      setFrozenSlots([]);
+
       setLastFeedback({
         type: "wrong",
-        message: `¡Fallaste! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}, no en esa posición.`
+        message: `¡Fallaste! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}, no en esa posición.`,
       });
 
       if (nextLives <= 0) {
@@ -148,7 +202,6 @@ export default function Juego() {
         setMascotStatus("gameover");
         recordGameResult({ won: false, cardsPlaced: score, category: categoryId });
       } else {
-        // Reemplazar carta fallida por otra para seguir intentando
         if (pool.length > 0) {
           const nextCard = pool[0];
           setCurrentCard(nextCard);
@@ -158,8 +211,28 @@ export default function Juego() {
     }
   };
 
+  const handleRevive = () => {
+    const powerups = getPowerups();
+    if (powerups.corazones > 0) {
+      usePowerup("corazones");
+      setLives(1);
+      setGameState("playing");
+      setMascotStatus("idle");
+      playSfx("victory");
+      toast.success("💖 ¡Reviviste con tu Segundo Aire!");
+    } else if (spendCoins(100)) {
+      setLives(1);
+      setGameState("playing");
+      setMascotStatus("idle");
+      playSfx("victory");
+      toast.success("💖 ¡Reviviste por 100 monedas!");
+    } else {
+      toast.error("No tienes vidas extra ni 100 monedas para revivir");
+    }
+  };
+
   return (
-    <div className="space-y-5 max-w-xl mx-auto">
+    <div className="space-y-4 max-w-xl mx-auto select-none">
       {/* Barra superior de control */}
       <div className="flex items-center justify-between gap-3">
         <Link
@@ -209,11 +282,23 @@ export default function Juego() {
 
       {/* Carta en mano activa */}
       {gameState === "playing" && currentCard && (
-        <div className="sticky top-14 md:top-6 z-20 py-2 bg-[#0a0e1a]/95 backdrop-blur-md">
+        <div className="sticky top-2 z-20 py-1 space-y-2 bg-[#0a0e1a]/95 backdrop-blur-md">
           <CurrentCardHand
             event={currentCard}
             cardsPlaced={score}
             targetGoal={targetGoal}
+            lupaActive={lupaActive}
+          />
+
+          {/* Barra de Poderes y Facultades */}
+          <PowerupsBar
+            onUseLupa={handleUseLupa}
+            onUseCongelador={handleUseCongelador}
+            onUseCorazon={handleUseCorazon}
+            lupaActive={lupaActive}
+            congeladorActive={frozenSlots.length > 0}
+            lives={lives}
+            maxLives={3}
           />
         </div>
       )}
@@ -236,6 +321,7 @@ export default function Juego() {
             <TimelineSlot
               onSelect={() => handleInsert(0)}
               disabled={gameState !== "playing"}
+              isFrozen={frozenSlots.includes(0)}
               label="Antes de todo"
             />
           </div>
@@ -250,6 +336,7 @@ export default function Juego() {
                 <TimelineSlot
                   onSelect={() => handleInsert(idx + 1)}
                   disabled={gameState !== "playing"}
+                  isFrozen={frozenSlots.includes(idx + 1)}
                   label={idx === timeline.length - 1 ? "Después de todo" : "En medio"}
                 />
               </div>
@@ -263,7 +350,7 @@ export default function Juego() {
          ======================================================== */}
       {(gameState === "victory" || gameState === "gameover") && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-gradient-to-b from-[#0c1630] to-[#090d1c] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center space-y-5 shadow-2xl shadow-amber-500/20">
+          <div className="bg-gradient-to-b from-[#0c1630] to-[#090d1c] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4 shadow-2xl shadow-amber-500/20">
             <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-lg bg-amber-500/20 border border-amber-500/40">
               {gameState === "victory" ? "🏆" : "💀"}
             </div>
@@ -275,37 +362,38 @@ export default function Juego() {
               <p className="text-xs text-amber-200/70 font-medium">
                 {gameState === "victory"
                   ? "Lograste posicionar 10 acontecimientos sin quebrar el curso de la historia."
-                  : "El tiempo fue implacable. ¿Te atreves a intentarlo de nuevo?"}
+                  : `Colocaste ${score} cartas en su lugar correcto.`}
               </p>
             </div>
 
-            <div className="bg-[#0b1328] border border-amber-500/30 rounded-2xl p-4 flex items-center justify-around shadow-inner">
-              <div>
-                <p className="text-[10px] text-amber-200/60 uppercase font-black">Cartas</p>
-                <p className="text-xl font-black text-white">{score}</p>
-              </div>
-              <div className="w-px h-8 bg-amber-500/20" />
-              <div>
-                <p className="text-[10px] text-amber-200/60 uppercase font-black">Recompensa</p>
-                <p className="text-xl font-black text-amber-400">+{score * 10} 🪙</p>
-              </div>
-            </div>
-
             <div className="space-y-2 pt-2">
+              {/* Opción de revivir en Game Over */}
+              {gameState === "gameover" && (
+                <button
+                  type="button"
+                  onClick={handleRevive}
+                  className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-black text-xs tracking-wider uppercase shadow-lg shadow-rose-500/30 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
+                >
+                  <Heart className="w-4 h-4 fill-white" />
+                  <span>Revivir (Segundo Aire · 100 🪙)</span>
+                </button>
+              )}
+
               <button
+                type="button"
                 onClick={startNewGame}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black py-3.5 rounded-2xl transition-all shadow-lg shadow-amber-500/30"
+                className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-xs tracking-wider uppercase shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
               >
-                <RotateCcw className="w-4 h-4 stroke-[2.5]" />
-                <span>Jugar de nuevo</span>
+                <RotateCcw className="w-4 h-4" />
+                <span>Jugar de Nuevo</span>
               </button>
 
               <Link
-                to="/categorias"
-                className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-amber-500/20 text-amber-200 font-bold py-3 rounded-2xl transition-all"
+                to="/tienda"
+                className="w-full py-2.5 px-4 rounded-2xl bg-white/10 hover:bg-white/15 text-amber-200 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
               >
-                <Layers className="w-4 h-4" />
-                <span>Cambiar de Mazo</span>
+                <ShoppingBag className="w-4 h-4 text-amber-400" />
+                <span>Ir a la Tienda de Monedas</span>
               </Link>
             </div>
           </div>
