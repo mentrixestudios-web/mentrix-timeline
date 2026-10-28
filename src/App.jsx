@@ -9,6 +9,9 @@ import DesafioDiario from "@/pages/DesafioDiario";
 import Estadisticas from "@/pages/Estadisticas";
 import Perfil from "@/pages/Perfil";
 import ConfigRonda from "@/pages/ConfigRonda";
+import DueloAmigos from "@/pages/DueloAmigos";
+import ModosIndividuales from "@/pages/ModosIndividuales";
+import ModosEnLinea from "@/pages/ModosEnLinea";
 import TiendaMonedas from "@/pages/TiendaMonedas";
 import { scheduleTimelineNotifications } from "@/utils/notificationSystem";
 
@@ -26,6 +29,9 @@ export default function App() {
           <Route path="/config-ronda" element={<ConfigRonda />} />
           <Route path="/ConfigRonda" element={<ConfigRonda />} />
           <Route path="/categorias" element={<ConfigRonda />} />
+          <Route path="/duelo-amigos" element={<DueloAmigos />} />
+          <Route path="/modos-individuales" element={<ModosIndividuales />} />
+          <Route path="/modos-online" element={<ModosEnLinea />} />
           <Route path="/desafio" element={<DesafioDiario />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
           <Route path="/perfil" element={<Perfil />} />
