@@ -13,7 +13,10 @@ import {
   Sparkles,
   HelpCircle,
   Hourglass,
-  ShoppingBag
+  ShoppingBag,
+  Timer,
+  Swords,
+  Skull
 } from "lucide-react";
 import { getEventsByCategory } from "@/data/eventsData";
 import { CATEGORIES } from "@/data/categories";
@@ -31,14 +34,17 @@ export default function Juego() {
   const navigate = useNavigate();
 
   const categoryId = searchParams.get("cat") || "caos";
+  const modo = searchParams.get("modo") || "clasico";
   const categoryInfo = CATEGORIES.find((c) => c.id === categoryId) || CATEGORIES[0];
+
+  const maxLives = modo === "supervivencia" ? 1 : 3;
 
   const [pool, setPool] = useState([]);
   const [timeline, setTimeline] = useState([]);
   const [currentCard, setCurrentCard] = useState(null);
-  const [lives, setLives] = useState(3);
+  const [lives, setLives] = useState(maxLives);
   const [score, setScore] = useState(0);
-  const [targetGoal] = useState(10);
+  const [targetGoal] = useState(modo === "supervivencia" ? 25 : 10);
   const [gameState, setGameState] = useState("playing"); // 'playing' | 'revealing' | 'victory' | 'gameover'
   const [mascotStatus, setMascotStatus] = useState("idle");
   const [lastFeedback, setLastFeedback] = useState(null);
@@ -47,10 +53,33 @@ export default function Juego() {
   const [lupaActive, setLupaActive] = useState(false);
   const [frozenSlots, setFrozenSlots] = useState([]);
 
+  // Estado de Contrarreloj (segundos restantes)
+  const [timeLeft, setTimeLeft] = useState(60);
+
   // Iniciar partida
   useEffect(() => {
     startNewGame();
-  }, [categoryId]);
+  }, [categoryId, modo]);
+
+  // Temporizador en modo contrarreloj
+  useEffect(() => {
+    if (modo !== "contrarreloj" || gameState !== "playing") return;
+
+    if (timeLeft <= 0) {
+      setGameState("gameover");
+      setMascotStatus("gameover");
+      playSfx("wrong");
+      recordGameResult({ won: false, cardsPlaced: score, category: categoryId });
+      toast.error("⏱️ ¡Tiempo agotado!");
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [modo, gameState, timeLeft, score, categoryId]);
 
   const startNewGame = () => {
     const rawEvents = getEventsByCategory(categoryId);
@@ -69,8 +98,9 @@ export default function Juego() {
     setTimeline([firstCard]);
     setCurrentCard(handCard);
     setPool(remainingPool);
-    setLives(3);
+    setLives(maxLives);
     setScore(0);
+    setTimeLeft(60);
     setGameState("playing");
     setMascotStatus("idle");
     setLastFeedback(null);
@@ -85,7 +115,6 @@ export default function Juego() {
 
   const handleUseCongelador = () => {
     if (!currentCard) return;
-    // Encontrar qué ranuras son incorrectas
     const wrongSlots = [];
     const totalSlots = timeline.length + 1;
 
@@ -99,14 +128,13 @@ export default function Juego() {
       }
     }
 
-    // Congelar hasta 2 ranuras incorrectas al azar
     const toFreeze = wrongSlots.sort(() => Math.random() - 0.5).slice(0, 2);
     setFrozenSlots(toFreeze);
     playSfx("tap");
   };
 
   const handleUseCorazon = () => {
-    setLives((prev) => Math.min(3, prev + 1));
+    setLives((prev) => Math.min(maxLives, prev + 1));
     playSfx("victory");
   };
 
@@ -117,15 +145,12 @@ export default function Juego() {
       return;
     }
 
-    // Validar orden cronológico
     let isCorrect = true;
 
-    // Debe ser >= que el elemento anterior
     if (slotIndex > 0 && currentCard.year < timeline[slotIndex - 1].year) {
       isCorrect = false;
     }
 
-    // Debe ser <= que el elemento posterior
     if (slotIndex < timeline.length && currentCard.year > timeline[slotIndex].year) {
       isCorrect = false;
     }
@@ -148,7 +173,11 @@ export default function Juego() {
       addCoins(10);
       setMascotStatus("correct");
 
-      // Reset de poderes para la siguiente carta
+      // Si es contrarreloj, regala +4 segundos de bonificación
+      if (modo === "contrarreloj") {
+        setTimeLeft((prev) => prev + 4);
+      }
+
       setLupaActive(false);
       setFrozenSlots([]);
 
@@ -157,7 +186,6 @@ export default function Juego() {
         message: `¡Correcto! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}.`,
       });
 
-      // Verificar Victoria
       if (nextScore >= targetGoal) {
         setGameState("victory");
         setMascotStatus("victory");
@@ -168,7 +196,6 @@ export default function Juego() {
         return;
       }
 
-      // Sacar siguiente carta
       if (pool.length > 0) {
         const nextCard = pool[0];
         setCurrentCard(nextCard);
@@ -180,7 +207,6 @@ export default function Juego() {
         recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
       }
     } else {
-      // ERROR
       playSfx("wrong");
       if (navigator?.vibrate) navigator.vibrate([100, 50, 100]);
 
@@ -188,7 +214,6 @@ export default function Juego() {
       setLives(nextLives);
       setMascotStatus("wrong");
 
-      // Reset poderes
       setLupaActive(false);
       setFrozenSlots([]);
 
@@ -231,6 +256,13 @@ export default function Juego() {
     }
   };
 
+  const getModeTitle = () => {
+    if (modo === "contrarreloj") return "⏱️ Contrarreloj 60s";
+    if (modo === "supervivencia") return "💀 Supervivencia (1 Vida)";
+    if (modo === "duelo") return "⚔️ Duelo vs Menti";
+    return `⏳ ${categoryInfo.name}`;
+  };
+
   return (
     <div className="space-y-4 max-w-xl mx-auto select-none">
       {/* Barra superior de control */}
@@ -242,19 +274,25 @@ export default function Juego() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
 
-        {/* Categoría y progreso */}
+        {/* Modo de juego y progreso */}
         <div className="text-center">
           <span className="text-[11px] font-black text-amber-400 uppercase tracking-widest block flex items-center justify-center gap-1">
-            <Hourglass className="w-3 h-3 text-amber-400" />
-            <span>{categoryInfo.name}</span>
+            <span>{getModeTitle()}</span>
           </span>
           <span className="text-sm font-black text-white">
             {score} / {targetGoal} cartas
           </span>
         </div>
 
-        {/* Vidas */}
-        <LivesDisplay lives={lives} maxLives={3} />
+        {/* Contador de tiempo o vidas */}
+        {modo === "contrarreloj" ? (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-300 font-black text-sm">
+            <Timer className="w-4 h-4 animate-pulse" />
+            <span>{timeLeft}s</span>
+          </div>
+        ) : (
+          <LivesDisplay lives={lives} maxLives={maxLives} />
+        )}
       </div>
 
       {/* Menti Mascot reactivo */}
@@ -298,7 +336,7 @@ export default function Juego() {
             lupaActive={lupaActive}
             congeladorActive={frozenSlots.length > 0}
             lives={lives}
-            maxLives={3}
+            maxLives={maxLives}
           />
         </div>
       )}
@@ -361,14 +399,14 @@ export default function Juego() {
               </h3>
               <p className="text-xs text-amber-200/70 font-medium">
                 {gameState === "victory"
-                  ? "Lograste posicionar 10 acontecimientos sin quebrar el curso de la historia."
-                  : `Colocaste ${score} cartas en su lugar correcto.`}
+                  ? "Lograste posicionar las cartas sin quebrar el curso de la historia."
+                  : `Colocaste ${score} cartas correctamente en su siglo.`}
               </p>
             </div>
 
             <div className="space-y-2 pt-2">
               {/* Opción de revivir en Game Over */}
-              {gameState === "gameover" && (
+              {gameState === "gameover" && modo !== "contrarreloj" && (
                 <button
                   type="button"
                   onClick={handleRevive}
