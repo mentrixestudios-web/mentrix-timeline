@@ -610,7 +610,7 @@ export default function Juego() {
               </p>
             </div>
 
-            {/* Carta de Aprendizaje Desbloqueada como Recompensa */}
+            {/* Carta de Aprendizaje Desbloqueada como Recompensa en Victoria */}
             {gameState === "victory" && unlockedPrizeCard && (
               <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/20 via-[#102048] to-[#0c1630] border-2 border-amber-400 text-left space-y-2 shadow-xl animate-fade-in">
                 <div className="flex items-center justify-between">
@@ -645,8 +645,45 @@ export default function Juego() {
                   to="/estadisticas?tab=codice"
                   className="block text-center py-1.5 px-3 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 text-[11px] font-black uppercase tracking-wider transition-colors"
                 >
-                  Abrir Ficha en el Códice 📖
+                  Abrir Ficha en el Museo 📖
                 </Link>
+              </div>
+            )}
+
+            {/* Ficha Educativa del Hito cuando el jugador pierde (Aprende del Error) */}
+            {gameState === "gameover" && currentCard && (
+              <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-950/60 via-[#0e1b38] to-[#091024] border border-blue-400/40 text-left space-y-2 shadow-xl">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/25 text-blue-300 border border-blue-400/40">
+                    📖 APRENDE DE ESTE HITO
+                  </span>
+                  <span className="text-[10px] font-black text-slate-950 bg-amber-400 px-2 py-0.5 rounded-full">
+                    {currentCard.yearFormatted}
+                  </span>
+                </div>
+
+                <div>
+                  <h4 className="text-xs sm:text-sm font-black text-white leading-tight">
+                    {currentCard.title}
+                  </h4>
+                  {currentCard.personajeClave && (
+                    <p className="text-[10px] text-amber-300 font-bold mt-0.5">
+                      👤 {currentCard.personajeClave} {currentCard.siglo ? `· ${currentCard.siglo}` : ""}
+                    </p>
+                  )}
+                </div>
+
+                {currentCard.description && (
+                  <p className="text-[11px] text-white/80 leading-relaxed">
+                    {currentCard.description}
+                  </p>
+                )}
+
+                {currentCard.datoCurioso && (
+                  <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-400/30 text-[10px] text-amber-100/90 leading-snug">
+                    💡 <strong>¿Sabías que?</strong> {currentCard.datoCurioso}
+                  </div>
+                )}
               </div>
             )}
 

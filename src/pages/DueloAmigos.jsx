@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { 
@@ -25,7 +25,7 @@ import TimelineSlot from "@/components/game/TimelineSlot";
 import CurrentCardHand from "@/components/game/CurrentCardHand";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import { playSfx } from "@/utils/soundSystem";
-import { addCoins } from "@/utils/gameStorage";
+import { addCoins, recordGameResult } from "@/utils/gameStorage";
 
 // Configuración de Mazos TCG
 const DECK_CONFIG = {
@@ -114,6 +114,7 @@ export default function DueloAmigos() {
   const [vidas, setVidas] = useState([3, 3, 3, 3]);
   const [feedback, setFeedback] = useState(null);
   const [ganadorIdx, setGanadorIdx] = useState(null);
+  const [unlockedPrizeCard, setUnlockedPrizeCard] = useState(null);
 
   const activeCategory = CATEGORIES.find((c) => c.id === catSeleccionada) || CATEGORIES[0];
   const activeDeckStyle = DECK_CONFIG[catSeleccionada] || DECK_CONFIG.caos;
@@ -148,6 +149,7 @@ export default function DueloAmigos() {
     setVidas([initialLives, initialLives, initialLives, initialLives]);
     setFeedback(null);
     setGanadorIdx(null);
+    setUnlockedPrizeCard(null);
     setFase("playing");
   };
 
@@ -249,6 +251,15 @@ export default function DueloAmigos() {
     setFase("victory");
     playSfx("victory");
     addCoins(40);
+    const res = recordGameResult({
+      won: true,
+      cardsPlaced: Math.max(puntos[winnerIndex] || 1, 1),
+      category: catSeleccionada,
+      mode: "duelo",
+    });
+    if (res?.newlyUnlockedCard) {
+      setUnlockedPrizeCard(res.newlyUnlockedCard);
+    }
     confetti({ particleCount: 130, spread: 90, origin: { y: 0.5 } });
   };
 
@@ -716,6 +727,46 @@ export default function DueloAmigos() {
               );
             })}
           </div>
+
+          {/* Reliquia / Códice desbloqueado en el Duelo */}
+          {unlockedPrizeCard && (
+            <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/20 via-[#102048] to-[#0c1630] border-2 border-amber-400 text-left space-y-2 shadow-xl">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  ¡TESORO DE DUELO COLECCIONADO!
+                </span>
+                <span className="text-xs font-black text-amber-300">
+                  +{unlockedPrizeCard.recompensaMonedas} 🪙
+                </span>
+              </div>
+
+              <div className="flex items-start gap-2.5">
+                <div className="w-11 h-11 rounded-xl bg-black/40 border border-amber-400/50 flex items-center justify-center text-2xl shrink-0">
+                  {unlockedPrizeCard.icono}
+                </div>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-black text-white leading-tight">
+                    {unlockedPrizeCard.title}
+                  </h4>
+                  <p className="text-[10px] text-amber-300 font-bold mt-0.5">
+                    {unlockedPrizeCard.yearFormatted} · {unlockedPrizeCard.personajeClave}
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-2 rounded-xl bg-black/35 border border-white/10 text-[11px] text-amber-100/90 leading-snug">
+                💡 <strong>¿Sabías que?</strong> {unlockedPrizeCard.sabiasQue}
+              </div>
+
+              <Link
+                to="/estadisticas?tab=reliquias"
+                className="block text-center py-1.5 px-3 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 text-[11px] font-black uppercase tracking-wider transition-colors"
+              >
+                Ver en el Museo 🏛️
+              </Link>
+            </div>
+          )}
 
           <div className="flex gap-2 pt-2">
             <button
