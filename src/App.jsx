@@ -8,6 +8,7 @@ import Categorias from "@/pages/Categorias";
 import DesafioDiario from "@/pages/DesafioDiario";
 import Estadisticas from "@/pages/Estadisticas";
 import Perfil from "@/pages/Perfil";
+import ConfigRonda from "@/pages/ConfigRonda";
 import TiendaMonedas from "@/pages/TiendaMonedas";
 import { scheduleTimelineNotifications } from "@/utils/notificationSystem";
 
@@ -22,7 +23,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/juego" element={<Juego />} />
-          <Route path="/categorias" element={<Categorias />} />
+          <Route path="/config-ronda" element={<ConfigRonda />} />
+          <Route path="/ConfigRonda" element={<ConfigRonda />} />
+          <Route path="/categorias" element={<ConfigRonda />} />
           <Route path="/desafio" element={<DesafioDiario />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
           <Route path="/perfil" element={<Perfil />} />

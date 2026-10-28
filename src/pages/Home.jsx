@@ -11,13 +11,14 @@ import {
   Timer, 
   Skull, 
   ArrowRight, 
+  Users,
   Compass,
+  Layers,
   ChevronRight,
   Shield,
-  Layers
+  Zap
 } from "lucide-react";
 import MentrixMascot from "@/components/game/MentrixMascot";
-import { CATEGORIES } from "@/data/categories";
 import { getHighScore, getStreakInfo, getLevelInfo } from "@/utils/gameStorage";
 import { playSfx } from "@/utils/soundSystem";
 
@@ -26,6 +27,7 @@ export default function Home() {
   const [highScore, setHighScore] = useState(getHighScore());
   const [streakData, setStreakData] = useState(getStreakInfo());
   const [levelData, setLevelData] = useState(getLevelInfo());
+  const [showMultiplayerModal, setShowMultiplayerModal] = useState(false);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -47,17 +49,17 @@ export default function Home() {
     if (strk >= 3) return `¡${strk} días seguidos! Menti admira tu constancia 🔥`;
     if (lvl >= 10) return "Nivel 10 ya. Reconozco a un verdadero erudito histórico 🧠";
     if (lvl >= 5) return "¡Nivel 5! Ya dominas la cronología como un maestro 📜";
-    return "¡Bienvenido, Viajero! Elige un modo y desafía el curso de la historia ⏳";
+    return "¡Bienvenido, Viajero! Elige un modo de juego para desafiar la historia ⏳";
   };
 
-  const handleStartMode = (modo = "clasico", cat = "caos") => {
+  const handleSelectMode = (modo = "clasico") => {
     playSfx("tap");
-    navigate(`/juego?modo=${modo}&cat=${cat}`);
+    navigate(`/config-ronda?modo=${modo}`);
   };
 
   return (
-    <div className="space-y-5 select-none pb-6">
-      {/* ── BRANDING IDÉNTICO A MENTRIX ESTUDIO BÍBLICO ── */}
+    <div className="space-y-4 select-none pb-8">
+      {/* ── BRANDING & MASCOTA MENTI VIAJERO (ESTILO MENTRIX ESTUDIO BÍBLICO) ── */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -73,7 +75,7 @@ export default function Home() {
         </div>
 
         {/* Mascota Menti Viajero del Tiempo Centrada con Diálogo */}
-        <div className="w-full mt-2">
+        <div className="w-full mt-1">
           <MentrixMascot
             status="idle"
             layout="hero"
@@ -82,7 +84,7 @@ export default function Home() {
         </div>
       </motion.div>
 
-      {/* ── CARD DESTACADA: DESAFÍO CRONOLÓGICO DEL DÍA (Estilo Versículo del Día de Mentrix) ── */}
+      {/* ── CARD DESTACADA: DESAFÍO CRONOLÓGICO DEL DÍA (Estilo Versículo del Día) ── */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -134,7 +136,7 @@ export default function Home() {
               to="/desafio"
               onClick={() => playSfx("tap")}
               style={{
-                padding: "5px 12px",
+                padding: "6px 14px",
                 borderRadius: "10px",
                 cursor: "pointer",
                 background: "linear-gradient(90deg, #F59E0B, #D97706)",
@@ -154,8 +156,8 @@ export default function Home() {
         </div>
       </motion.div>
 
-      {/* ── SECCIÓN: MODOS DE JUEGO PRINCIPALES (MÓDULOS DE JUEGO MENTRIX) ── */}
-      <div className="space-y-3">
+      {/* ── SECCIÓN: MODOS DE JUEGO (MÓDULOS DE ACCIÓN DIDÁCTICA ARCADE) ── */}
+      <div className="space-y-3 pt-1">
         <div className="flex items-center gap-2 px-1">
           <div className="w-1.5 h-4 bg-amber-400 rounded-full" />
           <h3 className="text-xs sm:text-sm font-black text-amber-100 uppercase tracking-wider">
@@ -163,12 +165,12 @@ export default function Home() {
           </h3>
         </div>
 
-        {/* MÓDULO 1: MODO CLÁSICO (CAOS TEMPORAL) - El modo estrella */}
+        {/* MÓDULO 1: LÍNEA TEMPORAL (MODO CLÁSICO) - El protagonista */}
         <motion.div
           whileTap={{ scale: 0.98 }}
           whileHover={{ y: -2 }}
-          onClick={() => handleStartMode("clasico", "caos")}
-          className="cursor-pointer w-full rounded-3xl p-4 sm:p-5 relative overflow-hidden transition-all duration-200 bg-gradient-to-br from-[#122347] via-[#0d1833] to-[#151f3d] border-2 border-amber-400/60 shadow-[0_8px_30px_rgba(245,158,11,0.18)] group"
+          onClick={() => handleSelectMode("clasico")}
+          className="cursor-pointer w-full rounded-3xl p-4 sm:p-5 relative overflow-hidden transition-all duration-200 bg-gradient-to-br from-[#122347] via-[#0d1833] to-[#151f3d] border-2 border-amber-400/70 shadow-[0_8px_30px_rgba(245,158,11,0.2)] group"
         >
           <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
@@ -184,10 +186,10 @@ export default function Home() {
                   </span>
                 </div>
                 <h4 className="text-white font-black text-base sm:text-lg group-hover:text-amber-200 transition-colors">
-                  Línea Temporal: Caos
+                  Línea Temporal
                 </h4>
                 <p className="text-amber-100/70 text-xs font-medium">
-                  Ordena 10 acontecimientos sin quebrar la historia
+                  Configura tu mazo y ordena los acontecimientos
                 </p>
               </div>
             </div>
@@ -202,7 +204,7 @@ export default function Home() {
         <motion.div
           whileTap={{ scale: 0.98 }}
           whileHover={{ y: -2 }}
-          onClick={() => handleStartMode("duelo", "historia")}
+          onClick={() => handleSelectMode("duelo")}
           className="cursor-pointer w-full rounded-2xl p-3.5 sm:p-4 relative overflow-hidden transition-all duration-200 bg-gradient-to-br from-purple-950/70 via-[#181138] to-indigo-950/70 border border-purple-400/40 hover:border-purple-300 shadow-lg shadow-purple-950/40 group"
         >
           <div className="flex items-center justify-between gap-3 relative z-10">
@@ -237,21 +239,21 @@ export default function Home() {
           <motion.div
             whileTap={{ scale: 0.98 }}
             whileHover={{ y: -2 }}
-            onClick={() => handleStartMode("contrarreloj", "ciencia")}
-            className="cursor-pointer rounded-2xl p-3.5 bg-gradient-to-br from-amber-950/60 via-[#18152e] to-[#121c38] border border-amber-400/35 hover:border-amber-400 shadow-md group"
+            onClick={() => handleSelectMode("contrarreloj")}
+            className="cursor-pointer rounded-2xl p-3.5 bg-gradient-to-br from-cyan-950/60 via-[#101b33] to-[#0c152a] border border-cyan-400/35 hover:border-cyan-400 shadow-md group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-xl shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-xl shrink-0">
                 ⏱️
               </div>
               <div className="min-w-0 flex-1">
-                <span className="text-[8px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300">
+                <span className="text-[8px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-300">
                   Frenesí 60s
                 </span>
                 <h4 className="text-white font-extrabold text-xs sm:text-sm mt-0.5 truncate">
                   Contrarreloj
                 </h4>
-                <p className="text-amber-100/60 text-[10px] truncate">
+                <p className="text-cyan-100/60 text-[10px] truncate">
                   El reloj no perdona
                 </p>
               </div>
@@ -262,7 +264,7 @@ export default function Home() {
           <motion.div
             whileTap={{ scale: 0.98 }}
             whileHover={{ y: -2 }}
-            onClick={() => handleStartMode("supervivencia", "biblia")}
+            onClick={() => handleSelectMode("supervivencia")}
             className="cursor-pointer rounded-2xl p-3.5 bg-gradient-to-br from-red-950/60 via-[#1b1226] to-[#141830] border border-red-400/35 hover:border-red-400 shadow-md group"
           >
             <div className="flex items-center gap-3">
@@ -283,54 +285,40 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-      </div>
 
-      {/* ── SECCIÓN: MAZOS TEMÁTICOS Y ERAS HISTÓRICAS ── */}
-      <div className="space-y-3 pt-2">
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-4 bg-blue-400 rounded-full" />
-            <h3 className="text-xs sm:text-sm font-black text-blue-100 uppercase tracking-wider">
-              Mazos Temáticos
-            </h3>
-          </div>
-          <Link
-            to="/categorias"
-            onClick={() => playSfx("tap")}
-            className="text-xs text-amber-400 font-extrabold hover:underline flex items-center gap-1"
-          >
-            <span>Ver todos</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        {/* Grid de Mazos Interactivos tipo Juego */}
-        <div className="grid grid-cols-2 gap-2.5">
-          {CATEGORIES.slice(0, 4).map((cat) => (
-            <motion.div
-              key={cat.id}
-              whileTap={{ scale: 0.97 }}
-              whileHover={{ y: -2 }}
-              onClick={() => handleStartMode("clasico", cat.id)}
-              className="cursor-pointer rounded-2xl p-3 bg-gradient-to-br from-[#0c1630] to-[#091024] border border-white/10 hover:border-amber-400/50 shadow-md group transition-all"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${cat.color} flex items-center justify-center text-white shadow-sm border border-white/20 group-hover:scale-105 transition-transform`}>
-                  <Layers className="w-4 h-4" />
-                </div>
-                <span className="text-[9px] font-black text-amber-300 bg-amber-500/15 border border-amber-400/30 px-2 py-0.5 rounded-full">
-                  Jugar
-                </span>
+        {/* MÓDULO 5: DUELO EN LÍNEA 1 VS 1 (MULTIJUGADOR PWA) */}
+        <motion.div
+          whileTap={{ scale: 0.98 }}
+          whileHover={{ y: -2 }}
+          onClick={() => {
+            playSfx("tap");
+            setShowMultiplayerModal(true);
+          }}
+          className="cursor-pointer w-full rounded-2xl p-3.5 bg-gradient-to-r from-blue-950/80 via-[#0f214a] to-indigo-950/80 border border-blue-400/40 hover:border-blue-300 shadow-lg group"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-xl shrink-0">
+                👥
               </div>
-              <h4 className="text-white font-extrabold text-xs sm:text-sm group-hover:text-amber-200 transition-colors truncate">
-                {cat.name}
-              </h4>
-              <p className="text-[10px] text-slate-400 truncate mt-0.5">
-                {cat.subtitle}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+              <div className="min-w-0">
+                <span className="text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                  Multijugador PWA 🌐
+                </span>
+                <h4 className="text-white font-extrabold text-xs sm:text-sm mt-0.5 group-hover:text-blue-200 transition-colors">
+                  Duelo en Línea 1 vs 1
+                </h4>
+                <p className="text-blue-200/60 text-[10px]">
+                  Crea una sala y reta a tus amigos por enlace directo
+                </p>
+              </div>
+            </div>
+
+            <div className="px-3 py-1.5 rounded-xl bg-blue-500/20 text-blue-300 font-black text-xs group-hover:bg-blue-500 group-hover:text-white transition-all shrink-0">
+              Crear Sala
+            </div>
+          </div>
+        </motion.div>
       </div>
 
       {/* ── RÉCORDS RÁPIDOS ── */}
@@ -355,6 +343,34 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* ── MODAL DE PREPARACIÓN DE SALAS MULTIJUGADOR ── */}
+      {showMultiplayerModal && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#0b1328] border-2 border-blue-400/60 rounded-3xl p-5 max-w-sm w-full space-y-3.5 shadow-2xl text-white text-center"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/20 mx-auto flex items-center justify-center text-2xl border border-blue-400/40">
+              👥
+            </div>
+            <h3 className="font-black text-base text-blue-200">Salas de Duelo 1 vs 1</h3>
+            <p className="text-xs text-white/70 leading-relaxed">
+              En este modelo PWA podrás crear una sala con un solo toque y <strong>compartir el enlace directo por WhatsApp</strong> para que tu rival entre al duelo al instante sin instalar nada.
+            </p>
+            <div className="p-3 bg-white/5 rounded-2xl border border-white/10 text-xs font-mono text-amber-300">
+              mentrix.cl/duelo?sala=CRONO24
+            </div>
+            <button
+              onClick={() => setShowMultiplayerModal(false)}
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs font-black uppercase tracking-wider cursor-pointer"
+            >
+              ¡Entendido, esperando dominio!
+            </button>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

@@ -43,8 +43,8 @@ export default function Juego() {
   const [timeline, setTimeline] = useState([]);
   const [currentCard, setCurrentCard] = useState(null);
   const [lives, setLives] = useState(maxLives);
-  const [score, setScore] = useState(0);
-  const [targetGoal] = useState(modo === "supervivencia" ? 25 : 10);
+  const cartasParam = parseInt(searchParams.get("cartas"));
+  const [targetGoal] = useState(!isNaN(cartasParam) && cartasParam > 0 ? cartasParam : (modo === "supervivencia" ? 25 : 10));
   const [gameState, setGameState] = useState("playing"); // 'playing' | 'revealing' | 'victory' | 'gameover'
   const [mascotStatus, setMascotStatus] = useState("idle");
   const [lastFeedback, setLastFeedback] = useState(null);
