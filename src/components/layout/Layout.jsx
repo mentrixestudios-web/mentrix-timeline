@@ -43,7 +43,7 @@ export default function Layout({ children }) {
     { label: "Jugar", path: "/", icon: Play },
     { label: "Categorías", path: "/categorias", icon: Layers },
     { label: "Desafío", path: "/desafio", icon: Calendar },
-    { label: "Récords", path: "/estadisticas", icon: Trophy },
+    { label: "Museo", path: "/estadisticas", icon: Trophy },
     { label: "Perfil", path: "/perfil", icon: User },
   ];
 

@@ -288,28 +288,28 @@ export default function Home() {
         whileHover={{ y: -2 }}
         onClick={() => {
           playSfx("tap");
-          navigate("/estadisticas?tab=codice");
+          navigate("/estadisticas?tab=galeria");
         }}
         className="cursor-pointer w-full rounded-2xl p-3 bg-gradient-to-r from-amber-950/50 via-[#101e42] to-slate-900 border border-amber-400/40 hover:border-amber-400 shadow-lg flex items-center justify-between gap-3 group transition-all"
       >
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/50 flex items-center justify-center text-xl shadow-md group-hover:scale-105 transition-transform shrink-0">
-            📖
+            🏛️
           </div>
           <div>
             <div className="flex items-center gap-1.5">
               <span className="text-[8px] font-black uppercase tracking-wider px-2 py-0.2 rounded-full bg-amber-400 text-slate-950">
-                MUSEO Y APRENDIZAJE
+                MUSEO & APRENDIZAJE 🏛️
               </span>
               <span className="text-[10px] text-amber-300 font-bold">
-                {unlockedCardsCount} / {LEARNING_CARDS.length} Reliquias
+                {unlockedCardsCount} Coleccionados · 157 Hitos
               </span>
             </div>
             <h4 className="text-white font-black text-xs sm:text-sm group-hover:text-amber-200 transition-colors mt-0.5">
-              Códice de Reliquias Históricas
+              Galería de Hitos, Códices y Reliquias
             </h4>
             <p className="text-white/60 text-[10px]">
-              Explora las cartas y aprendizajes desbloqueados
+              Explora la enciclopedia histórica y tus tesoros cronológicos
             </p>
           </div>
         </div>

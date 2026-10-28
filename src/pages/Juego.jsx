@@ -79,7 +79,7 @@ export default function Juego() {
       setGameState("gameover");
       setMascotStatus("gameover");
       playSfx("wrong");
-      recordGameResult({ won: false, cardsPlaced: score, category: categoryId });
+      recordGameResult({ won: false, cardsPlaced: score, category: categoryId, mode: modo });
       toast.error("⏱️ ¡Tiempo agotado!");
       return;
     }
@@ -102,7 +102,7 @@ export default function Juego() {
             setGameState("victory");
             setMascotStatus("victory");
             playSfx("victory");
-            const res = recordGameResult({ won: true, cardsPlaced: score, category: categoryId });
+            const res = recordGameResult({ won: true, cardsPlaced: score, category: categoryId, mode: modo });
             if (res?.newlyUnlockedCard) {
               setUnlockedPrizeCard(res.newlyUnlockedCard);
             }
@@ -110,6 +110,7 @@ export default function Juego() {
             setGameState("gameover");
             setMascotStatus("gameover");
             playSfx("wrong");
+            recordGameResult({ won: false, cardsPlaced: score, category: categoryId, mode: modo });
           }
           return currentPool;
         }
@@ -137,7 +138,7 @@ export default function Juego() {
                 setGameState("gameover");
                 setMascotStatus("gameover");
                 playSfx("wrong");
-                recordGameResult({ won: false, cardsPlaced: score, category: categoryId });
+                recordGameResult({ won: false, cardsPlaced: score, category: categoryId, mode: modo });
               }
               return nextM;
             });
@@ -299,7 +300,7 @@ export default function Juego() {
         setGameState("victory");
         setMascotStatus("victory");
         playSfx("victory");
-        const res = recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
+        const res = recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId, mode: modo });
         if (res?.newlyUnlockedCard) {
           setUnlockedPrizeCard(res.newlyUnlockedCard);
         }
@@ -324,7 +325,7 @@ export default function Juego() {
         setGameState("victory");
         setMascotStatus("victory");
         playSfx("victory");
-        const res = recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId });
+        const res = recordGameResult({ won: true, cardsPlaced: nextScore, category: categoryId, mode: modo });
         if (res?.newlyUnlockedCard) {
           setUnlockedPrizeCard(res.newlyUnlockedCard);
         }
@@ -348,7 +349,7 @@ export default function Juego() {
       if (nextLives <= 0) {
         setGameState("gameover");
         setMascotStatus("gameover");
-        recordGameResult({ won: false, cardsPlaced: score, category: categoryId });
+        recordGameResult({ won: false, cardsPlaced: score, category: categoryId, mode: modo });
         return;
       }
 

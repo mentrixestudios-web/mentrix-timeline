@@ -351,10 +351,13 @@ export function recordGameResult({ won, cardsPlaced, category }) {
   addXp(xpEarned);
   if (coinsEarned > 0) addCoins(coinsEarned);
 
-  // Si ganó la partida, intentar desbloquear una nueva carta coleccionable de aprendizaje
+  // Si ganó la partida, intentar desbloquear una nueva carta coleccionable
+  // Si fue un modo desafiante (duelo, supervivencia, desafío), priorizar Reliquias
   let newlyUnlockedCard = null;
   if (won) {
-    newlyUnlockedCard = unlockNextCardForCategory(category);
+    const isEpicMode = mode === "duelo" || mode === "supervivencia" || mode === "desafio";
+    const preferredTier = isEpicMode ? "reliquia" : "codice";
+    newlyUnlockedCard = unlockNextCardForCategory(category, preferredTier);
   }
 
   emitStorageUpdate();
@@ -369,7 +372,7 @@ export function getHighScore() {
 }
 
 // ============================================
-// CÓDICE DE CARTAS HISTÓRICAS COLECCIONABLES
+// CÓDICE & RELIQUIAS HISTÓRICAS COLECCIONABLES
 // ============================================
 export function getUnlockedCardIds() {
   try {
@@ -399,15 +402,23 @@ export function unlockCard(cardId) {
   return false;
 }
 
-export function unlockNextCardForCategory(category = null) {
+export function unlockNextCardForCategory(category = null, preferredTier = "codice") {
   const unlocked = getUnlockedCardIds();
 
-  // 1. Buscar en la categoría actual
+  // 1. Buscar en la categoría actual con el tier preferido
   let candidate = LEARNING_CARDS.find(
-    (c) => (category && category !== "caos" ? c.category === category : true) && !unlocked.includes(c.id)
+    (c) =>
+      c.tier === preferredTier &&
+      (category && category !== "caos" ? c.category === category : true) &&
+      !unlocked.includes(c.id)
   );
 
-  // 2. Si ya completó esa categoría o es caos, buscar en cualquier categoría
+  // 2. Si no hay en esa categoría, buscar en cualquier categoría del mismo tier
+  if (!candidate) {
+    candidate = LEARNING_CARDS.find((c) => c.tier === preferredTier && !unlocked.includes(c.id));
+  }
+
+  // 3. Si se agotó ese tier, buscar cualquier carta no desbloqueada
   if (!candidate) {
     candidate = LEARNING_CARDS.find((c) => !unlocked.includes(c.id));
   }
