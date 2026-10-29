@@ -9,6 +9,7 @@ import {
   Music, 
   Film,
   Swords,
+  Compass,
   Play,
   Hourglass
 } from "lucide-react";
@@ -25,6 +26,7 @@ const ICON_MAP = {
   Music,
   Film,
   Swords,
+  Compass,
 };
 
 export default function Categorias() {

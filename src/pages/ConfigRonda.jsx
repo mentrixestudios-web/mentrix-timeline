@@ -112,6 +112,15 @@ const DECK_CONFIG = {
     iconoBg: "bg-red-500/30 text-red-200 border-red-400/50",
     resumen: "Grandes batallas tácticas, asedios célebres y frentes decisivos.",
   },
+  exploraciones: {
+    iconoEmoji: "🧭",
+    tagline: "Océanos y Fronteras",
+    temaColor: "from-cyan-600 via-teal-700 to-slate-950",
+    bordeActivo: "border-cyan-400 ring-2 ring-cyan-400/60 shadow-cyan-500/30",
+    iconoBg: "bg-cyan-500/30 text-cyan-200 border-cyan-400/50",
+    resumen: "Travesías oceánicas, polos helados, cumbres y exploración espacial.",
+  },
+
 
 };
 

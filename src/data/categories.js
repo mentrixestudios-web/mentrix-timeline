@@ -62,4 +62,13 @@ export const CATEGORIES = [
     badgeColor: "bg-red-500/20 text-red-300 border-red-500/30",
     description: "Desde las falanges de la antigüedad hasta los frentes cruciales de las guerras mundiales.",
   },
+  {
+    id: "exploraciones",
+    name: "Exploraciones y Navegación",
+    subtitle: "Océanos, polos y fronteras",
+    icon: "Compass",
+    color: "from-cyan-600 to-blue-700",
+    badgeColor: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+    description: "Grandes travesías que desafiaron lo desconocido: océanos, cumbres, polos y abismos cósmicos.",
+  },
 ];

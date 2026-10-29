@@ -122,6 +122,19 @@ const CATEGORIAS_CONFIG = [
     pill: "bg-red-500/20 text-red-300 border-red-400/40",
     badgeText: "text-red-300",
   },
+  {
+    id: "exploraciones",
+    label: "Rutas",
+    sublabel: "Exploración y Mar",
+    emoji: "🧭",
+    topBar: "from-cyan-400 via-teal-500 to-blue-600",
+    activeBg: "from-cyan-500/25 via-[#102a3a] to-[#0b1328]",
+    activeBorder: "border-cyan-400 ring-2 ring-cyan-400/50 shadow-lg shadow-cyan-500/25",
+    iconBox: "bg-cyan-500/25 border-cyan-400/50 text-cyan-200",
+    pill: "bg-cyan-500/20 text-cyan-300 border-cyan-400/40",
+    badgeText: "text-cyan-300",
+  },
+
 
 ];
 
