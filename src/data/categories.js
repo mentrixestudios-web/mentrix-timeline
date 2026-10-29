@@ -71,4 +71,13 @@ export const CATEGORIES = [
     badgeColor: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
     description: "Grandes travesías que desafiaron lo desconocido: océanos, cumbres, polos y abismos cósmicos.",
   },
+  {
+    id: "arte",
+    name: "Arte y Literatura",
+    subtitle: "Filosofía, letras y grandes obras",
+    icon: "Palette",
+    color: "from-violet-600 to-purple-800",
+    badgeColor: "bg-violet-500/20 text-violet-300 border-violet-500/30",
+    description: "Obras cumbres de la literatura, corrientes de pensamiento filosófico y maestros del arte.",
+  },
 ];

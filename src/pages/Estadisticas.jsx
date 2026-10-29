@@ -134,6 +134,19 @@ const CATEGORIAS_CONFIG = [
     pill: "bg-cyan-500/20 text-cyan-300 border-cyan-400/40",
     badgeText: "text-cyan-300",
   },
+  {
+    id: "arte",
+    label: "Arte & Letras",
+    sublabel: "Filosofía y Clásicos",
+    emoji: "📚",
+    topBar: "from-violet-400 via-purple-500 to-indigo-600",
+    activeBg: "from-violet-500/25 via-[#23153c] to-[#0b1328]",
+    activeBorder: "border-violet-400 ring-2 ring-violet-400/50 shadow-lg shadow-violet-500/25",
+    iconBox: "bg-violet-500/25 border-violet-400/50 text-violet-200",
+    pill: "bg-violet-500/20 text-violet-300 border-violet-400/40",
+    badgeText: "text-violet-300",
+  },
+
 
 
 ];

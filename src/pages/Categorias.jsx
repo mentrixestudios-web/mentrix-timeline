@@ -10,6 +10,7 @@ import {
   Film,
   Swords,
   Compass,
+  Palette,
   Play,
   Hourglass
 } from "lucide-react";
@@ -27,6 +28,7 @@ const ICON_MAP = {
   Film,
   Swords,
   Compass,
+  Palette,
 };
 
 export default function Categorias() {

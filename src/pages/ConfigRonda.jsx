@@ -120,6 +120,15 @@ const DECK_CONFIG = {
     iconoBg: "bg-cyan-500/30 text-cyan-200 border-cyan-400/50",
     resumen: "Travesías oceánicas, polos helados, cumbres y exploración espacial.",
   },
+  arte: {
+    iconoEmoji: "📚",
+    tagline: "Letras y Filosofía",
+    temaColor: "from-violet-600 via-purple-700 to-slate-950",
+    bordeActivo: "border-violet-400 ring-2 ring-violet-400/60 shadow-violet-500/30",
+    iconoBg: "bg-violet-500/30 text-violet-200 border-violet-400/50",
+    resumen: "Clásicos literarios, corrientes filosóficas y grandes maestros de la pintura.",
+  },
+
 
 
 };
