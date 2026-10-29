@@ -1088,45 +1088,48 @@ export default function Estadisticas() {
               initial={{ opacity: 0, scale: 0.9, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className={`max-w-md w-full rounded-3xl p-5 sm:p-6 bg-gradient-to-br ${cartaSeleccionada.color} border-2 ${cartaSeleccionada.borde} shadow-2xl relative space-y-3.5 max-h-[85vh] overflow-y-auto`}
+              className="max-w-md w-full rounded-3xl p-5 sm:p-6 bg-gradient-to-b from-[#131d3b] via-[#0b1328] to-[#070d1e] border-2 border-amber-400/80 shadow-2xl shadow-black/90 relative space-y-3.5 max-h-[85vh] overflow-y-auto"
             >
+              {/* Barra superior de acento temático */}
+              <div className={`absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl bg-gradient-to-r ${cartaSeleccionada.color || "from-amber-400 to-yellow-500"}`} />
+
               {/* Botón cerrar */}
               <button
                 type="button"
                 onClick={() => setCartaSeleccionada(null)}
-                className="absolute top-4 right-4 p-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white/70 hover:text-white transition-colors cursor-pointer"
+                className="absolute top-4 right-4 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               {/* Cabecera */}
-              <div className="flex items-center gap-3 pr-8">
-                <div className="w-14 h-14 rounded-2xl bg-black/40 border border-white/20 flex items-center justify-center text-3xl shadow-lg shrink-0">
+              <div className="flex items-center gap-3 pr-8 pt-1">
+                <div className="w-14 h-14 rounded-2xl bg-[#15234a] border border-amber-400/40 flex items-center justify-center text-3xl shadow-lg shrink-0">
                   {cartaSeleccionada.icono}
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                    <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                    <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 shadow-sm">
                       ★ {cartaSeleccionada.rarity}
                     </span>
-                    <span className="text-[10px] font-bold text-amber-200">
+                    <span className="text-[10px] font-bold text-amber-300">
                       {cartaSeleccionada.yearFormatted}
                     </span>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/40 text-white/70">
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white/10 text-white/80 border border-white/10">
                       {cartaSeleccionada.tier === "reliquia" ? "Reliquia Mítica" : "Códice"}
                     </span>
                   </div>
                   <h3 className="text-base sm:text-lg font-black text-white leading-tight">
                     {cartaSeleccionada.title}
                   </h3>
-                  <p className="text-[11px] text-white/70 font-semibold">
+                  <p className="text-[11px] text-amber-200/70 font-semibold">
                     {cartaSeleccionada.era}
                   </p>
                 </div>
               </div>
 
               {/* Personaje Clave */}
-              <div className="p-2.5 rounded-2xl bg-black/35 border border-white/10 space-y-0.5">
+              <div className="p-2.5 rounded-2xl bg-[#121c3b]/90 border border-amber-400/30 space-y-0.5">
                 <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider block">
                   👤 Protagonista Clave
                 </span>
@@ -1136,7 +1139,7 @@ export default function Estadisticas() {
               </div>
 
               {/* Curiosidad */}
-              <div className="p-3 rounded-2xl bg-amber-500/15 border border-amber-400/30 space-y-1">
+              <div className="p-3 rounded-2xl bg-amber-950/35 border border-amber-400/40 space-y-1">
                 <span className="text-[10px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
                   <span>💡</span>
                   <span>¿Sabías Que? (Curiosidad Histórica)</span>
@@ -1147,7 +1150,7 @@ export default function Estadisticas() {
               </div>
 
               {/* Lección Pedagógica */}
-              <div className="p-3 rounded-2xl bg-blue-500/15 border border-blue-400/30 space-y-1">
+              <div className="p-3 rounded-2xl bg-blue-950/35 border border-blue-400/40 space-y-1">
                 <span className="text-[10px] font-black text-blue-300 uppercase tracking-wider flex items-center gap-1">
                   <span>🎓</span>
                   <span>Lección y Trascendencia</span>
@@ -1159,7 +1162,7 @@ export default function Estadisticas() {
 
               {/* Impacto Civilizatorio (Especial de Reliquias) */}
               {cartaSeleccionada.impactoCivilizatorio && (
-                <div className="p-3 rounded-2xl bg-purple-500/20 border border-purple-400/30 space-y-1">
+                <div className="p-3 rounded-2xl bg-purple-950/40 border border-purple-400/40 space-y-1">
                   <span className="text-[10px] font-black text-purple-300 uppercase tracking-wider flex items-center gap-1">
                     <span>👑</span>
                     <span>Impacto en la Civilización Humana</span>
@@ -1172,11 +1175,11 @@ export default function Estadisticas() {
 
               {/* Misterio Histórico (Especial de Reliquias) */}
               {cartaSeleccionada.misterioHistorico && (
-                <div className="p-2.5 rounded-2xl bg-black/40 border border-white/10 space-y-0.5">
+                <div className="p-2.5 rounded-2xl bg-[#0c142b] border border-white/10 space-y-0.5">
                   <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider block">
                     🔍 Misterio o Enigma Arqueológico
                   </span>
-                  <p className="text-[11px] text-white/80 leading-relaxed italic">
+                  <p className="text-[11px] text-slate-200 leading-relaxed italic">
                     {cartaSeleccionada.misterioHistorico}
                   </p>
                 </div>
@@ -1184,8 +1187,8 @@ export default function Estadisticas() {
 
               {/* Cita Célebre */}
               {cartaSeleccionada.citaHistorica && (
-                <div className="p-2.5 rounded-2xl bg-black/40 border border-white/10 text-center">
-                  <p className="text-[11px] italic text-amber-200/90 font-serif">
+                <div className="p-2.5 rounded-2xl bg-black/50 border border-amber-400/20 text-center">
+                  <p className="text-xs italic text-amber-300 font-serif">
                     {cartaSeleccionada.citaHistorica}
                   </p>
                 </div>
@@ -1195,7 +1198,7 @@ export default function Estadisticas() {
               <button
                 type="button"
                 onClick={() => setCartaSeleccionada(null)}
-                className="w-full py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-black text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-amber-500/20"
               >
                 Cerrar Dossier
               </button>
