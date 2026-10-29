@@ -110,6 +110,19 @@ const CATEGORIAS_CONFIG = [
     pill: "bg-orange-500/20 text-orange-300 border-orange-400/40",
     badgeText: "text-orange-300",
   },
+  {
+    id: "conflictos",
+    label: "Batallas",
+    sublabel: "Grandes Conflictos",
+    emoji: "⚔️",
+    topBar: "from-red-400 via-rose-500 to-red-600",
+    activeBg: "from-red-500/25 via-[#381119] to-[#0b1328]",
+    activeBorder: "border-red-400 ring-2 ring-red-400/50 shadow-lg shadow-red-500/25",
+    iconBox: "bg-red-500/25 border-red-400/50 text-red-200",
+    pill: "bg-red-500/20 text-red-300 border-red-400/40",
+    badgeText: "text-red-300",
+  },
+
 ];
 
 export default function Estadisticas() {

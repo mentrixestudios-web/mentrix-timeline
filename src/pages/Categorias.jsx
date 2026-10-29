@@ -8,6 +8,7 @@ import {
   Rocket, 
   Music, 
   Film,
+  Swords,
   Play,
   Hourglass
 } from "lucide-react";
@@ -23,6 +24,7 @@ const ICON_MAP = {
   Rocket,
   Music,
   Film,
+  Swords,
 };
 
 export default function Categorias() {

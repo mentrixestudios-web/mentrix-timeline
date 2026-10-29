@@ -77,6 +77,15 @@ const DECK_CONFIG = {
     iconoBg: "bg-orange-500/30 text-orange-200 border-orange-400/50",
     resumen: "Películas de culto, consolas legendarias y cultura pop.",
   },
+  conflictos: {
+    iconoEmoji: "⚔️",
+    tagline: "Estrategia y Frentes",
+    temaColor: "from-red-600 via-rose-700 to-slate-950",
+    bordeActivo: "border-red-400 ring-2 ring-red-400/60 shadow-red-500/30",
+    iconoBg: "bg-red-500/30 text-red-200 border-red-400/50",
+    resumen: "Grandes batallas tácticas, asedios célebres y frentes decisivos.",
+  },
+
 };
 
 const PLAYER_COLORS = [

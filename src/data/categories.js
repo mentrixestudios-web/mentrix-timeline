@@ -53,4 +53,13 @@ export const CATEGORIES = [
     badgeColor: "bg-orange-500/20 text-orange-300 border-orange-500/30",
     description: "Estrenos legendarios de cine, consolas de videojuegos y momentos icónicos.",
   },
+  {
+    id: "conflictos",
+    name: "Conflictos y Batallas",
+    subtitle: "Estrategia, asedios y frentes",
+    icon: "Swords",
+    color: "from-red-600 to-rose-700",
+    badgeColor: "bg-red-500/20 text-red-300 border-red-500/30",
+    description: "Desde las falanges de la antigüedad hasta los frentes cruciales de las guerras mundiales.",
+  },
 ];
