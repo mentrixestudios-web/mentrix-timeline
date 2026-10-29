@@ -128,6 +128,15 @@ const DECK_CONFIG = {
     iconoBg: "bg-violet-500/30 text-violet-200 border-violet-400/50",
     resumen: "Clásicos literarios, corrientes filosóficas y grandes maestros de la pintura.",
   },
+  deportes: {
+    iconoEmoji: "🏆",
+    tagline: "Copas y Leyendas",
+    temaColor: "from-emerald-600 via-green-700 to-slate-950",
+    bordeActivo: "border-emerald-400 ring-2 ring-emerald-400/60 shadow-emerald-500/30",
+    iconoBg: "bg-emerald-500/30 text-emerald-200 border-emerald-400/50",
+    resumen: "Juegos Olímpicos, copas mundiales, campeonatos históricos y atletas legendarios.",
+  },
+
 
 
 

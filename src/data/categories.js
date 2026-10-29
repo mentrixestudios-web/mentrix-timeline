@@ -80,4 +80,13 @@ export const CATEGORIES = [
     badgeColor: "bg-violet-500/20 text-violet-300 border-violet-500/30",
     description: "Obras cumbres de la literatura, corrientes de pensamiento filosófico y maestros del arte.",
   },
+  {
+    id: "deportes",
+    name: "Deportes y Hazañas",
+    subtitle: "Olimpiadas, récords y leyendas",
+    icon: "Trophy",
+    color: "from-emerald-500 to-green-700",
+    badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+    description: "Los momentos más memorables del deporte mundial: Juegos Olímpicos, mundiales y atletas de leyenda.",
+  },
 ];

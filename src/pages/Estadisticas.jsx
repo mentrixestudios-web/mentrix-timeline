@@ -146,6 +146,19 @@ const CATEGORIAS_CONFIG = [
     pill: "bg-violet-500/20 text-violet-300 border-violet-400/40",
     badgeText: "text-violet-300",
   },
+  {
+    id: "deportes",
+    label: "Deportes",
+    sublabel: "Copas y Leyendas",
+    emoji: "🏆",
+    topBar: "from-emerald-400 via-green-500 to-teal-600",
+    activeBg: "from-emerald-500/25 via-[#112d1e] to-[#0b1328]",
+    activeBorder: "border-emerald-400 ring-2 ring-emerald-400/50 shadow-lg shadow-emerald-500/25",
+    iconBox: "bg-emerald-500/25 border-emerald-400/50 text-emerald-200",
+    pill: "bg-emerald-500/20 text-emerald-300 border-emerald-400/40",
+    badgeText: "text-emerald-300",
+  },
+
 
 
 

@@ -11,6 +11,7 @@ import {
   Swords,
   Compass,
   Palette,
+  Trophy,
   Play,
   Hourglass
 } from "lucide-react";
@@ -29,6 +30,7 @@ const ICON_MAP = {
   Swords,
   Compass,
   Palette,
+  Trophy,
 };
 
 export default function Categorias() {
