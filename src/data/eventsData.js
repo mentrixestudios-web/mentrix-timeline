@@ -1,11 +1,12 @@
 // =========================================================================
 // MENTRIX: LÍNEA DE TIEMPO — BASE DE DATOS MAESTRA DE ACONTECIMIENTOS Y PERSONAJES
 // Cada evento incluye fecha exacta, siglo, personaje clave, descripción y curiosidad
+// Total: 310 hitos repartidos en 5 categorías principales (mínimo 60+ por categoría)
 // =========================================================================
 
 export const EVENTS_DB = [
   // ══════════════════════════════════════════════════════════════════════════
-  // 1. HISTORIA UNIVERSAL (42 hitos y personajes)
+  // 1. HISTORIA UNIVERSAL (62 hitos y personajes)
   // ══════════════════════════════════════════════════════════════════════════
   {
     id: "h-piramides",
@@ -20,6 +21,18 @@ export const EVENTS_DB = [
     icon: "Pyramid"
   },
   {
+    id: "h-stonehenge",
+    title: "Construcción del monumento megalítico de Stonehenge",
+    year: -2500,
+    yearFormatted: "2500 a.C.",
+    siglo: "Siglo XXV a.C.",
+    category: "historia",
+    personajeClave: "Pueblos del Neolítico británico",
+    description: "Monumento megalítico circular alineado con el solsticio de verano y de invierno en las llanuras de Salisbury, Inglaterra.",
+    datoCurioso: "Algunas de las 'piedras azules' pesan hasta cuatro toneladas y fueron transportadas más de 220 km desde las colinas de Preseli en Gales.",
+    icon: "Landmark"
+  },
+  {
     id: "h-codigo-hammurabi",
     title: "Promulgación del Código de Hammurabi",
     year: -1750,
@@ -30,6 +43,18 @@ export const EVENTS_DB = [
     description: "Uno de los conjuntos de leyes escritas más antiguos de Babilonia, famoso por consagrar el principio de proporcionalidad 'ojo por ojo'.",
     datoCurioso: "Estaba tallado en una estela de diorita de más de dos metros para que ningún gobernante pudiera modificar la ley a su antojo.",
     icon: "Scroll"
+  },
+  {
+    id: "h-tutankamon",
+    title: "Sepulcro y tesoros del Faraón Tutankamón",
+    year: -1323,
+    yearFormatted: "1323 a.C.",
+    siglo: "Siglo XIV a.C.",
+    category: "historia",
+    personajeClave: "Tutankamón y Howard Carter",
+    description: "El joven faraón de la dinastía XVIII fue sepultado con ricos ajuares en el Valle de los Reyes en Tebas.",
+    datoCurioso: "Su tumba (KV62) permaneció casi intacta durante más de 3.200 años hasta que Howard Carter la abrió en 1922.",
+    icon: "Crown"
   },
   {
     id: "h-juegos-olimpicos",
@@ -80,6 +105,30 @@ export const EVENTS_DB = [
     icon: "ShieldAlert"
   },
   {
+    id: "h-guerras-medicas-salamina",
+    title: "Batalla naval de Salamina",
+    year: -480,
+    yearFormatted: "480 a.C.",
+    siglo: "Siglo V a.C.",
+    category: "historia",
+    personajeClave: "Temístocles y Jerjes I",
+    description: "La flota aliada de las polis griegas derrotó decisivamente a la colosal armada del Imperio Persa en los estrechos de Salamina.",
+    datoCurioso: "Temístocles engañó a Jerjes enviándole un mensajero secreto que fingió una traición para hacer entrar a las naves persas en aguas angostas.",
+    icon: "Ship"
+  },
+  {
+    id: "h-muerte-socrates",
+    title: "Juicio y muerte del filósofo Sócrates",
+    year: -399,
+    yearFormatted: "399 a.C.",
+    siglo: "Siglo IV a.C.",
+    category: "historia",
+    personajeClave: "Sócrates y Platón",
+    description: "El maestro de la mayéutica y padre de la ética ateniense fue condenado a beber cicuta acusado de corromper a la juventud.",
+    datoCurioso: "Rechazó un plan de fuga organizado por sus discípulos porque consideraba que violar las leyes de la polis destruiría la justicia.",
+    icon: "BookOpen"
+  },
+  {
     id: "h-alejandro-magno",
     title: "Alejandro Magno conquista el Imperio Persa",
     year: -330,
@@ -90,6 +139,18 @@ export const EVENTS_DB = [
     description: "El joven rey macedonio derrotó a Darío III y expandió su imperio desde Grecia hasta Egipto y las fronteras de la India.",
     datoCurioso: "Nunca perdió una sola batalla en 15 años de campañas militares consecutivas.",
     icon: "Crown"
+  },
+  {
+    id: "h-biblioteca-alejandria",
+    title: "Fundación de la Gran Biblioteca de Alejandría",
+    year: -283,
+    yearFormatted: "283 a.C.",
+    siglo: "Siglo III a.C.",
+    category: "historia",
+    personajeClave: "Ptolomeo I Sóter y Demetrio de Falero",
+    description: "El mayor centro de investigación, traducción y acopio de manuscritos del mundo helenístico en Egipto.",
+    datoCurioso: "Todo barco que atracaba en el puerto de Alejandría debía entregar sus rollos para ser copiados antes de ser devueltos.",
+    icon: "Library"
   },
   {
     id: "h-anibal-alpes",
@@ -116,6 +177,18 @@ export const EVENTS_DB = [
     icon: "Castle"
   },
   {
+    id: "h-cleopatra-cesar",
+    title: "Encuentro de Cleopatra y Julio César",
+    year: -48,
+    yearFormatted: "48 a.C.",
+    siglo: "Siglo I a.C.",
+    category: "historia",
+    personajeClave: "Cleopatra VII y Julio César",
+    description: "La joven reina egipcia recuperó su trono pactando una alianza política y militar con el comandante supremo de Roma.",
+    datoCurioso: "Cleopatra burló la vigilancia de su hermano entrando de incógnito al palacio real envuelta dentro de un saco de ropa de cama.",
+    icon: "Crown"
+  },
+  {
     id: "h-julio-cesar",
     title: "Asesinato de Julio César en los Idus de Marzo",
     year: -44,
@@ -140,6 +213,18 @@ export const EVENTS_DB = [
     icon: "Anchor"
   },
   {
+    id: "h-erupcion-vesubio",
+    title: "Erupción del Vesubio y destrucción de Pompeya",
+    year: 79,
+    yearFormatted: "79 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "historia",
+    personajeClave: "Plinio el Joven y Emperador Tito",
+    description: "El volcán italiano sepultó las prósperas ciudades romanas de Pompeya y Herculano bajo toneladas de ceniza y rocas piroclásticas.",
+    datoCurioso: "El desastre preservó frescos, grafitis y panes intactos en los hornos, congelando la vida cotidiana romana en el tiempo.",
+    icon: "Flame"
+  },
+  {
     id: "h-coliseo-romano",
     title: "Inauguración del Coliseo Romano",
     year: 80,
@@ -149,6 +234,18 @@ export const EVENTS_DB = [
     personajeClave: "Emperador Tito",
     description: "El emperador inauguró el Anfiteatro Flavio con 100 días ininterrumpidos de juegos gladiatorios y naumaquias (batallas navales inundadas).",
     datoCurioso: "Podía albergar hasta 65.000 espectadores y se desalojaba en solo 15 minutos gracias a sus 80 vomitorios.",
+    icon: "Landmark"
+  },
+  {
+    id: "h-cangrande-pantheon",
+    title: "Reconstrucción del Panteón de Agripa en Roma",
+    year: 125,
+    yearFormatted: "125 d.C.",
+    siglo: "Siglo II d.C.",
+    category: "historia",
+    personajeClave: "Emperador Adriano",
+    description: "Templo erigido con la cúpula de hormigón no armado más grande del mundo, proeza insuperable de la ingeniería romana.",
+    datoCurioso: "El óculo cenital superior de 9 metros está permanentemente abierto; el piso de mármol cuenta con pequeños orificios para drenar la lluvia.",
     icon: "Landmark"
   },
   {
@@ -174,6 +271,42 @@ export const EVENTS_DB = [
     description: "El caudillo bárbaro Odoacro depuso al joven emperador Rómulo Augústulo, marcando tradicionalmente el fin de la Edad Antigua y el inicio del Medievo.",
     datoCurioso: "Paradójicamente, el último emperador de Roma compartía el nombre del mítico fundador de la ciudad (Rómulo) y del primer emperador (Augusto).",
     icon: "ShieldAlert"
+  },
+  {
+    id: "h-justiniano-santa-sofia",
+    title: "Consagración de la Basílica de Santa Sofía",
+    year: 537,
+    yearFormatted: "537 d.C.",
+    siglo: "Siglo VI d.C.",
+    category: "historia",
+    personajeClave: "Emperador Justiniano I",
+    description: "La mayor catedral de la cristiandad durante casi mil años, joya insigne de la arquitectura y los mosaicos del Imperio Bizantino.",
+    datoCurioso: "Al contemplar su colosal cúpula dorada por primera vez, Justiniano exclamó con orgullo: '¡Salomón, te he superado!'.",
+    icon: "Landmark"
+  },
+  {
+    id: "h-islam-hejira",
+    title: "La Hégira de Mahoma desde La Meca a Medina",
+    year: 622,
+    yearFormatted: "622 d.C.",
+    siglo: "Siglo VII d.C.",
+    category: "historia",
+    personajeClave: "Profeta Mahoma",
+    description: "La emigración de la primera comunidad islámica para escapar de la persecución marcó el año cero del calendario musulmán.",
+    datoCurioso: "En Medina se redactó la Carta de Medina, considerada uno de los primeros pactos constitucionales multi-religiosos de la historia.",
+    icon: "Moon"
+  },
+  {
+    id: "h-batalla-poitiers",
+    title: "Batalla de Poitiers (Tours)",
+    year: 732,
+    yearFormatted: "732 d.C.",
+    siglo: "Siglo VIII d.C.",
+    category: "historia",
+    personajeClave: "Carlos Martel y Abderramán",
+    description: "El líder de los francos frenó el avance militar del Califato Omeya en Europa occidental en los campos de Tours.",
+    datoCurioso: "La férrea falange defensiva de infantería de Carlos Martel resistió repetidas cargas de caballería sin romper filas.",
+    icon: "Shield"
   },
   {
     id: "h-carlomagno",
@@ -212,6 +345,18 @@ export const EVENTS_DB = [
     icon: "Swords"
   },
   {
+    id: "h-guilherme-conquistador-domesday",
+    title: "Redacción del Gran Censo Domesday Book",
+    year: 1086,
+    yearFormatted: "1086 d.C.",
+    siglo: "Siglo XI d.C.",
+    category: "historia",
+    personajeClave: "Guillermo el Conquistador",
+    description: "El primer exhaustivo catastro general de tierras, animales, siervos y molinos de toda Inglaterra bajo la corona normanda.",
+    datoCurioso: "Los súbditos le llamaron 'Domesday' (Día del Juicio) porque sus dictámenes eran tan inapelables como el juicio de Dios.",
+    icon: "Scroll"
+  },
+  {
     id: "h-cruzadas",
     title: "Conquista de Jerusalén en la Primera Cruzada",
     year: 1099,
@@ -248,6 +393,18 @@ export const EVENTS_DB = [
     icon: "Skull"
   },
   {
+    id: "h-juanna-arco-orleans",
+    title: "Levantamiento del Sitio de Orleans por Juana de Arco",
+    year: 1429,
+    yearFormatted: "1429 d.C.",
+    siglo: "Siglo XV d.C.",
+    category: "historia",
+    personajeClave: "Juana de Arco",
+    description: "La joven campesina de 17 años lideró el ejército de Francia infundiendo un fervor patriótico que cambió la Guerra de los Cien Años.",
+    datoCurioso: "Prefería portar su estandarte blanco con lirios dorados al frente de las tropas en lugar de empuñar la espada para no herir a nadie.",
+    icon: "Flag"
+  },
+  {
     id: "h-constantinopla",
     title: "Caída de Constantinopla ante el Imperio Otomano",
     year: 1453,
@@ -272,6 +429,18 @@ export const EVENTS_DB = [
     icon: "Ship"
   },
   {
+    id: "h-reyes-catolicos-granada",
+    title: "Rendición de Granada ante los Reyes Católicos",
+    year: 1492,
+    yearFormatted: "1492 d.C.",
+    siglo: "Siglo XV d.C.",
+    category: "historia",
+    personajeClave: "Isabel I, Fernando II y Boabdil",
+    description: "La entrega pacífica de las llaves de la Alhambra puso fin a casi ocho siglos de dominio andalusí en la península ibérica.",
+    datoCurioso: "El último emir nazarí, Boabdil, lloró al contemplar la ciudad por última vez en el paso conocido como 'El Suspiro del Moro'.",
+    icon: "Castle"
+  },
+  {
     id: "h-reforma-lutero",
     title: "Martín Lutero publica las 95 Tesis en Wittenberg",
     year: 1517,
@@ -282,6 +451,18 @@ export const EVENTS_DB = [
     description: "El monje agustino clavó sus objeciones a la venta de indulgencias papales en la puerta de la iglesia del castillo, detonando la Reforma Protestante.",
     datoCurioso: "Gracias a la imprenta, sus 95 tesis fueron traducidas al alemán y se difundieron por toda Europa en menos de cuatro semanas.",
     icon: "BookOpen"
+  },
+  {
+    id: "h-conquista-mexico",
+    title: "Caída de Tenochtitlan y conquista de México",
+    year: 1521,
+    yearFormatted: "1521 d.C.",
+    siglo: "Siglo XVI d.C.",
+    category: "historia",
+    personajeClave: "Hernán Cortés y Cuauhtémoc",
+    description: "Tras un largo asedio por tierra y agua en el lago Texcoco, los españoles y sus aliados tlaxcaltecas tomaron la capital azteca.",
+    datoCurioso: "La ciudad de Tenochtitlan tenía más de 200.000 habitantes en su apogeo, siendo más grande y limpia que la mayoría de ciudades europeas de la época.",
+    icon: "Pyramid"
   },
   {
     id: "h-magallanes-elcano",
@@ -296,16 +477,16 @@ export const EVENTS_DB = [
     icon: "Globe"
   },
   {
-    id: "h-conquista-mexico",
-    title: "Caída de Tenochtitlan y conquista de México",
-    year: 1521,
-    yearFormatted: "1521 d.C.",
+    id: "h-armada-invencible",
+    title: "Naufragio y dispersión de la Gran Armada Española",
+    year: 1588,
+    yearFormatted: "1588 d.C.",
     siglo: "Siglo XVI d.C.",
     category: "historia",
-    personajeClave: "Hernán Cortés y Cuauhtémoc",
-    description: "Tras un largo asedio por tierra y agua en el lago Texcoco, los españoles y sus aliados tlaxcaltecas tomaron la capital azteca.",
-    datoCurioso: "La ciudad de Tenochtitlan tenía más de 200.000 habitantes en su apogeo, siendo más grande y limpia que la mayoría de ciudades europeas de la época.",
-    icon: "Pyramid"
+    personajeClave: "Felipe II y Francis Drake",
+    description: "La colosal flota española enviada para invadir Inglaterra fue diezmada por tempestades atlánticas y brulotes en el Canal de la Mancha.",
+    datoCurioso: "Felipe II acogió con resignación la noticia sentenciando: 'No envié mis naves a luchar contra los elementos'.",
+    icon: "Ship"
   },
   {
     id: "h-westfalia",
@@ -330,6 +511,18 @@ export const EVENTS_DB = [
     description: "Las Trece Colonias norteamericanas proclamaron su separación de la Corona Británica en Filadelfia, proclamando la igualdad y los derechos inalienables.",
     datoCurioso: "56 delegados firmaron el pergamino, sabiendo que cometían delito de alta traición castigado con la horca por el rey Jorge III.",
     icon: "Scroll"
+  },
+  {
+    id: "h-paz-versalles-1783",
+    title: "Tratado de París y reconocimiento de EE.UU.",
+    year: 1783,
+    yearFormatted: "1783 d.C.",
+    siglo: "Siglo XVIII d.C.",
+    category: "historia",
+    personajeClave: "Benjamin Franklin y John Adams",
+    description: "Gran Bretaña reconoció formalmente la soberanía e independencia de las trece colonias americanas tras la guerra.",
+    datoCurioso: "El retrato pictórico conmemorativo quedó inconcluso porque los diplomáticos británicos se negaron a posar junto a los vencedores.",
+    icon: "FileText"
   },
   {
     id: "h-revolucion-francesa",
@@ -404,6 +597,18 @@ export const EVENTS_DB = [
     icon: "Bomb"
   },
   {
+    id: "h-canal-panama",
+    title: "Apertura oficial del Canal de Panamá",
+    year: 1914,
+    yearFormatted: "1914 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "historia",
+    personajeClave: "George Washington Goethals",
+    description: "Titánica obra de ingeniería interoceánica con esclusas que unió la navegación del Atlántico y el Pacífico.",
+    datoCurioso: "El barco de vapor Ancón fue la primera nave en cruzar el canal el 15 de agosto de 1914 en plena eclosión de la Primera Guerra Mundial.",
+    icon: "Anchor"
+  },
+  {
     id: "h-revolucion-rusa",
     title: "Revolución Rusa de Octubre y auge bolchevique",
     year: 1917,
@@ -414,6 +619,18 @@ export const EVENTS_DB = [
     description: "Los bolcheviques asaltaron el Palacio de Invierno en Petrogrado, derrocaron al gobierno provisional y fundaron el primer estado socialista del mundo.",
     datoCurioso: "El crucero militar Aurora disparó una salva sin munición que fue la señal acordada para comenzar el asalto.",
     icon: "Flame"
+  },
+  {
+    id: "h-crisis-1929",
+    title: "El Jueves Negro y el Crack bursátil de Wall Street",
+    year: 1929,
+    yearFormatted: "1929 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "historia",
+    personajeClave: "Herbert Hoover y la Bolsa de Nueva York",
+    description: "El desplome financiero de la bolsa estadounidense hundió a la economía global en la mayor recesión del siglo XX.",
+    datoCurioso: "En un solo día de ventas histéricas se ofertaron casi 13 millones de acciones sin que existieran compradores.",
+    icon: "TrendingDown"
   },
   {
     id: "h-segunda-guerra",
@@ -452,6 +669,18 @@ export const EVENTS_DB = [
     icon: "Zap"
   },
   {
+    id: "h-naciones-unidas",
+    title: "Firma de la Carta fundacional de la ONU",
+    year: 1945,
+    yearFormatted: "1945 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "historia",
+    personajeClave: "Delegados de 50 naciones en San Francisco",
+    description: "Nace la Organización de las Naciones Unidas para promover la paz mundial y prevenir futuros conflictos tras la Segunda Guerra Mundial.",
+    datoCurioso: "A China se le concedió el honor de estampar la primera firma en el documento oficial en reconocimiento a sus millones de víctimas.",
+    icon: "Globe"
+  },
+  {
     id: "h-tratado-roma",
     title: "Firma del Tratado de Roma (Nacimiento de la UE)",
     year: 1957,
@@ -476,6 +705,18 @@ export const EVENTS_DB = [
     icon: "Wall"
   },
   {
+    id: "h-crisis-misiles-cuba",
+    title: "Crisis de los Misiles en Cuba",
+    year: 1962,
+    yearFormatted: "1962 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "historia",
+    personajeClave: "John F. Kennedy y Nikita Jrushchov",
+    description: "Trece días de tensión límite entre EE.UU. y la Unión Soviética que llevaron a la humanidad al filo de la guerra nuclear.",
+    datoCurioso: "A raíz de este episodio se creó el famoso 'teléfono rojo', un enlace directo de teletipo cifrado entre la Casa Blanca y el Kremlin.",
+    icon: "AlertTriangle"
+  },
+  {
     id: "h-muro-berlin-caida",
     title: "Caída del Muro de Berlín y fin de la Guerra Fría",
     year: 1989,
@@ -486,6 +727,18 @@ export const EVENTS_DB = [
     description: "Miles de ciudadanos derribaron el muro con picos y martillos tras una confusa conferencia de prensa oficial, simbolizando el colapso del bloque soviético.",
     datoCurioso: "El portavoz Günter Schabowski leyó mal un borrador y dijo por televisión que los permisos de viaje entraban en vigor 'inmediatamente, sin demora'.",
     icon: "Unlock"
+  },
+  {
+    id: "h-fin-apartheid-mandela",
+    title: "Elecciones democráticas y fin del Apartheid",
+    year: 1994,
+    yearFormatted: "1994 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "historia",
+    personajeClave: "Nelson Mandela y F.W. de Klerk",
+    description: "Primeros comicios sin segregación racial en Sudáfrica que consagraron a Nelson Mandela como presidente tras 27 años de cárcel.",
+    datoCurioso: "Millones de votantes de todas las razas formaron filas de varios kilómetros durante días bajo el lema de la 'Nación del Arcoíris'.",
+    icon: "Award"
   },
   {
     id: "h-atentados-11s",
@@ -501,8 +754,32 @@ export const EVENTS_DB = [
   },
 
   // ══════════════════════════════════════════════════════════════════════════
-  // 2. LÍNEA BÍBLICA (34 hitos y personajes)
+  // 2. ESTUDIO BÍBLICO (62 hitos y personajes)
   // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: "b-arca-noe",
+    title: "El Arca de Noé y el Gran Diluvio",
+    year: -2400,
+    yearFormatted: "2400 a.C.",
+    siglo: "Siglo XXIV a.C.",
+    category: "biblia",
+    personajeClave: "Noé y su familia",
+    description: "Preservación milagrosa de la vida terrestre ante las aguas del juicio divino mediante un arca de madera de gofer calafateada con brea.",
+    datoCurioso: "El arca medía unos 300 codos de largo (aprox. 135 metros), proporciones idénticas a las utilizadas por los cargueros modernos de altamar.",
+    icon: "Ship"
+  },
+  {
+    id: "b-torre-babel",
+    title: "La Torre de Babel y la confusión de lenguas",
+    year: -2200,
+    yearFormatted: "2200 a.C.",
+    siglo: "Siglo XXII a.C.",
+    category: "biblia",
+    personajeClave: "Nimrod y los pueblos de Sinar",
+    description: "Los seres humanos intentaron erigir una torre que alcanzara el cielo para hacerse un nombre, resultando en la dispersión lingüística de las naciones.",
+    datoCurioso: "El término hebreo 'Babel' alude fonéticamente al verbo 'balal', que denota mezclar o confundir.",
+    icon: "Landmark"
+  },
   {
     id: "b-abraham-llamado",
     title: "Llamado de Abraham a salir de Ur",
@@ -528,6 +805,30 @@ export const EVENTS_DB = [
     icon: "Crown"
   },
   {
+    id: "b-sacrificio-isaac",
+    title: "La prueba de fe de Abraham en el Monte Moriah",
+    year: -1850,
+    yearFormatted: "1850 a.C.",
+    siglo: "Siglo XIX a.C.",
+    category: "biblia",
+    personajeClave: "Abraham e Isaac",
+    description: "Dios probó la obediencia de Abraham pidiéndole la entrega de su hijo prometido, proveyendo finalmente un carnero trabado en un zarzal.",
+    datoCurioso: "El monte Moriah es identificado por las Escrituras como el lugar exacto donde Salomón erigiría el Templo de Jerusalén siglos después.",
+    icon: "Mountain"
+  },
+  {
+    id: "b-escala-jacob",
+    title: "La escalera celestial de Jacob en Betel",
+    year: -1770,
+    yearFormatted: "1770 a.C.",
+    siglo: "Siglo XVIII a.C.",
+    category: "biblia",
+    personajeClave: "Patriarca Jacob",
+    description: "Mientras huía hacia Harán, Jacob soñó con una escalera que unía la tierra con el cielo por donde ascendían y descendían ángeles de Dios.",
+    datoCurioso: "Jacob tomó la piedra que le sirvió de cabecera, la ungió con aceite como memorial y proclamó: '¡Cuán terrible es este lugar! No es otra cosa que casa de Dios'.",
+    icon: "Sparkles"
+  },
+  {
     id: "b-exodo-mar-rojo",
     title: "El Éxodo y cruce milagroso del Mar Rojo",
     year: -1446,
@@ -538,6 +839,18 @@ export const EVENTS_DB = [
     description: "Tras las diez plagas sobre Egipto, el pueblo de Israel salió de la esclavitud y cruzó a pie enjuto por medio del mar abierto ante la persecución del faraón.",
     datoCurioso: "La fiesta de la Pascua judía (Pésaj) conmemora anualmente esta misma noche de liberación desde hace más de 3.400 años.",
     icon: "Waves"
+  },
+  {
+    id: "b-zarza-ardiente",
+    title: "Llamado de Moisés ante la zarza ardiente",
+    year: -1446,
+    yearFormatted: "1446 a.C.",
+    siglo: "Siglo XV a.C.",
+    category: "biblia",
+    personajeClave: "Moisés en el Monte Horeb",
+    description: "Jehová se manifestó en una zarza que ardía sin consumirse y reveló su Nombre sagrado 'YO SOY EL QUE SOY' para comisionar la liberación de Israel.",
+    datoCurioso: "Moisés debió descalzarse de inmediato porque el suelo donde pisaba había sido consagrado como tierra santa por la presencia divina.",
+    icon: "Flame"
   },
   {
     id: "b-tablas-ley",
@@ -552,6 +865,30 @@ export const EVENTS_DB = [
     icon: "Scroll"
   },
   {
+    id: "b-plagas-egipto",
+    title: "Las diez plagas sobre la tierra de Egipto",
+    year: -1445,
+    yearFormatted: "1445 a.C.",
+    siglo: "Siglo XV a.C.",
+    category: "biblia",
+    personajeClave: "Moisés, Aarón y el Faraón",
+    description: "Poderosas señales milagrosas que desmoronaron el poderío de los faraones y sus dioses tutelares hasta lograr la libertad del pueblo hebreo.",
+    datoCurioso: "Cada una de las plagas desafió y venció directamente a deidades del panteón egipcio (como Hapi en el Nilo de sangre o Ra en las tinieblas).",
+    icon: "Zap"
+  },
+  {
+    id: "b-mana-desierto",
+    title: "La provisión diaria del Maná en el desierto",
+    year: -1444,
+    yearFormatted: "1444 a.C.",
+    siglo: "Siglo XV a.C.",
+    category: "biblia",
+    personajeClave: "Moisés y el pueblo de Israel",
+    description: "Pan del cielo que descendía cada mañana como escarcha menuda alimentando a cientos de miles de israelitas durante cuarenta años de travesía.",
+    datoCurioso: "El nombre 'maná' proviene de la pregunta de asombro de los hebreos al verlo: '¿Man-hu?', que significa en hebreo '¿Qué es esto?'.",
+    icon: "Sun"
+  },
+  {
     id: "b-murallas-jerico",
     title: "Caída de las murallas de Jericó",
     year: -1406,
@@ -562,6 +899,18 @@ export const EVENTS_DB = [
     description: "Siguiendo la instrucción divina, los sacerdotes y guerreros marcharon siete días alrededor de la ciudad fortificada; al sonar las trompetas y clamar el pueblo, los muros colapsaron.",
     datoCurioso: "Jericó es considerada por los arqueólogos como una de las ciudades amuralladas habitadas más antiguas del planeta.",
     icon: "Castle"
+  },
+  {
+    id: "b-sol-detenido-josue",
+    title: "El sol se detiene sobre Gabaón en la batalla",
+    year: -1400,
+    yearFormatted: "1400 a.C.",
+    siglo: "Siglo XIV a.C.",
+    category: "biblia",
+    personajeClave: "Josué hijo de Nun",
+    description: "En apoyo a los gabaonitas contra los reyes amorreos, Josué oró y el sol y la luna se detuvieron casi un día entero para consumar la victoria.",
+    datoCurioso: "El libro de Josué consigna que 'no hubo día como aquel, ni antes ni después de él, habiendo atendido Jehová a la voz de un hombre'.",
+    icon: "Sun"
   },
   {
     id: "b-debora-barac",
@@ -600,6 +949,18 @@ export const EVENTS_DB = [
     icon: "Bell"
   },
   {
+    id: "b-sansone-filisteos",
+    title: "Hazañas y último sacrificio de Sansón en Gaza",
+    year: -1075,
+    yearFormatted: "1075 a.C.",
+    siglo: "Siglo XI a.C.",
+    category: "biblia",
+    personajeClave: "Sansón y Dalila",
+    description: "Juez dotado de fuerza sobrehumana por el Espíritu Santo que derribó las columnas maestras del templo de Dagón liberando a su pueblo.",
+    datoCurioso: "El texto bíblico señala que mató a más enemigos filisteos en el instante de su muerte que a lo largo de toda su vida terrenal.",
+    icon: "Dumbbell"
+  },
+  {
     id: "b-saul-rey",
     title: "Saúl es ungido como el primer rey de Israel",
     year: -1050,
@@ -633,6 +994,30 @@ export const EVENTS_DB = [
     personajeClave: "Rey David",
     description: "Todas las tribus se unieron en Hebrón para ungir a David como rey unificado. Poco después conquistó la fortaleza de Jebús y la nombró Jerusalén.",
     datoCurioso: "David reinó 7 años en Hebrón y 33 años en Jerusalén, completando 40 años de gobierno.",
+    icon: "Crown"
+  },
+  {
+    id: "b-arca-jerusalen-david",
+    title: "David traslada el Arca del Pacto a Jerusalén",
+    year: -1000,
+    yearFormatted: "1000 a.C.",
+    siglo: "Siglo X a.C.",
+    category: "biblia",
+    personajeClave: "Rey David",
+    description: "El monarca unificó a la nación entronizando la presencia divina en la Ciudad de David entre trompetas, danzas y sacrificios de alabanza.",
+    datoCurioso: "David danzó con júbilo vistiendo un sencillo efod de lino, motivo por el cual su esposa Mical lo censuró desde la ventana.",
+    icon: "Music"
+  },
+  {
+    id: "b-juicio-salomon",
+    title: "El juicio sabio de Salomón entre dos madres",
+    year: -960,
+    yearFormatted: "960 a.C.",
+    siglo: "Siglo X a.C.",
+    category: "biblia",
+    personajeClave: "Rey Salomón",
+    description: "Resolvió la disputa de un bebé fingiendo partirlo en dos con una espada, descubriendo de inmediato el amor de la verdadera madre.",
+    datoCurioso: "La fama de su entendimiento atrajo a la reina de Saba, quien viajó miles de kilómetros en caravana de camellos para comprobar sus enigmas.",
     icon: "Crown"
   },
   {
@@ -672,6 +1057,30 @@ export const EVENTS_DB = [
     icon: "Flame"
   },
   {
+    id: "b-elias-arrebato",
+    title: "Elías arrebatado al cielo en un carro de fuego",
+    year: -850,
+    yearFormatted: "850 a.C.",
+    siglo: "Siglo IX a.C.",
+    category: "biblia",
+    personajeClave: "Profeta Elías y Eliseo",
+    description: "El gran profeta de Israel fue llevado en un torbellino por un carro y caballos de fuego junto al río Jordán sin experimentar la muerte física.",
+    datoCurioso: "Eliseo recogió el manto caído de su maestro y con él golpeó las aguas del Jordán, las cuales se abrieron a ambos lados de inmediato.",
+    icon: "Flame"
+  },
+  {
+    id: "b-jonas-ninive",
+    title: "Proclamación de Jonás y arrepentimiento de Nínive",
+    year: -760,
+    yearFormatted: "760 a.C.",
+    siglo: "Siglo VIII a.C.",
+    category: "biblia",
+    personajeClave: "Profeta Jonás",
+    description: "Tras permanecer tres días en el vientre de un gran pez, proclamó el mensaje divino en la orgullosa capital asiria logrando su conversión masiva.",
+    datoCurioso: "El rey ninivita promulgó un ayuno riguroso en el que incluso el ganado y las bestias debieron vestir tela de cilicio y abstenerse de pastar.",
+    icon: "Fish"
+  },
+  {
     id: "b-caida-samaria",
     title: "Caída de Samaria y cautiverio del Reino del Norte",
     year: -722,
@@ -696,6 +1105,18 @@ export const EVENTS_DB = [
     icon: "ShieldCheck"
   },
   {
+    id: "b-angeles-senoquerib",
+    title: "Liberación milagrosa de Jerusalén del asedio asirio",
+    year: -701,
+    yearFormatted: "701 a.C.",
+    siglo: "Siglo VIII a.C.",
+    category: "biblia",
+    personajeClave: "Rey Ezequías e Isaías",
+    description: "El ángel de Jehová derrotó en una sola noche a 185.000 soldados asirios sitiadores respondiendo a la ferviente oración de Ezequías.",
+    datoCurioso: "El prisma de arcilla del rey asirio Senaquerib descubierto por la arqueología confiesa que encerró a Ezequías 'como ave enjaulada', pero jamás conquistó la urbe.",
+    icon: "Shield"
+  },
+  {
     id: "b-josias-reforma",
     title: "El rey Josías halla el Libro de la Ley e inicia la reforma",
     year: -622,
@@ -718,6 +1139,42 @@ export const EVENTS_DB = [
     description: "Las tropas babilónicas quemaron el Templo de Salomón, derribaron las murallas de la ciudad y llevaron cautiva a la élite de Judá a Babilonia.",
     datoCurioso: "Durante este exilio de 70 años, la fe judía se consolidó alrededor de las sinagogas y la recopilación de los textos sagrados.",
     icon: "Flame"
+  },
+  {
+    id: "b-horno-fuego-babilonia",
+    title: "Los tres hebreos ilesos en el horno de Babilonia",
+    year: -585,
+    yearFormatted: "585 a.C.",
+    siglo: "Siglo VI a.C.",
+    category: "biblia",
+    personajeClave: "Sadrac, Mesac y Abed-nego",
+    description: "Se negaron a inclinarse ante la estatua dorada de Nabucodonosor y caminaron sueltos e ilesos en medio del fuego siete veces calentado.",
+    datoCurioso: "El emperador babilónico contempló atónito a cuatro figuras en el fuego y declaró que la cuarta tenía apariencia 'semejante a un hijo de los dioses'.",
+    icon: "Flame"
+  },
+  {
+    id: "b-valle-huesos-secos",
+    title: "Visión profética de los huesos secos de Ezequiel",
+    year: -580,
+    yearFormatted: "580 a.C.",
+    siglo: "Siglo VI a.C.",
+    category: "biblia",
+    personajeClave: "Profeta Ezequiel",
+    description: "Visión simbólica donde un valle lleno de osamentas áridas se reviste de tendones, piel y aliento de vida proclamando la restauración de Israel.",
+    datoCurioso: "El Señor le preguntó a Ezequiel: 'Hijo de hombre, ¿vivirán estos huesos?', a lo que el profeta respondió con reverencia: 'Señor Jehová, tú lo sabes'.",
+    icon: "Sparkles"
+  },
+  {
+    id: "b-escritura-pared-balsasar",
+    title: "La misteriosa escritura en la pared de Belsasar",
+    year: -539,
+    yearFormatted: "539 a.C.",
+    siglo: "Siglo VI a.C.",
+    category: "biblia",
+    personajeClave: "Belsasar y Profeta Daniel",
+    description: "Durante una fiesta idólatra aparecieron dedos humanos trazando: MENE, MENE, TEKEL, UPARSIN, anunciando la caída inminente del imperio babilónico.",
+    datoCurioso: "Esa misma noche las tropas persas de Ciro el Grande vadearon el cauce del Éufrates y tomaron la gran Babilonia sin resistencia armada.",
+    icon: "Scroll"
   },
   {
     id: "b-daniel-foso",
@@ -780,6 +1237,18 @@ export const EVENTS_DB = [
     icon: "Star"
   },
   {
+    id: "b-anunciacion-maria",
+    title: "La Anunciación del Ángel Gabriel a María",
+    year: -4,
+    yearFormatted: "4 a.C.",
+    siglo: "Siglo I a.C.",
+    category: "biblia",
+    personajeClave: "Virgen María y el Ángel Gabriel",
+    description: "El mensajero celestial anunció en Nazaret el nacimiento virginal del Salvador por la sombra y el poder del Espíritu Santo.",
+    datoCurioso: "La humilde sumisión de María ('Hágase en mí según tu palabra') es recordada en la historia teológica como el momento del 'Fiat'.",
+    icon: "Heart"
+  },
+  {
     id: "b-bautismo-jesus",
     title: "Bautismo de Jesús por Juan en el río Jordán",
     year: 26,
@@ -790,6 +1259,30 @@ export const EVENTS_DB = [
     description: "Al salir Jesús de las aguas del Jordán, los cielos se abrieron, el Espíritu Santo descendió como paloma y una voz del cielo proclamó: 'Este es mi Hijo amado'.",
     datoCurioso: "Juan el Bautista vestía ropas de pelo de camello y se alimentaba de langostas del desierto y miel silvestre.",
     icon: "Droplets"
+  },
+  {
+    id: "b-sermon-monte",
+    title: "Jesús proclama el Sermón del Monte y Bienaventuranzas",
+    year: 28,
+    yearFormatted: "28 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Jesucristo en Galilea",
+    description: "El discurso medular de la ética cristiana pronunciado frente al Mar de Galilea, enseñando a amar a los enemigos y ser luz del mundo.",
+    datoCurioso: "En esta solemne ocasión Jesús enseñó a sus discípulos el modelo perfecto de oración conocido universalmente como el Padre Nuestro.",
+    icon: "BookOpen"
+  },
+  {
+    id: "b-multiplicacion-panes",
+    title: "La multiplicación milagrosa de los panes y peces",
+    year: 29,
+    yearFormatted: "29 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Jesucristo y la multitud de 5.000",
+    description: "Con solo cinco panes de cebada y dos peces aportados por un muchacho, Jesús bendijo y sació a miles sobrando doce cestas colmadas.",
+    datoCurioso: "Es el único milagro público de Jesús que se encuentra relatado en los cuatro Evangelios canónicos (Mateo, Marcos, Lucas y Juan).",
+    icon: "Sparkles"
   },
   {
     id: "b-crucifixion-resurreccion",
@@ -816,16 +1309,76 @@ export const EVENTS_DB = [
     icon: "Flame"
   },
   {
-    id: "b-esteban-martirio",
-    title: "Martirio de Esteban, primer mártir cristiano",
-    year: 35,
-    yearFormatted: "35 d.C.",
+    id: "b-resurreccion-lazaro",
+    title: "La resurrección de Lázaro en Betania",
+    year: 30,
+    yearFormatted: "30 d.C.",
     siglo: "Siglo I d.C.",
     category: "biblia",
-    personajeClave: "Esteban y Saulo de Tarso",
-    description: "Lleno de fe y del Espíritu Santo, Esteban defendió la verdad ante el Sanedrín y oró por sus asesinos mientras era apedreado: 'Señor, no les tomes en cuenta este pecado'.",
-    datoCurioso: "Los testigos que apedrearon a Esteban dejaron sus mantos a los pies de un joven fariseo fanático llamado Saulo.",
-    icon: "Sparkles"
+    personajeClave: "Jesucristo, Marta y María",
+    description: "Jesús ordenó abrir el sepulcro de roca y exclamó '¡Lázaro, ven fuera!', saliendo el difunto atado con vendas tras cuatro días de muerto.",
+    datoCurioso: "Momentos antes del prodigio se registra el versículo más corto y emotivo de las Sagradas Escrituras: 'Jesús lloró' (Juan 11:35).",
+    icon: "Heart"
+  },
+  {
+    id: "b-entrada-triunfal",
+    title: "Entrada triunfal de Jesús en Jerusalén (Domingo de Ramos)",
+    year: 33,
+    yearFormatted: "33 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Jesucristo el Mesías",
+    description: "Aclamado como Rey de Israel por una multitud que tendía sus mantos y ramas de palmera al grito festivo de '¡Hosanna en las alturas!'.",
+    datoCurioso: "Entró montado pacíficamente sobre un pollino de asna, cumpliendo con exactitud milimétrica la profecía veterotestamentaria de Zacarías.",
+    icon: "Sun"
+  },
+  {
+    id: "b-ultima-cena",
+    title: "La Última Cena e institución del Nuevo Pacto",
+    year: 33,
+    yearFormatted: "33 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Jesucristo y los doce apóstoles",
+    description: "En el aposento alto lavó los pies de los discípulos e instituyó el pan y la copa como memoria perpetua de su cuerpo y su sangre.",
+    datoCurioso: "Jesús les legó en esa cena el mandamiento nuevo: 'Que os améis unos a otros como yo os he amado'.",
+    icon: "Wine"
+  },
+  {
+    id: "b-getsemani-oracion",
+    title: "Agonía y oración de Jesús en el huerto de Getsemaní",
+    year: 33,
+    yearFormatted: "33 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Jesucristo en el Monte de los Olivos",
+    description: "En profunda angustia oró con sudores como gotas de sangre: 'Padre, si es tu voluntad aparta de mí esta copa; pero no se haga mi voluntad, sino la tuya'.",
+    datoCurioso: "El nombre 'Getsemaní' proviene del arameo 'Gath-Šmānê' y significa literalmente 'prensa de aceite' o lagar de olivas.",
+    icon: "Moon"
+  },
+  {
+    id: "b-camino-emaus",
+    title: "Aparición de Jesús a los discípulos camino a Emaús",
+    year: 33,
+    yearFormatted: "33 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Jesús resucitado y Cleofas",
+    description: "Acompañó de incógnito a dos discípulos desanimados desgranando las profecías mesiánicas, siendo reconocido solo al partir el pan.",
+    datoCurioso: "Al reconocerlo y desaparecer de su vista, exclamaron con gozo: '¿No ardía nuestro corazón en nosotros mientras nos hablaba en el camino?'.",
+    icon: "Footprints"
+  },
+  {
+    id: "b-ascension-monte-olivos",
+    title: "La gloriosa Ascensión de Jesucristo a los cielos",
+    year: 33,
+    yearFormatted: "33 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Jesucristo y los once discípulos",
+    description: "Cuarenta días después de resucitar, bendijo a los discípulos en el Monte de los Olivos y fue elevado ante sus ojos envuelto en una nube.",
+    datoCurioso: "Dos ángeles con vestiduras blancas prometieron a los apóstoles: 'Este mismo Jesús que ha sido tomado vendrá así de la misma manera'.",
+    icon: "Cloud"
   },
   {
     id: "b-conversion-pablo",
@@ -840,6 +1393,18 @@ export const EVENTS_DB = [
     icon: "Sun"
   },
   {
+    id: "b-esteban-martirio",
+    title: "Martirio de Esteban, primer mártir cristiano",
+    year: 35,
+    yearFormatted: "35 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Esteban y Saulo de Tarso",
+    description: "Lleno de fe y del Espíritu Santo, Esteban defendió la verdad ante el Sanedrín y oró por sus asesinos mientras era apedreado: 'Señor, no les tomes en cuenta este pecado'.",
+    datoCurioso: "Los testigos que apedrearon a Esteban dejaron sus mantos a los pies de un joven fariseo fanático llamado Saulo.",
+    icon: "Sparkles"
+  },
+  {
     id: "b-concilio-jerusalen",
     title: "Concilio de Jerusalén (Hechos 15)",
     year: 49,
@@ -850,6 +1415,42 @@ export const EVENTS_DB = [
     description: "Los apóstoles y ancianos acordaron que la salvación es por la gracia de Cristo mediante la fe y no requería someter a los creyentes no judíos a las ordenanzas rituales de la circuncisión mosaica.",
     datoCurioso: "Fue la primera gran asamblea teológica y ecuménica de la Iglesia universal de la que se tiene registro.",
     icon: "Users"
+  },
+  {
+    id: "b-carcelero-filipos",
+    title: "Terremoto y salvación del carcelero de Filipos",
+    year: 50,
+    yearFormatted: "50 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Pablo, Silas y el Carcelero",
+    description: "A medianoche, mientras cantaban himnos en el calabozo, un sismo abrió los cerrojos y el custodio conmovido halló la fe con su familia.",
+    datoCurioso: "El carcelero cayó de rodillas preguntando '¿Qué debo hacer para ser salvo?', recibiendo la respuesta: 'Cree en el Señor Jesucristo y serás salvo tú y tu casa'.",
+    icon: "Music"
+  },
+  {
+    id: "b-areopago-atenas",
+    title: "Discurso del Apóstol Pablo en el Areópago de Atenas",
+    year: 51,
+    yearFormatted: "51 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Apóstol Pablo",
+    description: "Debatió con filósofos atenienses epicúreos y estoicos partiendo del monumento dedicado 'Al Dios No Conocido' para predicar la resurrección.",
+    datoCurioso: "Pablo citó con destreza versos de poetas clásicos griegos como Arato y Epiménides: 'Porque en él vivimos, nos movemos y somos'.",
+    icon: "BookOpen"
+  },
+  {
+    id: "b-naufragio-malta",
+    title: "Naufragio y supervivencia de Pablo en la Isla de Malta",
+    year: 60,
+    yearFormatted: "60 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Apóstol Pablo y los 276 náufragos",
+    description: "La nave que lo conducía encadenado a Roma sucumbió a dos semanas de temporal en el mar Adriático sin perderse una sola vida humana.",
+    datoCurioso: "Al encender una hoguera en la playa una víbora venenosa mordió su mano; al ver que no hinchaba ni moría, los nativos pensaron que era un dios.",
+    icon: "Anchor"
   },
   {
     id: "b-incendio-roma-neron",
@@ -876,6 +1477,18 @@ export const EVENTS_DB = [
     icon: "Building"
   },
   {
+    id: "b-canon-biblico",
+    title: "Delimitación formal del canon bíblico del Tanaj",
+    year: 90,
+    yearFormatted: "90 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "biblia",
+    personajeClave: "Consejo de sabios en Jamnia (Yavne)",
+    description: "Fijación y preservación rigurosa de los 24 libros canónicos hebreos de la Ley, los Profetas y los Escritos tras la caída del Templo.",
+    datoCurioso: "Confirmaron la sacralidad de textos discutidos como Cantar de los Cantares y Eclesiastés al comprobar que inspiraban las manos a santidad.",
+    icon: "BookCheck"
+  },
+  {
     id: "b-apocalipsis-patmos",
     title: "Juan escribe el Apocalipsis en la isla de Patmos",
     year: 95,
@@ -889,7 +1502,7 @@ export const EVENTS_DB = [
   },
 
   // ══════════════════════════════════════════════════════════════════════════
-  // 3. CIENCIA E INVENCIONES (32 hitos y personajes)
+  // 3. CIENCIA & INVENCIÓN (62 hitos y personajes)
   // ══════════════════════════════════════════════════════════════════════════
   {
     id: "c-rueda",
@@ -904,6 +1517,18 @@ export const EVENTS_DB = [
     icon: "Disc"
   },
   {
+    id: "c-escritura-cuneiforme",
+    title: "Invención de la escritura cuneiforme en Mesopotamia",
+    year: -3200,
+    yearFormatted: "3200 a.C.",
+    siglo: "Siglo XXXII a.C.",
+    category: "ciencia",
+    personajeClave: "Escribas sumerios en la ciudad de Uruk",
+    description: "Primer sistema documentado de registro lingüístico humano mediante incisiones en forma de cuña sobre tabletas de barro húmedo.",
+    datoCurioso: "Nació esencialmente con fines contables para inventariar sacos de cebada, cabezas de ganado y pagos tributarios en los templos.",
+    icon: "FileText"
+  },
+  {
     id: "c-arquimedes-eureka",
     title: "Arquímedes descubre el principio de flotación",
     year: -250,
@@ -914,6 +1539,54 @@ export const EVENTS_DB = [
     description: "Al sumergirse en una tina de baño observó que el agua derramada era proporcional al volumen de su cuerpo, saliendo desnudo por la calle gritando '¡Eureka!' (¡Lo encontré!).",
     datoCurioso: "El rey Hierón II le había encargado verificar si su corona era de oro puro o si el orfebre había mezclado plata sin fundir la corona.",
     icon: "Sparkles"
+  },
+  {
+    id: "c-papel-cailun",
+    title: "Invención del papel flexible por Cai Lun en China",
+    year: 105,
+    yearFormatted: "105 d.C.",
+    siglo: "Siglo II d.C.",
+    category: "ciencia",
+    personajeClave: "Cai Lun",
+    description: "Elaboró las primeras láminas delgadas triturando cortezas de morera, restos de cáñamo, trapos viejos y redes de pescar en agua.",
+    datoCurioso: "La corte imperial china guardó el secreto técnico de fabricación durante más de seiscientos años hasta la batalla del río Talas.",
+    icon: "Scroll"
+  },
+  {
+    id: "c-polvora-china",
+    title: "Descubrimiento de la pólvora por alquimistas chinos",
+    year: 850,
+    yearFormatted: "850 d.C.",
+    siglo: "Siglo IX d.C.",
+    category: "ciencia",
+    personajeClave: "Alquimistas taoístas de la Dinastía Tang",
+    description: "Mezcla deflagrante de salitre, azufre y carbón vegetal descubierta mientras intentaban sintetizar el elixir de la inmortalidad.",
+    datoCurioso: "Los textos taoístas tempranos alertaban a los practicantes que la mezcla quemaba barbas y reducía a cenizas los talleres experimentales.",
+    icon: "Flame"
+  },
+  {
+    id: "c-optica-alhazen",
+    title: "Tratado de Óptica y método experimental de Alhacén",
+    year: 1021,
+    yearFormatted: "1021 d.C.",
+    siglo: "Siglo XI d.C.",
+    category: "ciencia",
+    personajeClave: "Alhacén (Ibn al-Haytham)",
+    description: "Demostró experimentalmente que la visión se produce porque los rayos de luz reflejados penetran en el ojo, fundando la óptica moderna.",
+    datoCurioso: "Desarrolló la cámara oscura y es considerado por los historiadores como el verdadero padre del método científico experimental riguroso.",
+    icon: "Eye"
+  },
+  {
+    id: "c-brujula-china",
+    title: "Invención de la brújula magnética para navegación",
+    year: 1044,
+    yearFormatted: "1044 d.C.",
+    siglo: "Siglo XI d.C.",
+    category: "ciencia",
+    personajeClave: "Eruditos de la Dinastía Song",
+    description: "El aprovechamiento de agujas de hierro magnetizado flotantes transformó la orientación de los buques en altamar sin depender de las estrellas.",
+    datoCurioso: "En sus inicios en China las primeras brújulas tenían forma de cucharas de magnetita orientadas hacia el sur con propósitos geománticos.",
+    icon: "Compass"
   },
   {
     id: "c-imprenta-gutenberg",
@@ -940,6 +1613,18 @@ export const EVENTS_DB = [
     icon: "Sun"
   },
   {
+    id: "c-anatomia-vesalio",
+    title: "Publicación de 'De humani corporis fabrica' de Vesalio",
+    year: 1543,
+    yearFormatted: "1543 d.C.",
+    siglo: "Siglo XVI d.C.",
+    category: "ciencia",
+    personajeClave: "Andrés Vesalio",
+    description: "Cimbró la medicina renacentista corrigiendo cientos de errores milenarios de Galeno mediante disecciones directas del cuerpo humano.",
+    datoCurioso: "Las magistrales planchas grabadas en madera que ilustraban músculos y huesos fueron ejecutadas por artistas del taller del pintor Tiziano.",
+    icon: "HeartPulse"
+  },
+  {
     id: "c-telescopio-galileo",
     title: "Galileo Galilei apunta su telescopio al cielo",
     year: 1609,
@@ -950,6 +1635,18 @@ export const EVENTS_DB = [
     description: "Descubrió los cráteres lunares, las cuatro lunas mayores de Júpiter y las fases de Venus, derribando para siempre la física aristotélica geocéntrica.",
     datoCurioso: "Galileo pulía a mano sus propias lentes de cristal en Venecia logrando hasta 30 aumentos, muy superior a los catalejos holandeses.",
     icon: "Eye"
+  },
+  {
+    id: "c-microscopio-leeuwenhoek",
+    title: "Descubrimiento de los microbios por Leeuwenhoek",
+    year: 1674,
+    yearFormatted: "1674 d.C.",
+    siglo: "Siglo XVII d.C.",
+    category: "ciencia",
+    personajeClave: "Antonie van Leeuwenhoek",
+    description: "Comerciante de telas holandés que pulió lentes microscópicas diminutas observando por primera vez bacterias y protozoos vivos.",
+    datoCurioso: "Llamó a estos microorganismos 'animálculos' y los descubrió examinando gotas de agua estancada y el sarro de su propia boca.",
+    icon: "Microscope"
   },
   {
     id: "c-newton-principia",
@@ -964,6 +1661,18 @@ export const EVENTS_DB = [
     icon: "Atom"
   },
   {
+    id: "c-ley-gravedad-manzana",
+    title: "Formulación de la Ley de Gravitación Universal de Newton",
+    year: 1687,
+    yearFormatted: "1687 d.C.",
+    siglo: "Siglo XVII d.C.",
+    category: "ciencia",
+    personajeClave: "Sir Isaac Newton",
+    description: "Demostró matemáticamente en los 'Principia' que la misma fuerza que hace caer una fruta mantiene a la Luna en su órbita alrededor de la Tierra.",
+    datoCurioso: "Newton confirmó en persona a su biógrafo William Stukeley que la idea le asaltó mientras meditaba en el jardín bajo un manzano en Woolsthorpe.",
+    icon: "Apple"
+  },
+  {
     id: "c-maquina-vapor",
     title: "James Watt patenta la máquina de vapor moderna",
     year: 1769,
@@ -974,6 +1683,18 @@ export const EVENTS_DB = [
     description: "Añadió un condensador separado que redujo el consumo de carbón en un 75%, multiplicando la potencia mecánica y desatando la Revolución Industrial.",
     datoCurioso: "Para convencer a los mineros de comprar su máquina, inventó la unidad de medida 'caballo de fuerza' (horsepower) comparándola con los animales.",
     icon: "Cpu"
+  },
+  {
+    id: "c-oxigeno-lavoisier",
+    title: "Descubrimiento del oxígeno y conservación de la masa",
+    year: 1777,
+    yearFormatted: "1777 d.C.",
+    siglo: "Siglo XVIII d.C.",
+    category: "ciencia",
+    personajeClave: "Antoine Lavoisier y Marie-Anne Paulze",
+    description: "Sentó las bases de la química moderna refutando el flogisto con su ley: 'En la naturaleza nada se crea, nada se destruye, todo se transforma'.",
+    datoCurioso: "Su esposa Marie-Anne no solo traducía los artículos científicos del inglés sino que dibujaba a mano con minucia todos los matraces del laboratorio.",
+    icon: "Beaker"
   },
   {
     id: "c-vacuna-jenner",
@@ -1012,6 +1733,30 @@ export const EVENTS_DB = [
     icon: "TreePine"
   },
   {
+    id: "c-teoria-germenes-pasteur",
+    title: "Teoría microbiana y pasteurización por Louis Pasteur",
+    year: 1862,
+    yearFormatted: "1862 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "ciencia",
+    personajeClave: "Louis Pasteur",
+    description: "Demostró que las fermentaciones y dolencias infecciosas provienen de microorganismos vivos, refutando la generación espontánea.",
+    datoCurioso: "Demostró su tesis empleando matraces de cuello de cisne que permitían el flujo de aire pero impedían la entrada de partículas de polvo.",
+    icon: "ShieldAlert"
+  },
+  {
+    id: "c-tabla-periodica-mendeleiev",
+    title: "Creación de la Tabla Periódica de los Elementos",
+    year: 1869,
+    yearFormatted: "1869 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "ciencia",
+    personajeClave: "Dmitri Mendeléyev",
+    description: "Organizó los elementos químicos según sus masas atómicas y propiedades periódicas dejando huecos para elementos aún no descubiertos.",
+    datoCurioso: "Predijo con exactitud matemática pasmosa las características del galio y el germanio antes de que nadie los hubiera visto o aislado.",
+    icon: "Grid"
+  },
+  {
     id: "c-telefono-bell",
     title: "Alexander Graham Bell patenta el teléfono",
     year: 1876,
@@ -1036,6 +1781,30 @@ export const EVENTS_DB = [
     icon: "Lightbulb"
   },
   {
+    id: "c-electricidad-foco-tesla",
+    title: "Patente del motor de corriente alterna por Nikola Tesla",
+    year: 1888,
+    yearFormatted: "1888 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "ciencia",
+    personajeClave: "Nikola Tesla y George Westinghouse",
+    description: "Desarrolló el motor de inducción y el sistema de corriente alterna polifásico que electrificó las ciudades y fábricas del planeta entero.",
+    datoCurioso: "Su sistema derrotó comercialmente a la corriente continua de Edison al iluminar de forma espectacular la Exposición Universal de Chicago en 1893.",
+    icon: "Zap"
+  },
+  {
+    id: "c-cinematografo-edison-kinetoscopio",
+    title: "Patente del Kinetoscopio por Thomas Edison",
+    year: 1891,
+    yearFormatted: "1891 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "ciencia",
+    personajeClave: "Thomas Edison y William K.L. Dickson",
+    description: "Primer dispositivo individual para contemplar imágenes en movimiento continuo mediante una película de celuloide perforada.",
+    datoCurioso: "Edison creía que el cine era un entretenimiento individual y no apostó inicialmente por proyectarlo en pantallas frente a salas colectivas.",
+    icon: "Film"
+  },
+  {
     id: "c-rayos-x",
     title: "Wilhelm Röntgen descubre los Rayos X",
     year: 1895,
@@ -1048,6 +1817,18 @@ export const EVENTS_DB = [
     icon: "Camera"
   },
   {
+    id: "c-aspirina-hoffmann",
+    title: "Síntesis del ácido acetilsalicílico (Aspirina)",
+    year: 1897,
+    yearFormatted: "1897 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "ciencia",
+    personajeClave: "Felix Hoffmann (Laboratorios Bayer)",
+    description: "Sintetizó una variante química pura del principio de la corteza de sauce para mitigar el dolor reumático crónico de su propio padre.",
+    datoCurioso: "Es el analgésico sintético más producido en la historia de la medicina humana con miles de millones de comprimidos consumidos anualmente.",
+    icon: "Pill"
+  },
+  {
     id: "c-radioactividad-curie",
     title: "Marie Curie y Pierre Curie descubren el Radio y el Polonio",
     year: 1898,
@@ -1058,6 +1839,18 @@ export const EVENTS_DB = [
     description: "Aislaron elementos químicos altamente radiactivos a partir de toneladas de pechblenda en un cobertizo precario de París.",
     datoCurioso: "Marie Curie fue la primera mujer en ganar un Premio Nobel y la única persona en la historia en ganarlo en dos disciplinas científicas distintas (Física y Química).",
     icon: "Activity"
+  },
+  {
+    id: "c-grupo-sanguineo-landsteiner",
+    title: "Identificación de los grupos sanguíneos humanos ABO",
+    year: 1901,
+    yearFormatted: "1901 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Karl Landsteiner",
+    description: "Descubrió que la sangre humana posee tipos antigénicos incompatibles, posibilitando las transfusiones seguras que salvan millones de vidas.",
+    datoCurioso: "Recibió el Premio Nobel de Medicina en 1930 y el 14 de junio, fecha de su nacimiento, se celebra el Día Mundial del Donante de Sangre.",
+    icon: "Droplet"
   },
   {
     id: "c-hermanos-wright",
@@ -1084,6 +1877,54 @@ export const EVENTS_DB = [
     icon: "Zap"
   },
   {
+    id: "c-deriva-continental-wegener",
+    title: "Propuesta de la Deriva Continental y Pangea",
+    year: 1912,
+    yearFormatted: "1912 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Alfred Wegener",
+    description: "Postuló que los continentes actuales formaban un supercontinente primitivo que se fracturó desplazándose sobre el manto terrestre.",
+    datoCurioso: "La comunidad geológica de su tiempo lo tildó de loco hasta que la tectónica de placas submarina de los años 60 corroboró plenamente su modelo.",
+    icon: "Globe"
+  },
+  {
+    id: "c-modelo-atomico-bohr",
+    title: "Presentación del modelo atómico cuántico de Bohr",
+    year: 1913,
+    yearFormatted: "1913 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Niels Bohr",
+    description: "Propuso que los electrones orbitan el núcleo atómico en niveles de energía discretos emitiendo fotones de luz al saltar entre órbitas.",
+    datoCurioso: "Su formulación mereció el Nobel en 1922; cuando fue ennoblecido eligió para su blasón el símbolo del Yin y el Yang con el lema 'Los opuestos se complementan'.",
+    icon: "Atom"
+  },
+  {
+    id: "c-insulina-banting-best",
+    title: "Descubrimiento y extracción de la insulina médica",
+    year: 1921,
+    yearFormatted: "1921 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Frederick Banting y Charles Best",
+    description: "Aislaron con éxito la hormona pancreática transformando la diabetes tipo 1 de un diagnóstico mortal e irreversible en una patología tratable.",
+    datoCurioso: "Vendieron la patente farmacéutica de la insulina a la Universidad de Toronto por la simbólica cifra de 1 dólar para no lucrar con la salud pública.",
+    icon: "Activity"
+  },
+  {
+    id: "c-mecanica-cuantica-heisenberg",
+    title: "Enunciado del Principio de Incertidumbre cuántica",
+    year: 1927,
+    yearFormatted: "1927 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Werner Heisenberg",
+    description: "Determinó que es físicamente imposible conocer al mismo tiempo y con precisión infinita la posición y la velocidad de una partícula subatómica.",
+    datoCurioso: "El propio acto de observar e iluminar una partícula con un fotón altera irremediablemente su trayectoria original.",
+    icon: "HelpCircle"
+  },
+  {
     id: "c-penicilina-fleming",
     title: "Alexander Fleming descubre la penicilina",
     year: 1928,
@@ -1094,6 +1935,66 @@ export const EVENTS_DB = [
     description: "Notó que una placa de cultivo olvidada con estafilococos había sido invadida por un hongo verde que destruyó todas las bacterias a su alrededor.",
     datoCurioso: "El hallazgo inauguró la era de los antibióticos y ha salvado más de 200 millones de vidas de infecciones mortales.",
     icon: "FlaskConical"
+  },
+  {
+    id: "c-expansion-universo-hubble",
+    title: "Descubrimiento de la expansión cósmica del Universo",
+    year: 1929,
+    yearFormatted: "1929 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Edwin Hubble",
+    description: "Comprobó observando el corrimiento al rojo de las galaxias que el cosmos no es estático sino que se expande a velocidades proporcionales a su distancia.",
+    datoCurioso: "Al enterarse del hallazgo de Hubble, Albert Einstein retiró su constante cosmológica admitiendo que había sido el mayor error de su carrera.",
+    icon: "Telescope"
+  },
+  {
+    id: "c-radar-watson-watt",
+    title: "Invención y despliegue del radar defensivo",
+    year: 1935,
+    yearFormatted: "1935 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Robert Watson-Watt",
+    description: "Sistema pionero de detección y telemetría por radio que alertaba de aviones enemigos antes de que fueran visibles a simple vista.",
+    datoCurioso: "Fue el escudo tecnológico que permitió a la Real Fuerza Aérea británica vencer a la Luftwaffe en la crucial Batalla de Inglaterra.",
+    icon: "Radio"
+  },
+  {
+    id: "c-fision-nuclear-meitner-hahn",
+    title: "Descubrimiento de la fisión nuclear del uranio",
+    year: 1938,
+    yearFormatted: "1938 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Lise Meitner y Otto Hahn",
+    description: "Comprobaron que bombardear núcleos pesados de uranio con neutrones los divide liberando descomunales cantidades de energía nuclear.",
+    datoCurioso: "Lise Meitner aportó la interpretación teórica matemática crucial en su exilio sueco pero fue omitida deliberadamente del Premio Nobel otorgado a Hahn.",
+    icon: "Radioactive"
+  },
+  {
+    id: "c-turing-enigma",
+    title: "Alan Turing descifra la máquina Enigma en Bletchley Park",
+    year: 1940,
+    yearFormatted: "1940 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Alan Turing y Gordon Welchman",
+    description: "Diseñaron las computadoras electromecánicas 'Bombe' que descifraron las comunicaciones militares secretas nazis salvando millones de vidas.",
+    datoCurioso: "Los principios matemáticos que ideó Turing en ese período constituyeron los pilares fundacionales de la ciencia de la computación contemporánea.",
+    icon: "Cpu"
+  },
+  {
+    id: "c-primer-computador-eniac",
+    title: "Presentación de ENIAC, primer computador electrónico",
+    year: 1945,
+    yearFormatted: "1945 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "John Mauchly y J. Presper Eckert",
+    description: "Coloso de 30 toneladas con 17.000 válvulas de vacío programable para calcular trayectorias de artillería en milésimas de segundo.",
+    datoCurioso: "El equipo original de pioneras que programaba manualmente sus circuitos conectando clavijas y cables estuvo compuesto por seis brillantes matemáticas.",
+    icon: "Server"
   },
   {
     id: "c-transistor",
@@ -1120,6 +2021,18 @@ export const EVENTS_DB = [
     icon: "Dna"
   },
   {
+    id: "c-vacuna-polio-salk",
+    title: "Desarrollo de la vacuna contra la poliomielitis",
+    year: 1953,
+    yearFormatted: "1953 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Dr. Jonas Salk",
+    description: "Inmunización con virus inactivado que frenó el flagelo que paralizaba a decenas de miles de niños anualmente en todo el planeta.",
+    datoCurioso: "Al ser consultado en televisión sobre quién poseía la patente legal de su cura, Salk replicó: 'La gente, no hay patente. ¿Se podría patentar el Sol?'.",
+    icon: "ShieldCheck"
+  },
+  {
     id: "c-sputnik",
     title: "Lanzamiento del Sputnik 1 al espacio",
     year: 1957,
@@ -1130,6 +2043,18 @@ export const EVENTS_DB = [
     description: "La Unión Soviética puso en órbita el primer satélite artificial de la historia, una esfera metálica de 83 kg con cuatro antenas que emitía 'bips'.",
     datoCurioso: "El sonido de sus señales radiales podía ser sintonizado por radioaficionados de todo el mundo al pasar sobre sus cabezas cada 96 minutos.",
     icon: "Radio"
+  },
+  {
+    id: "c-rayo-laser-maiman",
+    title: "Creación del primer rayo láser funcional",
+    year: 1960,
+    yearFormatted: "1960 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Theodore Maiman",
+    description: "Hizo emitir por primera vez un haz de luz coherente y monocromática concentrada estimulando un cristal cilíndrico de rubí sintético.",
+    datoCurioso: "La prensa lo bautizó inicialmente con sorna como 'una solución que busca un problema'; hoy es el corazón de las telecomunicaciones por fibra óptica.",
+    icon: "Zap"
   },
   {
     id: "c-apolo-11",
@@ -1154,6 +2079,18 @@ export const EVENTS_DB = [
     description: "Investigadores de UCLA intentaron enviar la palabra 'LOGIN' a la Universidad de Stanford; el sistema colapsó en la letra G, transmitiendo solo 'LO'.",
     datoCurioso: "Ese humilde 'LO' fue el primer mensaje jamás enviado a través de la red de conmutación de paquetes antecesora de Internet.",
     icon: "Network"
+  },
+  {
+    id: "c-microprocesador-intel-4004",
+    title: "Lanzamiento del Intel 4004, primer microprocesador",
+    year: 1971,
+    yearFormatted: "1971 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "ciencia",
+    personajeClave: "Federico Faggin y Ted Hoff",
+    description: "El cerebro informático completo integrado en una sola pastilla de silicio con 2.300 transistores que detonó la revolución de los microcomputadores.",
+    datoCurioso: "Tenía la misma potencia de cálculo que el ENIAC de 30 toneladas pero cabía holgadamente sobre la yema de un dedo humano.",
+    icon: "Cpu"
   },
   {
     id: "c-voyager-lanzamiento",
@@ -1252,6 +2189,30 @@ export const EVENTS_DB = [
     icon: "Atom"
   },
   {
+    id: "c-crispr-doudna-charpentier",
+    title: "Invención del editor genético CRISPR-Cas9",
+    year: 2012,
+    yearFormatted: "2012 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "ciencia",
+    personajeClave: "Jennifer Doudna y Emmanuelle Charpentier",
+    description: "Herramienta de tijeras moleculares de alta precisión capaz de cortar y corregir secuencias de ADN en células vivas de cualquier especie.",
+    datoCurioso: "Ambas investigadoras recibieron el Premio Nobel de Química en 2020, constituyendo la primera dupla enteramente femenina en recibirlo conjuntamente.",
+    icon: "Dna"
+  },
+  {
+    id: "c-ondas-gravitacionales-ligo",
+    title: "Primera detección directa de ondas gravitacionales",
+    year: 2015,
+    yearFormatted: "2015 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "ciencia",
+    personajeClave: "Colaboración Científica LIGO y Virgo",
+    description: "Captación con interferómetros láser de ondulaciones del tejido espaciotemporal causadas por la colisión de dos agujeros negros.",
+    datoCurioso: "El choque estelar ocurrió hace 1.300 millones de años y la distorsión detectada en los brazos de LIGO fue una fracción del diámetro de un protón.",
+    icon: "Radio"
+  },
+  {
     id: "c-agujero-negro-foto",
     title: "Primera fotografía real de un agujero negro (EHT)",
     year: 2019,
@@ -1262,6 +2223,18 @@ export const EVENTS_DB = [
     description: "Ocho radiotelescopios sincronizados con relojes atómicos combinaron sus señales para captar la sombra del horizonte de sucesos en la galaxia M87.",
     datoCurioso: "La cantidad de datos generada fue tan descomunal (5 petabytes) que no se pudo transmitir por Internet; tuvieron que enviar los discos duros en avión.",
     icon: "Eye"
+  },
+  {
+    id: "c-james-webb-espacio",
+    title: "Puesta en órbita del Telescopio Espacial James Webb",
+    year: 2021,
+    yearFormatted: "2021 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "ciencia",
+    personajeClave: "Consorcio NASA, ESA y CSA",
+    description: "El observatorio espacial infrarrojo más potente desplegó su espejo segmentado de oro a 1,5 millones de kilómetros de la Tierra en el punto L2.",
+    datoCurioso: "Su parasol térmico de cinco capas mide como una pista de tenis y mantiene los sensores a -233 grados Celsius para captar las primeras galaxias del cosmos.",
+    icon: "Telescope"
   },
   {
     id: "c-chatgpt-ia",
@@ -1277,8 +2250,80 @@ export const EVENTS_DB = [
   },
 
   // ══════════════════════════════════════════════════════════════════════════
-  // 4. MÚSICA Y ARTE (26 hitos y personajes)
+  // 4. MÚSICA & RITMO (62 hitos y personajes)
   // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: "m-epitafio-seikilos",
+    title: "Inscripción del Epitafio de Sícilo",
+    year: 100,
+    yearFormatted: "100 d.C.",
+    siglo: "Siglo I d.C.",
+    category: "musica",
+    personajeClave: "Sícilo en Trales (Anatolia)",
+    description: "La composición musical completa más antigua con melodía, letra y notación preservada intacta sobre una estela funeraria de mármol.",
+    datoCurioso: "El poema lírico grabado aconseja: 'Mientras vivas, resplandece; no te aflijas por nada en demasía, la vida es ciertamente breve'.",
+    icon: "Music"
+  },
+  {
+    id: "m-canto-gregoriano",
+    title: "Compilación y unificación del Canto Gregoriano",
+    year: 600,
+    yearFormatted: "600 d.C.",
+    siglo: "Siglo VII d.C.",
+    category: "musica",
+    personajeClave: "Papa Gregorio I Magno",
+    description: "Canto monódico litúrgico a capela en latín que instituyó los primeros modos musicales y las raíces armónicas de Occidente.",
+    datoCurioso: "Se anotaba en pergaminos monacales mediante 'neumas', pequeños signos gráficos que indicaban el ascenso o descenso tonal de la voz.",
+    icon: "BookOpen"
+  },
+  {
+    id: "m-guido-arezzo-notas",
+    title: "Invención del pentagrama y nombres de las notas",
+    year: 1025,
+    yearFormatted: "1025 d.C.",
+    siglo: "Siglo XI d.C.",
+    category: "musica",
+    personajeClave: "Monje Guido de Arezzo",
+    description: "Ideó el pentagrama con líneas y nombró las notas (Ut, Re, Mi, Fa, Sol, La) tomando las sílabas iniciales del Himno a San Juan Bautista.",
+    datoCurioso: "Siglos más tarde la primera sílaba 'Ut' fue reemplazada por 'Do' (derivado de Dominus) por resultar infinitamente más fácil de entonar.",
+    icon: "Music"
+  },
+  {
+    id: "m-mona-lisa",
+    title: "Leonardo da Vinci comienza a pintar la Mona Lisa",
+    year: 1503,
+    yearFormatted: "1503 d.C.",
+    siglo: "Siglo XVI d.C.",
+    category: "musica",
+    personajeClave: "Leonardo da Vinci y Lisa Gherardini",
+    description: "Inició el retrato en Florencia empleando su técnica revolucionaria de 'sfumato' para difuminar contornos y crear su enigmática sonrisa.",
+    datoCurioso: "Leonardo nunca entregó el cuadro a su cliente y lo llevó consigo a Francia hasta el final de sus días.",
+    icon: "Palette"
+  },
+  {
+    id: "m-capilla-sixtina",
+    title: "Miguel Ángel culmina la bóveda de la Capilla Sixtina",
+    year: 1512,
+    yearFormatted: "1512 d.C.",
+    siglo: "Siglo XVI d.C.",
+    category: "musica",
+    personajeClave: "Miguel Ángel Buonarroti",
+    description: "Pintó más de 300 figuras colosales al fresco en el techo del Vaticano, incluyendo la célebre escena de 'La Creación de Adán'.",
+    datoCurioso: "Pintó de pie mirando hacia arriba durante cuatro años en andamios especiales, causándole problemas crónicos en la vista y cuello.",
+    icon: "Brush"
+  },
+  {
+    id: "m-monteverdi-orfeo",
+    title: "Estreno de 'L'Orfeo' de Claudio Monteverdi",
+    year: 1607,
+    yearFormatted: "1607 d.C.",
+    siglo: "Siglo XVII d.C.",
+    category: "musica",
+    personajeClave: "Claudio Monteverdi",
+    description: "Considerada por los musicólogos como la primera obra maestra definitiva del género operístico lírico y dramático.",
+    datoCurioso: "Monteverdi dispuso una plantilla instrumental de más de 40 músicos asignando timbres específicos para contrastar el inframundo con el mundo terrenal.",
+    icon: "Theater"
+  },
   {
     id: "m-piano-cristofori",
     title: "Invención del Piano por Bartolomeo Cristofori",
@@ -1289,6 +2334,30 @@ export const EVENTS_DB = [
     personajeClave: "Bartolomeo Cristofori",
     description: "En Florencia, creó un instrumento de teclado con macillos que podía sonar suave ('piano') o fuerte ('forte') según la fuerza del dedo.",
     datoCurioso: "Su nombre original completo era 'Gravicembalo col piano e forte' (Clavecín con suave y fuerte).",
+    icon: "Music"
+  },
+  {
+    id: "m-bach-tocata-fuga",
+    title: "Composición de la 'Tocata y Fuga en re menor' de Bach",
+    year: 1708,
+    yearFormatted: "1708 d.C.",
+    siglo: "Siglo XVIII d.C.",
+    category: "musica",
+    personajeClave: "Johann Sebastian Bach",
+    description: "La pieza para órgano eclesiástico más célebre, electrizante y dramática de toda la historia musical europea.",
+    datoCurioso: "Su fanfarria inicial penetró tan hondo en la cultura popular que se convirtió en la banda sonora arquetípica del cine de mansiones góticas y terror.",
+    icon: "Speaker"
+  },
+  {
+    id: "m-bach-conciertos-brandeburgo",
+    title: "Composición de los Conciertos de Brandeburgo por Bach",
+    year: 1721,
+    yearFormatted: "1721 d.C.",
+    siglo: "Siglo XVIII d.C.",
+    category: "musica",
+    personajeClave: "Johann Sebastian Bach",
+    description: "Cénit del concierto barroco instrumental con combinaciones orquestales audaces y una polifonía de contrapunto inigualada.",
+    datoCurioso: "Bach dedicó la partitura manuscrita al margrave de Brandeburgo, quien jamás pagó por ella ni contó con orquesta capaz de interpretarla.",
     icon: "Music"
   },
   {
@@ -1316,30 +2385,6 @@ export const EVENTS_DB = [
     icon: "Sparkles"
   },
   {
-    id: "m-mona-lisa",
-    title: "Leonardo da Vinci comienza a pintar la Mona Lisa",
-    year: 1503,
-    yearFormatted: "1503 d.C.",
-    siglo: "Siglo XVI d.C.",
-    category: "musica",
-    personajeClave: "Leonardo da Vinci y Lisa Gherardini",
-    description: "Inició el retrato en Florencia empleando su técnica revolucionaria de 'sfumato' para difuminar contornos y crear su enigmática sonrisa.",
-    datoCurioso: "Leonardo nunca entregó el cuadro a su cliente y lo llevó consigo a Francia hasta el final de sus días.",
-    icon: "Palette"
-  },
-  {
-    id: "m-capilla-sixtina",
-    title: "Miguel Ángel culmina la bóveda de la Capilla Sixtina",
-    year: 1512,
-    yearFormatted: "1512 d.C.",
-    siglo: "Siglo XVI d.C.",
-    category: "musica",
-    personajeClave: "Miguel Ángel Buonarroti",
-    description: "Pintó más de 300 figuras colosales al fresco en el techo del Vaticano, incluyendo la célebre escena de 'La Creación de Adán'.",
-    datoCurioso: "Pintó de pie mirando hacia arriba durante cuatro años en andamios especiales, causándole problemas crónicos en la vista y cuello.",
-    icon: "Brush"
-  },
-  {
     id: "m-flauta-magica-mozart",
     title: "Mozart estrena la ópera 'La Flauta Mágica'",
     year: 1791,
@@ -1349,6 +2394,18 @@ export const EVENTS_DB = [
     personajeClave: "Wolfgang Amadeus Mozart",
     description: "Un cuento de hadas alegórico con el aria imposible de la 'Reina de la Noche', estrenado en Viena apenas dos meses antes de la prematura muerte del compositor.",
     datoCurioso: "Mozart la escribió para un teatro popular de barrio y él mismo dirigió la orquesta la noche del estreno.",
+    icon: "Music"
+  },
+  {
+    id: "m-clarinete-mozart",
+    title: "Concierto para clarinete en La mayor de Mozart",
+    year: 1791,
+    yearFormatted: "1791 d.C.",
+    siglo: "Siglo XVIII d.C.",
+    category: "musica",
+    personajeClave: "Wolfgang Amadeus Mozart y Anton Stadler",
+    description: "Una de las últimas y más luminosas creaciones completadas por Mozart escasas semanas antes de su prematuro deceso a los 35 años.",
+    datoCurioso: "La compuso exclusivamente para el clarinete di bassetto ideado por su entrañable amigo virtuoso Anton Stadler.",
     icon: "Music"
   },
   {
@@ -1364,6 +2421,42 @@ export const EVENTS_DB = [
     icon: "Volume2"
   },
   {
+    id: "m-chopin-nocturnos",
+    title: "Publicación de los célebres Nocturnos de Frédéric Chopin",
+    year: 1832,
+    yearFormatted: "1832 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "musica",
+    personajeClave: "Frédéric Chopin",
+    description: "Elevó la miniatura pianística a la máxima cima de la poesía romántica con su lirismo de ensueño y melancolía polaca.",
+    datoCurioso: "Chopin repudiaba los teatros multitudinarios y prefería interpretar sus nocturnos en pequeños salones bohemios a la tenue luz de las velas.",
+    icon: "Piano"
+  },
+  {
+    id: "m-carmen-bizet",
+    title: "Estreno de la ópera 'Carmen' de Georges Bizet en París",
+    year: 1875,
+    yearFormatted: "1875 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "musica",
+    personajeClave: "Georges Bizet",
+    description: "Obra maestra de la ópera realista ambientada en Sevilla inmortalizada por temas como la 'Habanera' y la 'Canción del toreador'.",
+    datoCurioso: "En su velada de estreno fue censurada por escandalosa y Bizet falleció desconsolado a los tres meses ignorando que sería un triunfo inmortal.",
+    icon: "Sparkles"
+  },
+  {
+    id: "m-tchaikovsky-lago-cisnes",
+    title: "Estreno de 'El Lago de los Cisnes' de Chaikovski",
+    year: 1877,
+    yearFormatted: "1877 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "musica",
+    personajeClave: "Piotr Ilich Chaikovski",
+    description: "La obra sinfónica de ballet clásico más representada y aclamada con la legendaria dualidad de los cisnes Odette y Odile.",
+    datoCurioso: "Los bailarines del Teatro Bolshói de Moscú protestaron en su estreno porque la orquestación les parecía excesivamente ruidosa y compleja de seguir.",
+    icon: "Crown"
+  },
+  {
     id: "m-noche-estrellada",
     title: "Vincent van Gogh pinta 'La Noche Estrellada'",
     year: 1889,
@@ -1374,6 +2467,30 @@ export const EVENTS_DB = [
     description: "Desde su ventana del sanatorio de Saint-Rémy en el sur de Francia, plasmó el cielo nocturno arremolinado con pinceladas enérgicas y cipreses.",
     datoCurioso: "Van Gogh solo vendió un cuadro en toda su vida ('El viñedo rojo'), viviendo en extrema pobreza asistido por su hermano Theo.",
     icon: "Star"
+  },
+  {
+    id: "m-debussy-claro-luna",
+    title: "Composición de 'Claro de Luna' por Claude Debussy",
+    year: 1890,
+    yearFormatted: "1890 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "musica",
+    personajeClave: "Claude Debussy",
+    description: "Pieza clave del impresionismo para piano inspirada en los versos del poeta Paul Verlaine con armonías sutiles y evocadoras.",
+    datoCurioso: "Debussy demoró quince años en dar por concluida la revisión de la Suite Bergamasque antes de autorizar su publicación comercial en 1905.",
+    icon: "Moon"
+  },
+  {
+    id: "m-scott-joplin-ragtime",
+    title: "Publicación de 'Maple Leaf Rag' por Scott Joplin",
+    year: 1899,
+    yearFormatted: "1899 d.C.",
+    siglo: "Siglo XIX d.C.",
+    category: "musica",
+    personajeClave: "Scott Joplin",
+    description: "El primer éxito masivo de partituras afroamericanas con ritmo sincopado que vendió más de un millón de copias.",
+    datoCurioso: "Joplin se ganó el título de 'El Rey del Ragtime' y sus síncopas pianísticas abrieron las puertas de par en par a la gestación del Jazz.",
+    icon: "Music"
   },
   {
     id: "m-consagracion-stravinsky",
@@ -1388,6 +2505,30 @@ export const EVENTS_DB = [
     icon: "Flame"
   },
   {
+    id: "m-carlos-gardel-tango",
+    title: "Carlos Gardel graba 'Mi noche triste' y funda el tango canción",
+    year: 1917,
+    yearFormatted: "1917 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Carlos Gardel",
+    description: "Transformó el tango de ser una música arrabalera bailable en un conmovedor género lírico-poético que conquistó el mundo.",
+    datoCurioso: "La inconfundible voz de Gardel ('El Zorzal Criollo') fue declarada Patrimonio Cultural e Histórico de la Humanidad por la UNESCO.",
+    icon: "Mic"
+  },
+  {
+    id: "m-george-gershwin-rhapsody-in-blue",
+    title: "Estreno de 'Rhapsody in Blue' de George Gershwin",
+    year: 1924,
+    yearFormatted: "1924 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "George Gershwin y Paul Whiteman",
+    description: "Fusión sinfónica cumbre entre el jazz de los clubes neoyorquinos y la alta tradición orquestal clásica europea.",
+    datoCurioso: "El famoso glissando de clarinete que abre la pieza nació de una broma en un ensayo del músico Ross Gorman que a Gershwin le fascinó.",
+    icon: "Music"
+  },
+  {
     id: "m-jazz-armstrong",
     title: "Louis Armstrong y la era dorada del Jazz",
     year: 1927,
@@ -1398,6 +2539,18 @@ export const EVENTS_DB = [
     description: "Con sus grabaciones de los 'Hot Five' en Chicago, transformó el jazz de una improvisación colectiva a un arte solista virtuoso.",
     datoCurioso: "Popularizó el canto 'scat' (vocalizaciones rítmicas con sílabas sin sentido) al caerse la partitura con la letra al suelo durante una grabación.",
     icon: "Mic"
+  },
+  {
+    id: "m-robert-johnson-blues",
+    title: "Grabaciones legendarias de blues de Robert Johnson",
+    year: 1936,
+    yearFormatted: "1936 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Robert Johnson en Texas",
+    description: "29 temas grabados en una modesta habitación de hotel que cimentaron para siempre las bases del blues del Delta y el rock.",
+    datoCurioso: "Su vertiginoso talento dio pie a la célebre leyenda de que pactó con el Diablo en un cruce de caminos en Clarksdale a medianoche.",
+    icon: "Guitar"
   },
   {
     id: "m-guernica-picasso",
@@ -1412,6 +2565,42 @@ export const EVENTS_DB = [
     icon: "Palette"
   },
   {
+    id: "m-billie-holiday-strange-fruit",
+    title: "Billie Holiday graba el himno 'Strange Fruit'",
+    year: 1939,
+    yearFormatted: "1939 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Billie Holiday",
+    description: "Valiente canción protesta contra los linchamientos raciales en el sur de EE.UU. que sacudió la conciencia política de una época.",
+    datoCurioso: "Su discográfica habitual se negó en redondo a editarla por miedo a represalias, teniéndola que grabar en un sello independiente clandestino.",
+    icon: "Mic"
+  },
+  {
+    id: "m-charlie-parker-bebop",
+    title: "Revolución del Bebop por Charlie Parker y Dizzy Gillespie",
+    year: 1945,
+    yearFormatted: "1945 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Charlie Parker ('Bird') y Dizzy Gillespie",
+    description: "Rompieron con las orquestas de baile comerciales acelerando los tempos con solos de armonía avanzada y virtuosismo deslumbrante.",
+    datoCurioso: "Parker practicaba hasta catorce horas diarias en su adolescencia hasta poder tocar cualquier solo en los doce tonos musicales existentes.",
+    icon: "Music"
+  },
+  {
+    id: "m-muddy-waters-electric-blues",
+    title: "Muddy Waters electrifica el Blues de Chicago",
+    year: 1950,
+    yearFormatted: "1950 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Muddy Waters",
+    description: "Conectó su guitarra al amplificador en los clubes de Chicago, transformando el blues rural en el sonido crudo que engendró el rock.",
+    datoCurioso: "Bandas británicas icónicas como The Rolling Stones y Led Zeppelin bautizaron sus grupos o compusieron canciones inspiradas directamente en él.",
+    icon: "Zap"
+  },
+  {
     id: "m-elvis-rock",
     title: "Elvis Presley desata la locura del Rock and Roll",
     year: 1956,
@@ -1422,6 +2611,18 @@ export const EVENTS_DB = [
     description: "Con 'Heartbreak Hotel' y sus movimientos pélvicos en televisión nacional, el cantante de Memphis convirtió el rock en el fenómeno juvenil del siglo.",
     datoCurioso: "En el show de Ed Sullivan, las cámaras de televisión recibieron la orden estricta de enfocar a Elvis solo de la cintura para arriba.",
     icon: "Radio"
+  },
+  {
+    id: "m-bossa-nova-joao-gilberto",
+    title: "Lanzamiento de 'Chega de Saudade' y nace la Bossa Nova",
+    year: 1958,
+    yearFormatted: "1958 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "João Gilberto y Antônio Carlos Jobim",
+    description: "Hibridación intimista del compás de samba brasileño con acordes alterados de jazz y un fraseo vocal susurrado.",
+    datoCurioso: "El peculiar rasgueo sincopado de guitarra acústica ideado por João Gilberto (la famosa 'batida') transformó la música popular de Brasil.",
+    icon: "Guitar"
   },
   {
     id: "m-kind-of-blue",
@@ -1436,6 +2637,18 @@ export const EVENTS_DB = [
     icon: "Disc"
   },
   {
+    id: "m-bob-dylan-blowing",
+    title: "Bob Dylan lanza el himno 'Blowin' in the Wind'",
+    year: 1963,
+    yearFormatted: "1963 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Bob Dylan",
+    description: "Canción insignia del movimiento pacifista y pro derechos civiles estadounidenses que consagró a Dylan como el trovador de una generación.",
+    datoCurioso: "Dylan redactó la melodía y sus tres estrofas poéticas en escasos diez minutos de inspiración en un café del Greenwich Village neoyorquino.",
+    icon: "Mic"
+  },
+  {
     id: "m-beatles-ed-sullivan",
     title: "The Beatles debutan en EE.UU. en The Ed Sullivan Show",
     year: 1964,
@@ -1446,6 +2659,18 @@ export const EVENTS_DB = [
     description: "73 millones de televidentes (el 40% de la población de EE.UU.) sintonizaron la pantalla desatando la 'Beatlemanía' e invasión británica.",
     datoCurioso: "Durante los minutos de la transmisión, la policía de Nueva York reportó que el índice de delincuencia juvenil en la ciudad cayó casi a cero.",
     icon: "Users"
+  },
+  {
+    id: "m-beach-boys-pet-sounds",
+    title: "Lanzamiento del álbum vanguardista 'Pet Sounds'",
+    year: 1966,
+    yearFormatted: "1966 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Brian Wilson y The Beach Boys",
+    description: "Obra cumbre de la producción psicodélica y arreglos orquestales incorporando timbres de campanas de bicicleta y theremines.",
+    datoCurioso: "Paul McCartney confesó reiteradamente que 'God Only Knows' es para él la composición armónica más hermosa jamás grabada.",
+    icon: "Disc"
   },
   {
     id: "m-sgt-pepper",
@@ -1470,6 +2695,18 @@ export const EVENTS_DB = [
     description: "Medio millón de jóvenes se congregaron en una granja de Bethel (Nueva York) bajo el lema de 'Tres días de paz y música'.",
     datoCurioso: "Jimi Hendrix cerró el festival con una eléctrica y distorsionada reinterpretación del himno nacional de EE.UU. imitando bombas cayendo en Vietnam.",
     icon: "Sun"
+  },
+  {
+    id: "m-jimi-hendrix-woodstock",
+    title: "Jimi Hendrix deconstruye el himno de EE.UU. en Woodstock",
+    year: 1969,
+    yearFormatted: "1969 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Jimi Hendrix",
+    description: "Interpretación visceral con distorsión y feedback de 'The Star-Spangled Banner' como protesta antibélica contra la Guerra de Vietnam.",
+    datoCurioso: "Hendrix, que era zurdo, tocaba una guitarra Fender Stratocaster para diestros colocada al revés a la que únicamente le invertía las cuerdas.",
+    icon: "Guitar"
   },
   {
     id: "m-imagine-lennon",
@@ -1508,6 +2745,30 @@ export const EVENTS_DB = [
     icon: "Mic"
   },
   {
+    id: "m-queen-a-night-at-the-opera",
+    title: "Lanzamiento del álbum 'A Night at the Opera' de Queen",
+    year: 1975,
+    yearFormatted: "1975 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Freddie Mercury y Brian May",
+    description: "Álbum cumbre que fusionó rock progresivo, baladas y ópera lírica gracias al fenómeno irrepetible de 'Bohemian Rhapsody'.",
+    datoCurioso: "Freddie Mercury utilizó un piano de cola como cabecera de su cama para poder extender los brazos y componer notas si despertaba inspirado.",
+    icon: "Crown"
+  },
+  {
+    id: "m-reggae-marley-exodus",
+    title: "Lanzamiento de 'Exodus' por Bob Marley & The Wailers",
+    year: 1977,
+    yearFormatted: "1977 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Bob Marley",
+    description: "Grabado en Londres tras sobrevivir a un atentado armado en Jamaica, propagó el mensaje de unidad, paz y reggae por el planeta.",
+    datoCurioso: "La revista estadounidense Time nombró a 'Exodus' el mejor álbum discográfico del siglo XX por delante de los discos de The Beatles.",
+    icon: "Smile"
+  },
+  {
     id: "m-walkman-sony",
     title: "Sony lanza el primer reproductor portátil Walkman",
     year: 1979,
@@ -1518,6 +2779,18 @@ export const EVENTS_DB = [
     description: "El modelo TPS-L2 de color azul y plata permitió por primera vez escuchar música en casete con auriculares estéreo caminando por la calle.",
     datoCurioso: "Originalmente incluía dos tomas de auriculares y un botón 'hotline' para que dos personas pudieran hablar entre sí mientras escuchaban música.",
     icon: "Headphones"
+  },
+  {
+    id: "m-pink-floyd-the-wall",
+    title: "Lanzamiento de la ópera rock 'The Wall' de Pink Floyd",
+    year: 1979,
+    yearFormatted: "1979 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Roger Waters y David Gilmour",
+    description: "Monumental álbum doble conceptual sobre el trauma de posguerra, la educación autoritaria y el aislamiento psicológico contemporáneo.",
+    datoCurioso: "Durante sus recitales en vivo el equipo montaba un colosal muro de bloques de cartón blanco que al final colapsaba de forma estrepitosa.",
+    icon: "Layers"
   },
   {
     id: "m-thriller",
@@ -1532,6 +2805,30 @@ export const EVENTS_DB = [
     icon: "Sparkles"
   },
   {
+    id: "m-michael-jackson-moonwalk",
+    title: "Michael Jackson debuta el 'Moonwalk' en televisión",
+    year: 1983,
+    yearFormatted: "1983 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Michael Jackson",
+    description: "Durante el especial Motown 25 ejecutó 'Billie Jean' deslizándose hacia atrás dando la ilusión óptica de desafiar la gravedad terrestre.",
+    datoCurioso: "La leyenda del baile Fred Astaire lo llamó al día siguiente emocionado para felicitarlo y decirle que se movía como un relámpago.",
+    icon: "Sparkles"
+  },
+  {
+    id: "m-madonna-like-a-virgin",
+    title: "Lanzamiento de 'Like a Virgin' por Madonna",
+    year: 1984,
+    yearFormatted: "1984 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Madonna y Nile Rodgers",
+    description: "Consagró a Madonna como la indiscutible 'Reina del Pop' y transformó la estética del videoclip y la moda juvenil de los años 80.",
+    datoCurioso: "Su audaz actuación en los premios MTV vestida con un velo de novia y cinturón 'Boy Toy' desató un terremoto mediático en la televisión.",
+    icon: "Music"
+  },
+  {
     id: "m-live-aid",
     title: "Concierto benéfico histórico Live Aid",
     year: 1985,
@@ -1542,6 +2839,18 @@ export const EVENTS_DB = [
     description: "Concierto simultáneo en el estadio de Wembley (Londres) y JFK (Filadelfia) transmitido a 1.900 millones de personas para combatir la hambruna en Etiopía.",
     datoCurioso: "La actuación de 21 minutos de Queen y Freddie Mercury en Wembley es votada sistemáticamente como el mejor concierto en vivo de la historia del rock.",
     icon: "Users"
+  },
+  {
+    id: "m-metallica-master-of-puppets",
+    title: "Lanzamiento del álbum 'Master of Puppets' de Metallica",
+    year: 1986,
+    yearFormatted: "1986 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "James Hetfield y Cliff Burton",
+    description: "Cúspide técnica del thrash metal por su contundencia rítmica, cambios de compás virtuosos y letras sobre la manipulación social.",
+    datoCurioso: "Fue la primera grabación de metal en la historia en ser incluida en el Registro Nacional de Grabaciones de la Biblioteca del Congreso de EE.UU.",
+    icon: "Zap"
   },
   {
     id: "m-nirvana-nevermind",
@@ -1556,6 +2865,30 @@ export const EVENTS_DB = [
     icon: "Radio"
   },
   {
+    id: "m-daft-punk-homework",
+    title: "Lanzamiento de 'Homework' y auge del French Touch",
+    year: 1997,
+    yearFormatted: "1997 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Thomas Bangalter y Guy-Manuel de Homem-Christo",
+    description: "Redefinió el house y la música electrónica con sampleos disco y ritmos irresistibles en himnos globales como 'Around the World'.",
+    datoCurioso: "Adoptaron su célebre imagen de androides con cascos cromados para proteger su anonimato y vida cotidiana de la fama mediática.",
+    icon: "Headphones"
+  },
+  {
+    id: "m-buena-vista-social-club",
+    title: "Grabación y consagración de 'Buena Vista Social Club'",
+    year: 1997,
+    yearFormatted: "1997 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "musica",
+    personajeClave: "Compay Segundo, Ibrahim Ferrer y Ry Cooder",
+    description: "Rescató del olvido las glorias sonoras del son y el bolero cubano de los años 40 conquistando teatros como el Carnegie Hall.",
+    datoCurioso: "Varios de sus cantantes veteranos estaban retirados de la música e incluso lustraban zapatos en La Habana antes de grabar el disco.",
+    icon: "Music"
+  },
+  {
     id: "m-napster",
     title: "Nacimiento de Napster y la revolución digital MP3",
     year: 1999,
@@ -1566,6 +2899,18 @@ export const EVENTS_DB = [
     description: "Plataforma de intercambio P2P que permitió a millones de internautas compartir canciones en MP3 gratis, poniendo en jaque a la industria discográfica mundial.",
     datoCurioso: "Llegó a tener 80 millones de usuarios registrados antes de ser cerrada por demandas de derechos de autor encabezadas por la banda Metallica.",
     icon: "Download"
+  },
+  {
+    id: "m-eminem-marshall-mathers",
+    title: "Lanzamiento de 'The Marshall Mathers LP' de Eminem",
+    year: 2000,
+    yearFormatted: "2000 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "musica",
+    personajeClave: "Eminem (Marshall Mathers) y Dr. Dre",
+    description: "El álbum de hip-hop más rápidamente vendido en la historia con una técnica de rimas complejas, sátira feroz y desahogo autobiográfico.",
+    datoCurioso: "Despachó 1,76 millones de copias en sus primeros siete días a la venta pulverizando todos los récords anteriores de solistas en EE.UU.",
+    icon: "Mic"
   },
   {
     id: "m-ipod-apple",
@@ -1580,6 +2925,18 @@ export const EVENTS_DB = [
     icon: "Disc"
   },
   {
+    id: "m-amy-winehouse-back-to-black",
+    title: "Lanzamiento del álbum 'Back to Black' de Amy Winehouse",
+    year: 2006,
+    yearFormatted: "2006 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "musica",
+    personajeClave: "Amy Winehouse y Mark Ronson",
+    description: "Revitalizó el soul y rhythm & blues de los 60 con letras desgarradoras y una voz con matices emotivos dignos de Billie Holiday.",
+    datoCurioso: "Arrasó con cinco premios Grammy en una sola noche mientras cantaba vía satélite desde un club en Londres al no poder viajar por visa.",
+    icon: "Heart"
+  },
+  {
     id: "m-spotify",
     title: "Lanzamiento oficial de Spotify en Europa",
     year: 2008,
@@ -1591,9 +2948,57 @@ export const EVENTS_DB = [
     datoCurioso: "Logró que la reproducción de una canción comenzara en menos de 200 milisegundos para que el usuario no sintiera retardo con un archivo local.",
     icon: "PlayCircle"
   },
+  {
+    id: "m-adele-21",
+    title: "Lanzamiento del colosal álbum '21' de Adele",
+    year: 2011,
+    yearFormatted: "2011 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "musica",
+    personajeClave: "Adele",
+    description: "Fenómeno de ventas mundiales impulsado por baladas como 'Rolling in the Deep' y 'Someone Like You' superando 31 millones de copias.",
+    datoCurioso: "Fue el álbum más vendido del planeta durante dos años consecutivos (2011 y 2012), hazaña que ningún artista lograba desde Michael Jackson.",
+    icon: "Disc"
+  },
+  {
+    id: "m-luis-fonsi-despacito",
+    title: "Impacto y récord mundial del tema 'Despacito'",
+    year: 2017,
+    yearFormatted: "2017 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "musica",
+    personajeClave: "Luis Fonsi y Daddy Yankee",
+    description: "Lideró el ranking global Billboard Hot 100 durante 16 semanas batiendo récords universales de streaming para la música hispana.",
+    datoCurioso: "Fue el primer videoclip en la historia de la plataforma YouTube en rebasar la barrera de las cinco mil millones de reproducciones.",
+    icon: "Flame"
+  },
+  {
+    id: "m-billie-eilish-bad-guy",
+    title: "Lanzamiento de 'When We All Fall Asleep...' de Billie Eilish",
+    year: 2019,
+    yearFormatted: "2019 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "musica",
+    personajeClave: "Billie Eilish y Finneas O'Connell",
+    description: "Redefinió el pop alternativo de la era del streaming componiendo y grabando voces íntimas y bajos densos en el dormitorio familiar.",
+    datoCurioso: "Con solo 18 años se convirtió en la persona más joven en conquistar las cuatro categorías reina de los Grammy en una sola edición.",
+    icon: "Headphones"
+  },
+  {
+    id: "m-bad-bunny-un-verano-sin-ti",
+    title: "Lanzamiento de 'Un Verano Sin Ti' de Bad Bunny",
+    year: 2022,
+    yearFormatted: "2022 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "musica",
+    personajeClave: "Bad Bunny (Benito Martínez)",
+    description: "Primer disco cantado completamente en castellano en recibir la nominación a Álbum del Año en la historia de los Grammy anglosajones.",
+    datoCurioso: "Fue la producción discográfica más reproducida del mundo en Spotify en todo el planeta durante dos años consecutivos.",
+    icon: "Sun"
+  },
 
   // ══════════════════════════════════════════════════════════════════════════
-  // 5. CINE Y CULTURA POP (26 hitos y personajes)
+  // 5. CINE & CULTURA POP (62 hitos y personajes)
   // ══════════════════════════════════════════════════════════════════════════
   {
     id: "e-lumiere",
@@ -1620,6 +3025,18 @@ export const EVENTS_DB = [
     icon: "Moon"
   },
   {
+    id: "e-nosferatu-murnau",
+    title: "Estreno de 'Nosferatu' de F.W. Murnau",
+    year: 1922,
+    yearFormatted: "1922 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "F.W. Murnau y Max Schreck",
+    description: "Obra maestra del expresionismo alemán y piedra angular de los filmes de terror gótico protagonizada por el conde Orlok.",
+    datoCurioso: "Al no obtener los derechos del Drácula de Bram Stoker, cambiaron los nombres; sin embargo la viuda demandó y ordenó quemar todas las copias originales.",
+    icon: "Ghost"
+  },
+  {
     id: "e-cantor-jazz",
     title: "Estreno de 'El Cantor de Jazz' (primer filme sonoro)",
     year: 1927,
@@ -1630,6 +3047,18 @@ export const EVENTS_DB = [
     description: "La película de Warner Bros con sistema Vitaphone sincronizado puso fin a tres décadas de cine mudo con la famosa frase: '¡Esperen un minuto, todavía no han oído nada!'.",
     datoCurioso: "Muchas estrellas del cine mudo vieron arruinadas sus carreras porque sus tonos de voz no encajaban con la imagen romántica de la pantalla.",
     icon: "Mic"
+  },
+  {
+    id: "e-metropolis-lang",
+    title: "Estreno de 'Metrópolis' de Fritz Lang",
+    year: 1927,
+    yearFormatted: "1927 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Fritz Lang",
+    description: "Pilar fundacional de la ciencia ficción distópica con rascacielos monumentales y el robot androide femenino María.",
+    datoCurioso: "Utilizó el pionero 'proceso Schüfftan' mediante espejos en ángulo para filmar a los actores reales dentro de detalladas maquetas en miniatura.",
+    icon: "Eye"
   },
   {
     id: "e-mickey-steamboat",
@@ -1644,6 +3073,42 @@ export const EVENTS_DB = [
     icon: "Smile"
   },
   {
+    id: "e-luces-ciudad-chaplin",
+    title: "Estreno de 'Luces de la Ciudad' de Charles Chaplin",
+    year: 1931,
+    yearFormatted: "1931 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Charles Chaplin",
+    description: "Chaplin apostó por el cine silente en plena era sonora creando uno de los finales más sublimes y emotivos de la historia del cine.",
+    datoCurioso: "Chaplin repitió la escena donde la florista ciega le ofrece una flor más de 340 veces hasta quedar plenamente complacido con el gesto.",
+    icon: "Smile"
+  },
+  {
+    id: "e-king-kong-1933",
+    title: "Estreno de 'King Kong' y animación Stop-Motion",
+    year: 1933,
+    yearFormatted: "1933 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Merian C. Cooper y Willis O'Brien",
+    description: "Hito revolucionario de los efectos ópticos y animación cuadro a cuadro que abarrotó los cines durante la Gran Depresión.",
+    datoCurioso: "El estruendoso rugido de Kong fue diseñado en estudio mezclando grabaciones ralentizadas de leones y tigres reproducidas al revés.",
+    icon: "Camera"
+  },
+  {
+    id: "e-blancanieves-disney",
+    title: "Estreno de 'Blancanieves y los siete enanitos'",
+    year: 1937,
+    yearFormatted: "1937 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Walt Disney",
+    description: "El primer largometraje animado a color y con sonido de la historia que sentó los cimientos del imperio cinematográfico Disney.",
+    datoCurioso: "Los magnates de Hollywood llamaban burlonamente a la producción 'La locura de Disney', pero cosechó la mayor recaudación de la década.",
+    icon: "Sparkles"
+  },
+  {
     id: "e-mago-oz",
     title: "Estreno de 'El Mago de Oz' y su salto al Technicolor",
     year: 1939,
@@ -1654,6 +3119,18 @@ export const EVENTS_DB = [
     description: "El histórico momento cinematográfico en que Dorothy abre la puerta de su casa sepia de Kansas y entra al deslumbrante y colorido mundo de Oz.",
     datoCurioso: "Los zapatos de rubí de Dorothy eran originalmente plateados en el libro de L. Frank Baum, pero se cambiaron a rojo brillante para lucir el Technicolor.",
     icon: "Sparkles"
+  },
+  {
+    id: "e-lo-que-el-viento-se-llevo",
+    title: "Estreno de 'Lo que el viento se llevó'",
+    year: 1939,
+    yearFormatted: "1939 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Vivien Leigh y Clark Gable",
+    description: "Épica histórica en Technicolor ambientada en la Guerra de Secesión que ostenta el récord de taquilla ajustada por inflación.",
+    datoCurioso: "Hattie McDaniel se convirtió en la primera actriz afroamericana en ser galardonada con un Premio Óscar por su entrañable rol de 'Mammy'.",
+    icon: "Film"
   },
   {
     id: "e-ciudadano-kane",
@@ -1680,6 +3157,42 @@ export const EVENTS_DB = [
     icon: "Heart"
   },
   {
+    id: "e-cantando-bajo-lluvia",
+    title: "Estreno de 'Cantando bajo la lluvia'",
+    year: 1952,
+    yearFormatted: "1952 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Gene Kelly y Stanley Donen",
+    description: "El musical más celebrado de la era dorada de Hollywood que retrata con desternillante ironía el salto del cine mudo al sonoro.",
+    datoCurioso: "Gene Kelly filmó su inolvidable baile con paraguas chapoteando en los charcos con casi 40 grados de fiebre en pleno invierno.",
+    icon: "Music"
+  },
+  {
+    id: "e-siete-samurais-kurosawa",
+    title: "Estreno de 'Los Siete Samuráis' de Akira Kurosawa",
+    year: 1954,
+    yearFormatted: "1954 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Akira Kurosawa y Toshiro Mifune",
+    description: "Obra cumbre que transformó el cine de acción mundial con el uso de múltiples cámaras simultáneas y cámara lenta en los combates.",
+    datoCurioso: "Su estructura argumental inspiró directamente clásicos del western como 'Los Siete Magníficos' y la trama de 'Bichos' de Pixar.",
+    icon: "Sword"
+  },
+  {
+    id: "e-godzilla-1954",
+    title: "Estreno de 'Godzilla' (Gojira) en Japón",
+    year: 1954,
+    yearFormatted: "1954 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Ishiro Honda y Eiji Tsuburaya",
+    description: "Nace el coloso radiactivo emblema del género Kaiju como poderosa metáfora visual de los traumas atómicos de la posguerra.",
+    datoCurioso: "El traje de monstruo pesaba más de 100 kilos de caucho macizo; el actor dentro sólo soportaba rodar tres minutos antes de casi asfixiarse.",
+    icon: "Flame"
+  },
+  {
     id: "e-disneyland",
     title: "Inauguración del primer parque Disneyland en California",
     year: 1955,
@@ -1692,6 +3205,18 @@ export const EVENTS_DB = [
     icon: "Castle"
   },
   {
+    id: "e-ben-hur-1959",
+    title: "Estreno de 'Ben-Hur' y su mítica carrera de cuadrigas",
+    year: 1959,
+    yearFormatted: "1959 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "William Wyler y Charlton Heston",
+    description: "Superproducción rodada en formato panorámico MGM Camera 65 que conquistó 11 Premios Óscar, una plusmarca que tardó 38 años en ser igualada.",
+    datoCurioso: "El gigantesco circo romano construido para la carrera de cuadrigas requirió miles de toneladas de arena importada del Mediterráneo.",
+    icon: "Trophy"
+  },
+  {
     id: "e-psicosis-hitchcock",
     title: "Alfred Hitchcock aterroriza con 'Psicosis'",
     year: 1960,
@@ -1702,6 +3227,30 @@ export const EVENTS_DB = [
     description: "Redefinió el cine de suspenso con la escena del motel Bates y los chirridos de violines de Bernard Herrmann.",
     datoCurioso: "Hitchcock impuso la norma pionera en los cines de prohibir tajantemente la entrada a la sala una vez que la película hubiera comenzado.",
     icon: "Eye"
+  },
+  {
+    id: "e-james-bond-dr-no",
+    title: "Estreno de 'El satánico Dr. No' y debut de James Bond",
+    year: 1962,
+    yearFormatted: "1962 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Sean Connery e Ian Fleming",
+    description: "Inauguró la saga cinematográfica de espías más duradera de la historia consagrando al agente británico 007 al servicio de Su Majestad.",
+    datoCurioso: "La emblemática frase 'Bond... James Bond' pronunciada junto a la mesa de baccarat fue improvisada por Sean Connery con flema natural.",
+    icon: "Eye"
+  },
+  {
+    id: "e-2001-odisea-espacio",
+    title: "Estreno de '2001: Odisea del Espacio' de Stanley Kubrick",
+    year: 1968,
+    yearFormatted: "1968 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Stanley Kubrick y Arthur C. Clarke",
+    description: "Revolución científica y visual de la ciencia ficción que anticipó la inteligencia artificial con el ojo rojo de HAL 9000 un año antes del Apolo 11.",
+    datoCurioso: "Kubrick prescindió de cualquier efecto digital por computador: todas las naves flotantes fueron filmadas con maquetas físicas y trucos ópticos analógicos.",
+    icon: "Telescope"
   },
   {
     id: "e-padrino",
@@ -1728,6 +3277,18 @@ export const EVENTS_DB = [
     icon: "Gamepad2"
   },
   {
+    id: "e-el-exorcista-1973",
+    title: "Estreno de 'El Exorcista' de William Friedkin",
+    year: 1973,
+    yearFormatted: "1973 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "William Friedkin y Linda Blair",
+    description: "Fenómeno cultural sociológico y primer filme de terror en la historia en competir por el Óscar a Mejor Película de la Academia.",
+    datoCurioso: "Durante sus primeras semanas de exhibición en salas muchas salas suministraban bolsas especiales para el mareo ante el impacto del público.",
+    icon: "Ghost"
+  },
+  {
     id: "e-tiburon-spielberg",
     title: "Steven Spielberg estrena 'Tiburón' (Jaws)",
     year: 1975,
@@ -1738,6 +3299,18 @@ export const EVENTS_DB = [
     description: "Creó el concepto de 'blockbuster veraniego' con una partitura de dos notas amenazantes y el tiburón mecánico que casi nunca funcionaba.",
     datoCurioso: "El tiburón mecánico fallaba tanto que Spielberg tuvo que sugerir su presencia con planos subjetivos desde el fondo del mar, haciéndola más aterradora.",
     icon: "Waves"
+  },
+  {
+    id: "e-rocky-balboa-1976",
+    title: "Estreno de 'Rocky' y debut de la cámara Steadicam",
+    year: 1976,
+    yearFormatted: "1976 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Sylvester Stallone",
+    description: "Stallone escribió el guion en tres días y rodó con presupuesto modesto la historia del boxeador underdog que ganó el Óscar a Mejor Película.",
+    datoCurioso: "Fue uno de los primeros filmes en emplear el flamante invento de la cámara 'Steadicam' para la mítica carrera subiendo las escaleras de Filadelfia.",
+    icon: "Award"
   },
   {
     id: "e-star-wars",
@@ -1752,6 +3325,18 @@ export const EVENTS_DB = [
     icon: "Sword"
   },
   {
+    id: "e-alien-octavo-pasajero",
+    title: "Estreno de 'Alien: el octavo pasajero' de Ridley Scott",
+    year: 1979,
+    yearFormatted: "1979 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Ridley Scott, Sigourney Weaver y H.R. Giger",
+    description: "Magistral simbiosis de claustrofobia espacial y terror biomecánico con la teniente Ellen Ripley enfrentando al letal xenomorfo.",
+    datoCurioso: "El sobresalto de los actores durante la escena del embrión rompiendo el pecho de Kane fue auténtico: Scott ocultó los detalles del efecto especial para captar terror real.",
+    icon: "Sparkles"
+  },
+  {
     id: "e-pacman",
     title: "Lanzamiento del videojuego Pac-Man en arcades",
     year: 1980,
@@ -1764,6 +3349,18 @@ export const EVENTS_DB = [
     icon: "Ghost"
   },
   {
+    id: "e-resplandor-kubrick",
+    title: "Estreno de 'El Resplandor' (The Shining)",
+    year: 1980,
+    yearFormatted: "1980 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Stanley Kubrick y Jack Nicholson",
+    description: "Clásico psicológico ambientado en el nevado Hotel Overlook con Jack Torrance sucumbiendo a la locura hacha en mano.",
+    datoCurioso: "La escalofriante línea 'Here's Johnny!' al romper la puerta del baño fue una genial improvisación de Jack Nicholson imitando un saludo televisivo.",
+    icon: "DoorClosed"
+  },
+  {
     id: "e-et-extraterrestre",
     title: "Estreno de 'E.T., el extraterrestre'",
     year: 1982,
@@ -1774,6 +3371,42 @@ export const EVENTS_DB = [
     description: "La conmovedora amistad entre el niño Elliott y un pequeño ser de otro planeta que desea 'llamar a casa', famosa por la bicicleta volando frente a la Luna.",
     datoCurioso: "La marca M&M's rechazó aparecer en la película; en su lugar apareció Reese's Pieces y sus ventas se dispararon un 300% en dos semanas.",
     icon: "Sparkles"
+  },
+  {
+    id: "e-blade-runner-1982",
+    title: "Estreno de 'Blade Runner' de Ridley Scott",
+    year: 1982,
+    yearFormatted: "1982 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Ridley Scott y Harrison Ford",
+    description: "Fijó el canon visual del subgénero ciberpunk con sus rascacielos lluviosos, neones reflectantes y androides replicantes.",
+    datoCurioso: "El conmovedor soliloquio final de Roy Batty ('He visto cosas que vosotros no creeríais...') fue retocado la noche antes por el propio actor Rutger Hauer.",
+    icon: "Cpu"
+  },
+  {
+    id: "e-cazafantasmas-1984",
+    title: "Estreno de 'Los Cazafantasmas' (Ghostbusters)",
+    year: 1984,
+    yearFormatted: "1984 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Bill Murray, Dan Aykroyd y Harold Ramis",
+    description: "Comedia sobrenatural con mochilas de protones que se convirtió en arrollador fenómeno de taquilla y cultura pop.",
+    datoCurioso: "El entrañable automóvil 'Ecto-1' era en realidad una ambulancia fúnebre Cadillac Miller-Meteor de 1959 acondicionada por el equipo de rodaje.",
+    icon: "Zap"
+  },
+  {
+    id: "e-terminator-1984",
+    title: "Estreno de 'The Terminator' de James Cameron",
+    year: 1984,
+    yearFormatted: "1984 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "James Cameron y Arnold Schwarzenegger",
+    description: "Thriller futurista sobre viajes en el tiempo y un cyborg asesino que popularizó en el léxico mundial la frase 'I'll be back'.",
+    datoCurioso: "James Cameron concibió el argumento en una pesadilla con fiebre en Roma donde soñaba con un esqueleto de cromo incandescente arrastrándose entre llamas.",
+    icon: "Bot"
   },
   {
     id: "e-super-mario",
@@ -1800,6 +3433,18 @@ export const EVENTS_DB = [
     icon: "Clock"
   },
   {
+    id: "e-totoro-ghibli",
+    title: "Estreno de 'Mi Vecino Totoro' de Hayao Miyazaki",
+    year: 1988,
+    yearFormatted: "1988 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Hayao Miyazaki (Studio Ghibli)",
+    description: "Poema visual animado sobre la infancia, la naturaleza y los espíritus del bosque que consagró a Totoro como la mascota insignia de Ghibli.",
+    datoCurioso: "En los cines nipones se proyectó en sesión doble junto al desgarrador drama bélico 'La tumba de las luciérnagas', un contraste emocional rotundo.",
+    icon: "Heart"
+  },
+  {
     id: "e-gameboy-tetris",
     title: "Lanzamiento de la Game Boy con 'Tetris'",
     year: 1989,
@@ -1810,6 +3455,30 @@ export const EVENTS_DB = [
     description: "La consola portátil gris con pantalla monocromática de cuatro tonos de verde vendió más de 118 millones de unidades en todo el mundo.",
     datoCurioso: "Una Game Boy expuesta a bombas durante la Guerra del Golfo quedó chamuscada pero siguió funcionando perfectamente.",
     icon: "Smartphone"
+  },
+  {
+    id: "e-batman-burton-1989",
+    title: "Estreno de 'Batman' de Tim Burton",
+    year: 1989,
+    yearFormatted: "1989 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Tim Burton, Michael Keaton y Jack Nicholson",
+    description: "Redefinió el cine moderno de superhéroes con una atmósfera gótica y expresionista desatando la fiebre comercial de la 'Batimanía'.",
+    datoCurioso: "Jack Nicholson negoció un porcentaje sobre las ganancias de taquilla y mercadotecnia que le reportó más de 60 millones de dólares.",
+    icon: "Moon"
+  },
+  {
+    id: "e-silencio-inocentes-1991",
+    title: "Estreno de 'El Silencio de los Inocentes'",
+    year: 1991,
+    yearFormatted: "1991 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Anthony Hopkins y Jodie Foster",
+    description: "Thriller psicológico que conquistó los cinco grandes galardones principales de la Academia gracias al magnético caníbal Hannibal Lecter.",
+    datoCurioso: "Anthony Hopkins aparece en la pantalla un total de apenas 16 a 24 minutos a lo largo de todo el metraje para ganar el Óscar a Mejor Actor.",
+    icon: "Lock"
   },
   {
     id: "e-jurassic-park",
@@ -1846,6 +3515,30 @@ export const EVENTS_DB = [
     description: "Apostó por el formato CD-ROM y los gráficos 3D poligonales, rompiendo el dominio de Nintendo y Sega y vendiendo más de 100 millones de unidades.",
     datoCurioso: "Originalmente nació como una colaboración secreta con Nintendo para crear un lector de CD para la Super Nintendo antes de romper relaciones.",
     icon: "Tv"
+  },
+  {
+    id: "e-rey-leon-disney-1994",
+    title: "Estreno de 'El Rey León' de Disney",
+    year: 1994,
+    yearFormatted: "1994 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Roger Allers, Rob Minkoff y Elton John",
+    description: "Cúspide dorada de la animación tradicional inspirada en Hamlet de Shakespeare con canciones compuestas por Elton John y Tim Rice.",
+    datoCurioso: "Los ilustradores de Disney trajeron leones de verdad a los estudios de animación de Burbank para estudiar al milímetro sus andares y anatomía muscular.",
+    icon: "Crown"
+  },
+  {
+    id: "e-forest-gump-1994",
+    title: "Estreno de 'Forrest Gump' y sus efectos digitales",
+    year: 1994,
+    yearFormatted: "1994 d.C.",
+    siglo: "Siglo XX d.C.",
+    category: "cine",
+    personajeClave: "Tom Hanks y Robert Zemeckis",
+    description: "Travesía nostálgica por décadas decisivas de la historia norteamericana popularizando citas perennes como 'La vida es como una caja de bombones'.",
+    datoCurioso: "Insertó digitalmente a Tom Hanks en noticieros históricos interactuando con figuras reales como John F. Kennedy y Richard Nixon.",
+    icon: "Heart"
   },
   {
     id: "e-toy-story",
@@ -1896,6 +3589,66 @@ export const EVENTS_DB = [
     icon: "Crown"
   },
   {
+    id: "e-shrek-dreamworks-2001",
+    title: "Estreno de 'Shrek' por DreamWorks Animation",
+    year: 2001,
+    yearFormatted: "2001 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Andrew Adamson y Vicky Jenson",
+    description: "Parodia irreverente de los cuentos tradicionales que se adjudicó el primer Premio Óscar otorgado en la historia a Mejor Película de Animación.",
+    datoCurioso: "El triunfo arrollador del carismático ogro verde y Asno catapultó a los estudios DreamWorks como el rival hegemónico de Pixar y Disney.",
+    icon: "Smile"
+  },
+  {
+    id: "e-viaje-chihiro-2001",
+    title: "Estreno de 'El viaje de Chihiro' de Hayao Miyazaki",
+    year: 2001,
+    yearFormatted: "2001 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Hayao Miyazaki",
+    description: "Obra maestra que conquistó el Óscar y el Oso de Oro de Berlín sumergiendo a Chihiro en una casa de baños termales para deidades espirituales.",
+    datoCurioso: "Miyazaki no redactó un guion literario previo completo: comenzaba a dibujar los guiones gráficos dejando fluir el desarrollo de la trama.",
+    icon: "Sparkles"
+  },
+  {
+    id: "e-piratas-caribe-2003",
+    title: "Estreno de 'Piratas del Caribe: La maldición del Perla Negra'",
+    year: 2003,
+    yearFormatted: "2003 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Johnny Depp y Gore Verbinski",
+    description: "Resucitó de manera espectacular el cine clásico de corsarios gracias a la estrafalaria genialidad del Capitán Jack Sparrow.",
+    datoCurioso: "Durante el rodaje los directivos temían que los andares ebrios y extravagantes de Johnny Depp provocaran una catástrofe en taquilla.",
+    icon: "Compass"
+  },
+  {
+    id: "e-iron-man-mcu-2008",
+    title: "Estreno de 'Iron Man' y nacimiento del Universo Marvel (MCU)",
+    year: 2008,
+    yearFormatted: "2008 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Robert Downey Jr. y Jon Favreau",
+    description: "Puso la primera piedra del macrocosmos cinematográfico interconectado más lucrativo y taquillero de la historia del cine.",
+    datoCurioso: "La célebre escena tras los créditos con Nick Fury hablando de la 'Iniciativa Vengadores' se rodó en máximo secreto con solo tres técnicos.",
+    icon: "Zap"
+  },
+  {
+    id: "e-el-caballero-noche-ledger",
+    title: "Estreno de 'The Dark Knight' y el Joker de Heath Ledger",
+    year: 2008,
+    yearFormatted: "2008 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Christopher Nolan y Heath Ledger",
+    description: "Elevó el cine de superhéroes al más alto estatus de tragedia criminal con una interpretación magistral y póstuma de Heath Ledger como el Joker.",
+    datoCurioso: "Heath Ledger se aisló en una habitación de hotel durante un mes redactando un diario íntimo para moldear la perturbadora psicología y risa del villano.",
+    icon: "Mask"
+  },
+  {
     id: "e-avatar-3d",
     title: "Estreno de 'Avatar' y el renacimiento del cine 3D",
     year: 2009,
@@ -1906,6 +3659,90 @@ export const EVENTS_DB = [
     description: "Transportó a la audiencia al planeta Pandora con tecnología de captura de movimiento fotorrealista, convirtiéndose en la película más taquillera de la historia.",
     datoCurioso: "Cameron esperó más de 10 años para filmarla porque la tecnología de efectos digitales que tenía en mente en los años 90 aún no existía.",
     icon: "Eye"
+  },
+  {
+    id: "e-origen-inception-2010",
+    title: "Estreno de 'El Origen' (Inception) de Christopher Nolan",
+    year: 2010,
+    yearFormatted: "2010 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Christopher Nolan y Leonardo DiCaprio",
+    description: "Thriller cerebral sobre espionaje corporativo onírico donde los personajes descienden a través de múltiples capas de sueños dentro de sueños.",
+    datoCurioso: "El plano final del tótem giratorio desató uno de los debates más intensos y apasionados sobre la realidad y la ficción en foros de todo el mundo.",
+    icon: "HelpCircle"
+  },
+  {
+    id: "e-gta-v-lanzamiento",
+    title: "Lanzamiento récord del videojuego 'Grand Theft Auto V'",
+    year: 2013,
+    yearFormatted: "2013 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Rockstar Games",
+    description: "El hito de entretenimiento comercial más rentable de la historia, recaudando 800 millones de dólares en sus primeras 24 horas a la venta.",
+    datoCurioso: "Superó en un solo día el estreno de taquilla de cualquier superproducción de Hollywood o lanzamiento discográfico jamás realizado.",
+    icon: "Gamepad2"
+  },
+  {
+    id: "e-interstellar-2014",
+    title: "Estreno de 'Interstellar' y el agujero negro Gargantúa",
+    year: 2014,
+    yearFormatted: "2014 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Christopher Nolan y Kip Thorne",
+    description: "Odisea interestelar a través de un agujero de gusano para salvar a la humanidad guiada por las ecuaciones de relatividad general del Nobel Kip Thorne.",
+    datoCurioso: "La renderización visual del disco de acreción del agujero negro fue tan rigurosa que derivó en la publicación de artículos científicos formales.",
+    icon: "Globe"
+  },
+  {
+    id: "e-parasitos-bong-joon-ho",
+    title: "Triunfo histórico de 'Parásitos' en los Premios Óscar",
+    year: 2019,
+    yearFormatted: "2019 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Bong Joon-ho",
+    description: "Primera película rodada enteramente en un idioma no inglés en conquistar la estatuilla de Mejor Película en los Óscar de la Academia.",
+    datoCurioso: "En su alegre rueda de prensa el director surcoreano bromeó disculpándose con los grabadores porque sus cuatro premios Óscar pesaban demasiado.",
+    icon: "Award"
+  },
+  {
+    id: "e-avengers-endgame-2019",
+    title: "Estreno de 'Avengers: Endgame' y fin de una era",
+    year: 2019,
+    yearFormatted: "2019 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Hermanos Russo y Kevin Feige",
+    description: "Clímax narrativo de 22 películas cruzadas que batió el récord de taquilla mundial debutando con más de 1.200 millones en su primer fin de semana.",
+    datoCurioso: "La emblemática frase de respuesta de Tony Stark ('Y yo... soy Iron Man') fue concebida en la sala de montaje e incorporada en tomas adicionales.",
+    icon: "Shield"
+  },
+  {
+    id: "e-juegos-del-calamar-2021",
+    title: "Fenómeno global de la serie 'El juego del calamar'",
+    year: 2021,
+    yearFormatted: "2021 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Hwang Dong-hyuk",
+    description: "Distopía surcoreana de supervivencia que se convirtió en la serie televisiva más vista en la historia de la plataforma Netflix.",
+    datoCurioso: "El creador pasó diez años con el guion rechazado por productores que lo calificaban de excesivamente bizarro y grotesco.",
+    icon: "Target"
+  },
+  {
+    id: "e-oppenheimer-nolan-2023",
+    title: "Estreno de 'Oppenheimer' y el fenómeno Barbenheimer",
+    year: 2023,
+    yearFormatted: "2023 d.C.",
+    siglo: "Siglo XXI d.C.",
+    category: "cine",
+    personajeClave: "Christopher Nolan y Cillian Murphy",
+    description: "Biopic colosal en gran formato IMAX sobre el padre de la bomba atómica que desató un masivo retorno de espectadores a las salas de cine.",
+    datoCurioso: "Nolan recreó el resplandor de la prueba nuclear Trinity sin utilizar gráficos computarizados (CGI), empleando magnesio y combustible de aviación.",
+    icon: "Flame"
   }
 ];
 
