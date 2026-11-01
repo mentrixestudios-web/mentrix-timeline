@@ -4,20 +4,25 @@ import { motion } from "framer-motion";
 import { 
   Sparkles, 
   ArrowRight,
-  Shuffle
+  Shuffle,
+  BookOpen,
+  CheckCircle,
+  Flame
 } from "lucide-react";
 import MentrixMascot from "@/components/game/MentrixMascot";
-import { getHighScore, getStreakInfo, getLevelInfo, getUnlockedCardIds } from "@/utils/gameStorage";
-import { EVENTS_DB } from "@/data/eventsData";
+import EfemerideModal from "@/components/home/EfemerideModal";
+import { 
+  getHighScore, 
+  getStreakInfo, 
+  getLevelInfo, 
+  getUnlockedCardIds 
+} from "@/utils/gameStorage";
+import { 
+  getEphemerisForDate, 
+  getRandomEphemeris, 
+  isDailyEphemerisReadToday 
+} from "@/utils/dailyEphemeris";
 import { playSfx } from "@/utils/soundSystem";
-
-function getHitoForDate(date = new Date()) {
-  if (!EVENTS_DB || EVENTS_DB.length === 0) return null;
-  const dayIndex = Math.abs(
-    date.getFullYear() * 365 + (date.getMonth() + 1) * 31 + date.getDate()
-  ) % EVENTS_DB.length;
-  return EVENTS_DB[dayIndex];
-}
 
 export default function Home() {
   const navigate = useNavigate();
@@ -25,7 +30,11 @@ export default function Home() {
   const [streakData, setStreakData] = useState(getStreakInfo());
   const [levelData, setLevelData] = useState(getLevelInfo());
   const [unlockedCardsCount, setUnlockedCardsCount] = useState(getUnlockedCardIds().length);
-  const [hitoDia, setHitoDia] = useState(() => getHitoForDate());
+  
+  // Estado de la efeméride diaria
+  const [efemeride, setEfemeride] = useState(() => getEphemerisForDate());
+  const [showEfemerideModal, setShowEfemerideModal] = useState(false);
+  const [leidaHoy, setLeidaHoy] = useState(() => isDailyEphemerisReadToday());
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -33,6 +42,7 @@ export default function Home() {
       setStreakData(getStreakInfo());
       setLevelData(getLevelInfo());
       setUnlockedCardsCount(getUnlockedCardIds().length);
+      setLeidaHoy(isDailyEphemerisReadToday());
     };
     window.addEventListener("mt_storage_updated", handleUpdate);
     return () => window.removeEventListener("mt_storage_updated", handleUpdate);
@@ -51,15 +61,13 @@ export default function Home() {
     return "¡Bienvenido! Que la sabiduría de los siglos te guíe hoy ⏳";
   };
 
-  const hitoAleatorio = () => {
+  const handleShuffleEfemeride = () => {
     playSfx("tap");
-    const randIdx = Math.floor(Math.random() * EVENTS_DB.length);
-    setHitoDia(EVENTS_DB[randIdx]);
+    setEfemeride(getRandomEphemeris());
   };
 
-  const formatearAnio = (anio) => {
-    if (anio === undefined || anio === null) return "";
-    return anio >= 0 ? `${anio} d.C.` : `${Math.abs(anio)} a.C.`;
+  const handlePlayCategory = (categoria) => {
+    navigate(`/config-ronda?categoria=${categoria || "todas"}`);
   };
 
   return (
@@ -69,7 +77,7 @@ export default function Home() {
       <div className="w-full flex flex-col gap-3 lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
 
         {/* ══════════════════════════════════════════════════════════
-            COLUMNA IZQUIERDA EN PC: Menti + Hito Histórico del Día
+            COLUMNA IZQUIERDA EN PC: Menti + Efeméride Histórica del Día
         ══════════════════════════════════════════════════════════ */}
         <div className="w-full flex flex-col items-center gap-3 lg:col-span-5 lg:bg-slate-900/40 lg:border lg:border-white/10 lg:rounded-3xl lg:p-6">
           
@@ -100,8 +108,8 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* ── HITO HISTÓRICO DEL DÍA (Equivalente al Versículo del Día) ── */}
-          {hitoDia && (
+          {/* ── EFEMÉRIDE HISTÓRICA DEL DÍA (Idéntica al Versículo del Día) ── */}
+          {efemeride && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -118,29 +126,36 @@ export default function Home() {
                 style={{ background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)" }}
               />
 
-              {/* Cabecera del Hito */}
+              {/* Cabecera de la Efeméride */}
               <div className="px-3.5 pt-3 flex items-center justify-between">
-                <span className="text-[9px] font-extrabold text-[#A78BFA] tracking-wider flex items-center gap-1">
-                  <span>✦ HITO HISTÓRICO DEL DÍA</span>
-                </span>
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#A78BFA] border border-[#a78bfa]/25 uppercase">
-                  {hitoDia.categoria || "Historia"}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-extrabold text-[#A78BFA] tracking-wider flex items-center gap-1">
+                    <span>✦ EFEMÉRIDE DEL DÍA</span>
+                  </span>
+                  {leidaHoy && (
+                    <span className="text-[8px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-0.5">
+                      ✓ Leída
+                    </span>
+                  )}
+                </div>
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#A78BFA] border border-[#a78bfa]/25 uppercase truncate max-w-[140px]">
+                  {efemeride.fechaTexto}
                 </span>
               </div>
 
-              {/* Contenido del Hito */}
+              {/* Contenido de la Efeméride */}
               <div className="p-3.5 pt-2">
                 <p className="text-xs lg:text-sm italic text-slate-200 leading-relaxed mb-2.5 line-clamp-3 lg:line-clamp-none font-normal">
-                  "{hitoDia.descripcion || hitoDia.pista || hitoDia.nombre}"
+                  "{efemeride.resumenCorto}"
                 </p>
 
                 <div className="flex justify-between items-center pt-1 border-t border-white/5">
                   <div className="min-w-0 pr-2">
                     <p className="text-xs font-black text-[#A78BFA] truncate m-0">
-                      {formatearAnio(hitoDia.anio)} · {hitoDia.nombre}
+                      {efemeride.anioTexto} · {efemeride.titulo}
                     </p>
                     <p className="text-[10px] text-slate-400 m-0">
-                      {hitoDia.siglo || "Era Histórica"}
+                      {efemeride.categoriaLabel}
                     </p>
                   </div>
 
@@ -149,18 +164,19 @@ export default function Home() {
                       type="button"
                       onClick={() => {
                         playSfx("tap");
-                        navigate(`/config-ronda?categoria=${hitoDia.categoria || "todas"}`);
+                        setShowEfemerideModal(true);
                       }}
-                      className="px-2.5 py-1 rounded-lg bg-[#a78bfa]/15 border border-[#a78bfa]/30 text-[#A78BFA] hover:bg-[#a78bfa]/25 text-[10px] font-bold transition-all cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-[#a78bfa]/15 border border-[#a78bfa]/30 text-[#A78BFA] hover:bg-[#a78bfa]/25 text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1"
                     >
-                      📜 Jugar hito →
+                      <BookOpen className="w-3 h-3" />
+                      <span>Leer efeméride →</span>
                     </button>
                     <button
                       type="button"
-                      onClick={hitoAleatorio}
+                      onClick={handleShuffleEfemeride}
                       className="p-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/15 text-xs text-slate-300 transition-all cursor-pointer"
-                      title="Ver otro hito histórico"
-                      aria-label="Otro hito"
+                      title="Ver otra efeméride histórica"
+                      aria-label="Otra efeméride"
                     >
                       <Shuffle className="w-3.5 h-3.5" />
                     </button>
@@ -173,7 +189,6 @@ export default function Home() {
 
         {/* ══════════════════════════════════════════════════════════
             COLUMNA DERECHA EN PC: Los 4 Módulos Principales de Juego
-            (Idéntico a Estudio Bíblico: Camino, Desafío, 1 Año, Interactiva)
         ══════════════════════════════════════════════════════════ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -295,6 +310,15 @@ export default function Home() {
           <span>⏳</span>
         </p>
       </div>
+
+      {/* Modal detallado de la Efeméride Histórica */}
+      <EfemerideModal
+        open={showEfemerideModal}
+        onClose={() => setShowEfemerideModal(false)}
+        efemeride={efemeride}
+        onShuffle={handleShuffleEfemeride}
+        onPlayCategory={handlePlayCategory}
+      />
     </div>
   );
 }
