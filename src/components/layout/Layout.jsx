@@ -5,12 +5,7 @@ import {
   Trophy, 
   User, 
   Shield, 
-  Hourglass, 
-  Calendar, 
-  Swords, 
-  BookOpen, 
-  Download,
-  Sparkles
+  Download
 } from "lucide-react";
 import TopBar from "@/components/common/TopBar";
 import { getCoins, getStreak } from "@/utils/gameStorage";
@@ -61,43 +56,35 @@ export default function Layout({ children }) {
 
   // Módulos de juego (accesos directos en barra lateral de escritorio)
   const quickModules = [
-    { path: "/config-ronda?modo=clasico", label: "Línea de Tiempo", emoji: "⏳", accent: "text-purple-300" },
-    { path: "/duelo-amigos", label: "Duelo Histórico", emoji: "⚔️", accent: "text-blue-300" },
-    { path: "/desafio", label: "Desafío Diario", emoji: "📅", accent: "text-emerald-300" },
-    { path: "/estadisticas", label: "Museo del Tiempo", emoji: "🏛️", accent: "text-amber-300" },
+    { path: "/config-ronda?modo=clasico", label: "Línea de Tiempo", emoji: "⏳" },
+    { path: "/duelo-amigos", label: "Duelo Histórico", emoji: "⚔️" },
+    { path: "/desafio", label: "Desafío Diario", emoji: "📅" },
+    { path: "/estadisticas", label: "Museo del Tiempo", emoji: "🏛️" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#070b16] text-white flex flex-col lg:flex-row selection:bg-amber-500/30">
+    <div className="min-h-screen bg-slate-950 text-white flex flex-col lg:flex-row selection:bg-blue-500/30">
       
       {/* =======================================================
           BARRA LATERAL DE ESCRITORIO (Visible solo en >= 1024px)
-          Estilo y estructura idéntica a Mentrix Estudio Bíblico
+          Exacto mismo fondo slate-950/95 y bordes de Estudio Bíblico
          ======================================================= */}
       {showNav && (
-        <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 lg:left-0 bg-[#080d1e]/95 backdrop-blur-xl border-r border-amber-500/15 z-50 px-4 py-6 select-none shadow-2xl">
+        <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 lg:left-0 bg-slate-950/95 backdrop-blur-xl border-r border-white/10 z-50 px-4 py-6 select-none shadow-2xl">
           
           {/* Logo y Encabezado */}
           <Link
             to="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-gradient-to-r from-blue-950/80 via-[#0e1b3d] to-indigo-950/60 border border-blue-400/20 mb-6 hover:border-amber-400/40 transition-all group"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-gradient-to-r from-blue-950/80 to-indigo-950/60 border border-blue-400/20 mb-6 hover:border-blue-400/40 transition-all group"
           >
-            <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 via-amber-600 to-yellow-700 p-0.5 shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform shrink-0">
-              <div className="w-full h-full bg-[#0a0e1a] rounded-[10px] flex items-center justify-center overflow-hidden">
-                <img 
-                  src="./icons/icon-192.png" 
-                  alt="Mentrix" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+            <img
+              src="./icons/icon-192.png"
+              alt="Mentrix"
+              className="w-11 h-11 rounded-xl border border-white/15 shadow-md object-cover shrink-0"
+            />
             <div className="min-w-0">
-              <div className="text-sm font-extrabold text-white truncate flex items-center gap-1.5">
-                <span>Mentrix Cronos</span>
-              </div>
-              <div className="text-[11px] text-amber-300/80 font-medium truncate">
-                Línea de Tiempo Histórica
-              </div>
+              <div className="text-sm font-extrabold text-white truncate">Mentrix Cronos</div>
+              <div className="text-[11px] text-blue-300/80 font-medium truncate">Línea de Tiempo Histórica</div>
             </div>
           </Link>
 
@@ -176,12 +163,16 @@ export default function Layout({ children }) {
       {/* =======================================================
           ÁREA PRINCIPAL DE CONTENIDO
          ======================================================= */}
-      <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-24 lg:pb-8 lg:pl-72" : "pb-4"} overflow-x-hidden relative`}>
-        {/* Glows de fondo cósmico / dorado */}
-        <div className="fixed top-0 right-0 w-80 md:w-96 h-80 md:h-96 bg-blue-600/10 rounded-full blur-[130px] pointer-events-none overflow-hidden" />
-        <div className="fixed bottom-0 left-0 lg:left-72 w-72 md:w-80 h-72 md:h-80 bg-amber-500/5 rounded-full blur-[110px] pointer-events-none overflow-hidden" />
+      <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-24 lg:pb-8 lg:pl-72" : "pb-4"} overflow-x-hidden relative bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900`}>
+        
+        {/* Glows de fondo atmosférico cósmico idénticos a Estudio Bíblico */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-20 left-10 lg:left-80 w-44 h-44 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl" />
+        </div>
 
-        <div className="flex-1 w-full max-w-md lg:!max-w-5xl mx-auto px-3 sm:px-6 py-3 sm:py-6 relative z-10">
+        <div className="flex-1 w-full max-w-md lg:!max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 relative z-10">
           {showNav && <TopBar />}
           {children}
         </div>
@@ -191,7 +182,7 @@ export default function Layout({ children }) {
           BARRA INFERIOR MÓVIL (Visible en celulares < 1024px)
          ======================================================= */}
       {showNav && (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#090e1f]/95 border-t border-amber-500/20 backdrop-blur-xl px-2 py-1.5 flex items-center justify-around shadow-2xl">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-white/10 backdrop-blur-lg px-2 py-1.5 flex items-center justify-around shadow-2xl">
           {mainNavItems.map((item, idx) => {
             const Icon = item.icon;
             const active = location.pathname === item.path && (idx === 0 ? location.pathname === "/" : true);
@@ -201,11 +192,11 @@ export default function Layout({ children }) {
                 to={item.path}
                 className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl transition-all ${
                   active
-                    ? "text-amber-400 font-extrabold scale-105"
-                    : "text-white/40 hover:text-amber-200"
+                    ? "text-blue-400 font-extrabold scale-105"
+                    : "text-white/40 hover:text-white"
                 }`}
               >
-                <Icon className={`w-5 h-5 ${active ? "text-amber-400" : "text-white/40"}`} />
+                <Icon className={`w-5 h-5 ${active ? "text-blue-400 fill-blue-400/20" : "text-white/40"}`} />
                 <span className="text-[10px]">{item.mobileLabel}</span>
               </Link>
             );
@@ -213,7 +204,7 @@ export default function Layout({ children }) {
         </nav>
       )}
 
-      {/* Botón flotante PWA estilo ARANPRO (Aparece en móviles y pantallas) */}
+      {/* Botón flotante PWA estilo ARANPRO */}
       <PwaFloatingBanner />
 
       {/* Modal tutorial de instalación para iOS y navegadores */}

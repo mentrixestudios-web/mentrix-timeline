@@ -3,19 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Sparkles, 
-  Hourglass, 
-  Swords, 
-  Calendar, 
-  Trophy, 
-  Flame, 
   ArrowRight,
-  BookOpen,
   Shuffle
 } from "lucide-react";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import { getHighScore, getStreakInfo, getLevelInfo, getUnlockedCardIds } from "@/utils/gameStorage";
 import { EVENTS_DB } from "@/data/eventsData";
-import { LEARNING_CARDS } from "@/data/learningCards";
 import { playSfx } from "@/utils/soundSystem";
 
 function getHitoForDate(date = new Date()) {
@@ -115,22 +108,22 @@ export default function Home() {
               transition={{ delay: 0.15 }}
               className="w-full rounded-2xl overflow-hidden relative shadow-lg"
               style={{
-                background: "linear-gradient(135deg, #161c36 0%, #0d1326 100%)",
-                border: "1px solid rgba(245, 158, 11, 0.25)"
+                background: "linear-gradient(135deg, #1a1040 0%, #0f1a35 100%)",
+                border: "1px solid rgba(167, 139, 250, 0.25)"
               }}
             >
               {/* Resplandor decorativo de fondo */}
               <div 
                 className="absolute -top-5 -right-5 w-20 h-20 rounded-full pointer-events-none"
-                style={{ background: "radial-gradient(circle, rgba(245, 158, 11, 0.15), transparent)" }}
+                style={{ background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)" }}
               />
 
               {/* Cabecera del Hito */}
               <div className="px-3.5 pt-3 flex items-center justify-between">
-                <span className="text-[10px] font-extrabold text-amber-300 tracking-wider flex items-center gap-1">
+                <span className="text-[9px] font-extrabold text-[#A78BFA] tracking-wider flex items-center gap-1">
                   <span>✦ HITO HISTÓRICO DEL DÍA</span>
                 </span>
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 uppercase">
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#A78BFA] border border-[#a78bfa]/25 uppercase">
                   {hitoDia.categoria || "Historia"}
                 </span>
               </div>
@@ -143,7 +136,7 @@ export default function Home() {
 
                 <div className="flex justify-between items-center pt-1 border-t border-white/5">
                   <div className="min-w-0 pr-2">
-                    <p className="text-xs font-black text-amber-300 truncate m-0">
+                    <p className="text-xs font-black text-[#A78BFA] truncate m-0">
                       {formatearAnio(hitoDia.anio)} · {hitoDia.nombre}
                     </p>
                     <p className="text-[10px] text-slate-400 m-0">
@@ -158,7 +151,7 @@ export default function Home() {
                         playSfx("tap");
                         navigate(`/config-ronda?categoria=${hitoDia.categoria || "todas"}`);
                       }}
-                      className="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-400/30 text-amber-300 hover:bg-amber-500/25 text-[10px] font-bold transition-all cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-[#a78bfa]/15 border border-[#a78bfa]/30 text-[#A78BFA] hover:bg-[#a78bfa]/25 text-[10px] font-bold transition-all cursor-pointer"
                     >
                       📜 Jugar hito →
                     </button>
@@ -180,6 +173,7 @@ export default function Home() {
 
         {/* ══════════════════════════════════════════════════════════
             COLUMNA DERECHA EN PC: Los 4 Módulos Principales de Juego
+            (Idéntico a Estudio Bíblico: Camino, Desafío, 1 Año, Interactiva)
         ══════════════════════════════════════════════════════════ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -196,17 +190,14 @@ export default function Home() {
             >
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-4">
-                  <span className="text-2xl lg:text-3xl drop-shadow-md filter group-hover:scale-110 transition-transform">
+                  <span className="text-2xl lg:text-3xl drop-shadow-md filter group-hover:scale-110 transition-transform" style={{ color: "#A78BFA" }}>
                     ⏳
                   </span>
                   <div className="text-left">
                     <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
                       <span>Línea de Tiempo Clásica</span>
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-purple-500/25 text-purple-200 border border-purple-400/40 uppercase">
-                        Solo
-                      </span>
                     </div>
-                    <div className="text-xs font-normal text-purple-200/80 mt-0.5 line-clamp-1">
+                    <div className="text-xs font-normal text-purple-200/70 mt-0.5 line-clamp-1">
                       Ubica eventos cronológicamente, construye tu racha y gana monedas
                     </div>
                   </div>
@@ -221,7 +212,7 @@ export default function Home() {
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
               whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-blue-950/80 via-blue-900/70 to-blue-950/80 border border-blue-400/35 hover:border-blue-300/50 hover:shadow-2xl hover:shadow-blue-500/20 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+              className="w-full bg-gradient-to-br from-blue-950/80 via-blue-900/70 to-blue-950/80 border border-amber-600/30 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-600/15 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
             >
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-4">
@@ -231,16 +222,13 @@ export default function Home() {
                   <div className="text-left">
                     <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
                       <span>Duelo Histórico</span>
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-500/25 text-blue-200 border border-blue-400/40 uppercase">
-                        Multijugador
-                      </span>
                     </div>
-                    <div className="text-xs font-normal text-blue-200/80 mt-0.5 line-clamp-1">
+                    <div className="text-xs font-normal text-blue-200/70 mt-0.5 line-clamp-1">
                       Pasa el celular con amigos, reta a la IA de Menti o crea una sala en línea
                     </div>
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-blue-300/70 group-hover:text-blue-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                <ArrowRight className="w-5 h-5 text-amber-300/70 group-hover:text-amber-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
               </div>
             </motion.div>
           </Link>
@@ -250,7 +238,7 @@ export default function Home() {
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
               whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-emerald-950/80 via-emerald-900/70 to-teal-950/80 border border-emerald-400/35 hover:border-emerald-300/50 hover:shadow-2xl hover:shadow-emerald-500/20 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+              className="w-full bg-gradient-to-br from-emerald-950/80 via-emerald-900/70 to-teal-950/80 border border-emerald-500/30 hover:border-emerald-400/50 hover:shadow-2xl hover:shadow-emerald-500/20 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
             >
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-4">
@@ -260,12 +248,9 @@ export default function Home() {
                   <div className="text-left">
                     <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
                       <span>Desafío Diario & Retos</span>
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/40 uppercase">
-                        Rachas
-                      </span>
                     </div>
-                    <div className="text-xs font-normal text-emerald-200/80 mt-0.5 line-clamp-1">
-                      Desafío del día con calendario, Contrarreloj 60s y Supervivencia
+                    <div className="text-xs font-normal text-emerald-200/70 mt-0.5 line-clamp-1">
+                      Desafío del día con calendario de racha, Contrarreloj 60s y Supervivencia
                     </div>
                   </div>
                 </div>
@@ -279,7 +264,7 @@ export default function Home() {
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
               whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-[#1a1202]/90 via-[#261a05]/85 to-[#120e03]/90 border border-amber-500/35 hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/20 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+              className="w-full bg-gradient-to-br from-[#1a1040]/80 via-[#151a3d]/70 to-[#0e172e]/80 border border-blue-400/30 hover:border-blue-300/40 hover:shadow-2xl hover:shadow-blue-500/15 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
             >
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-4">
@@ -289,16 +274,13 @@ export default function Home() {
                   <div className="text-left">
                     <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
                       <span>Museo del Tiempo</span>
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 uppercase">
-                        72 Piezas
-                      </span>
                     </div>
-                    <div className="text-xs font-normal text-amber-200/80 mt-0.5 line-clamp-1">
-                      Colecciona y explora 36 códices y 36 reliquias históricas
+                    <div className="text-xs font-normal text-blue-200/70 mt-0.5 line-clamp-1">
+                      Colecciona y explora los 72 códices y reliquias históricas desbloqueables
                     </div>
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-amber-300/70 group-hover:text-amber-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                <ArrowRight className="w-5 h-5 text-blue-300/70 group-hover:text-blue-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
               </div>
             </motion.div>
           </Link>
@@ -307,7 +289,7 @@ export default function Home() {
 
       {/* ── PIE DE PÁGINA MOTIVACIONAL (Idéntico a Estudio Bíblico) ── */}
       <div className="w-full text-center mt-6 py-2">
-        <p className="text-[11px] sm:text-xs text-white/35 font-medium flex items-center justify-center gap-2 m-0">
+        <p className="text-[11px] sm:text-xs text-slate-400/60 font-medium flex items-center justify-center gap-2 m-0">
           <span>⏳</span>
           <span>Explora · Deduce · Conquista la historia</span>
           <span>⏳</span>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Download, Share, X, CheckCircle2, Sparkles } from "lucide-react";
+import { Download, Share, X, CheckCircle2 } from "lucide-react";
 import { playSfx } from "@/utils/soundSystem";
 
 let deferredPromptGlobal = null;
@@ -73,20 +73,18 @@ export function usePwaInstall() {
 }
 
 /**
- * Banner flotante de instalación PWA estilo "Pill" (como en ARANPRO)
+ * Banner flotante de instalación PWA estilo "Pill" (idéntico a la imagen compartida)
  */
 export function PwaFloatingBanner() {
-  const { isStandalone, isIos, triggerInstall, setShowInstructionsModal } = usePwaInstall();
+  const { isStandalone, triggerInstall } = usePwaInstall();
   const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
-    // Si ya está instalada como app nativa/PWA, no mostrar
     if (isStandalone) {
       setDismissed(true);
       return;
     }
 
-    // Verificar si el usuario la descartó recientemente (3 días)
     const lastDismissed = localStorage.getItem("mt_pwa_banner_dismissed");
     if (lastDismissed) {
       const diffDays = (Date.now() - parseInt(lastDismissed, 10)) / (1000 * 60 * 60 * 24);
@@ -96,7 +94,6 @@ export function PwaFloatingBanner() {
       }
     }
 
-    // Mostrar después de un delay de 1.5s para no bloquear la carga inicial
     const timer = setTimeout(() => {
       setDismissed(false);
     }, 1500);
@@ -114,13 +111,13 @@ export function PwaFloatingBanner() {
   if (dismissed || isStandalone) return null;
 
   return (
-    <div className="fixed bottom-20 md:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:max-w-md z-50 animate-in fade-in slide-in-from-bottom-5 duration-300">
+    <div className="fixed bottom-20 lg:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:max-w-md z-50 animate-in fade-in slide-in-from-bottom-5 duration-300 select-none">
       <div 
         onClick={triggerInstall}
-        className="w-full bg-[#0a1820]/95 hover:bg-[#0c1e28]/95 border border-emerald-500/40 hover:border-emerald-400 shadow-[0_12px_36px_rgba(0,0,0,0.7)] backdrop-blur-xl rounded-2xl sm:rounded-full px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-3 cursor-pointer transition-all group"
+        className="w-full bg-[#08151f]/95 hover:bg-[#0c1e2d]/95 border border-emerald-500/40 hover:border-emerald-400 shadow-[0_12px_36px_rgba(0,0,0,0.7)] backdrop-blur-xl rounded-2xl sm:rounded-full px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-3 cursor-pointer transition-all group"
       >
         {/* Isotipo Menti en círculo */}
-        <div className="relative w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-emerald-950 via-[#0a1820] to-[#040e14] border border-emerald-500/50 p-1 flex items-center justify-center shadow-md shadow-emerald-950/60">
+        <div className="relative w-10 h-10 shrink-0 rounded-full bg-slate-950 border border-emerald-500/40 p-1 flex items-center justify-center shadow-md shadow-emerald-950/60">
           <img 
             src="./mentrix-mascot-transparent.png" 
             alt="Menti" 
@@ -143,7 +140,7 @@ export function PwaFloatingBanner() {
             </span>
           </div>
           <p className="text-[10px] sm:text-[11px] text-slate-300/85 leading-snug line-clamp-2 mt-0.5 mb-0">
-            Accede directo desde tu pantalla de inicio sin descargas pesadas ni tiendas.
+            Accede a tus partidas y duelos directo desde tu pantalla de inicio sin descargas pesadas.
           </p>
         </div>
 
@@ -181,7 +178,7 @@ export function PwaInstallModal({ open, onClose, isIos }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-md rounded-3xl bg-gradient-to-b from-[#0e172e] via-[#090d1c] to-[#0a0e1a] border border-amber-400/40 p-5 sm:p-6 text-white shadow-2xl relative select-none">
+      <div className="w-full max-w-md rounded-3xl bg-slate-900 border border-blue-400/30 p-5 sm:p-6 text-white shadow-2xl relative select-none">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all cursor-pointer"
@@ -192,19 +189,15 @@ export function PwaInstallModal({ open, onClose, isIos }) {
 
         {/* Encabezado con Menti */}
         <div className="flex items-center gap-3.5 mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-600 to-yellow-700 p-0.5 shadow-lg shadow-amber-500/20 shrink-0">
-            <div className="w-full h-full bg-[#0a0e1a] rounded-[14px] flex items-center justify-center overflow-hidden">
-              <img src="./mentrix-mascot-transparent.png" alt="Mentrix" className="w-9 h-9 object-contain" />
-            </div>
-          </div>
+          <img src="./icons/icon-192.png" alt="Mentrix" className="w-12 h-12 rounded-2xl border border-white/15 object-cover shrink-0" />
           <div className="min-w-0">
-            <h3 className="text-base font-black text-amber-100 m-0">Instalar Mentrix: Línea de Tiempo</h3>
-            <p className="text-xs text-amber-300/80 font-medium m-0">Juega sin conexión y directo desde tu pantalla</p>
+            <h3 className="text-base font-bold text-white m-0">Instalar Mentrix Cronos</h3>
+            <p className="text-xs text-blue-300 m-0">Acceso directo sin tiendas de aplicaciones</p>
           </div>
         </div>
 
         {isIos ? (
-          <div className="space-y-3 text-sm text-slate-200 bg-slate-950/80 rounded-2xl p-4 border border-amber-500/20">
+          <div className="space-y-3 text-sm text-slate-200 bg-slate-950/70 rounded-2xl p-4 border border-white/10">
             <p className="m-0 font-bold text-amber-300 text-xs uppercase tracking-wider">
               En iPhone / iPad (Safari):
             </p>
@@ -213,7 +206,7 @@ export function PwaInstallModal({ open, onClose, isIos }) {
                 1
               </span>
               <span>
-                Toca el botón <strong>Compartir</strong> <Share className="inline w-4 h-4 text-blue-400 mx-0.5" /> en la barra inferior de Safari.
+                Toca el botón <strong>Compartir</strong> <Share className="inline w-4 h-4 text-blue-400 mx-0.5" /> en la barra de Safari.
               </span>
             </div>
             <div className="flex items-start gap-2.5">
@@ -221,7 +214,7 @@ export function PwaInstallModal({ open, onClose, isIos }) {
                 2
               </span>
               <span>
-                Baja un poco en el menú y selecciona <strong>“Agregar a pantalla de inicio”</strong> ➕.
+                Selecciona <strong>“Agregar a pantalla de inicio”</strong> ➕.
               </span>
             </div>
             <div className="flex items-start gap-2.5">
@@ -234,7 +227,7 @@ export function PwaInstallModal({ open, onClose, isIos }) {
             </div>
           </div>
         ) : (
-          <div className="space-y-3 text-sm text-slate-200 bg-slate-950/80 rounded-2xl p-4 border border-amber-500/20">
+          <div className="space-y-3 text-sm text-slate-200 bg-slate-950/70 rounded-2xl p-4 border border-white/10">
             <p className="m-0 font-bold text-cyan-300 text-xs uppercase tracking-wider">
               Instalación rápida en tu dispositivo:
             </p>
@@ -257,9 +250,9 @@ export function PwaInstallModal({ open, onClose, isIos }) {
 
         <button
           onClick={onClose}
-          className="mt-5 w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 font-black text-sm text-[#0a0e1a] shadow-lg shadow-amber-500/25 transition-all cursor-pointer"
+          className="mt-5 w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 font-semibold text-sm text-white transition-all cursor-pointer"
         >
-          ¡Entendido, vamos a jugar!
+          ¡Entendido!
         </button>
       </div>
     </div>
