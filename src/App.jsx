@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import Layout from "@/components/layout/Layout";
 import Home from "@/pages/Home";
 import Juego from "@/pages/Juego";
+import JuegoOnline from "@/pages/JuegoOnline";
 import Categorias from "@/pages/Categorias";
 import DesafioDiario from "@/pages/DesafioDiario";
 import Estadisticas from "@/pages/Estadisticas";
@@ -26,6 +27,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/juego" element={<Juego />} />
+          <Route path="/juego-online" element={<JuegoOnline />} />
           <Route path="/config-ronda" element={<ConfigRonda />} />
           <Route path="/ConfigRonda" element={<ConfigRonda />} />
           <Route path="/categorias" element={<ConfigRonda />} />

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, 
@@ -11,29 +11,61 @@ import {
   Clock, 
   Loader2,
   Sparkles,
-  Wifi
+  Wifi,
+  Users
 } from "lucide-react";
 import { toast } from "sonner";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import { playSfx } from "@/utils/soundSystem";
-
-function generarCodigoSala() {
-  const palabras = ["CRONO", "TIEMPO", "ROCA", "ERA", "SIGLO", "MENTI"];
-  const randP = palabras[Math.floor(Math.random() * palabras.length)];
-  const randN = Math.floor(10 + Math.random() * 90);
-  return `${randP}${randN}`;
-}
+import { 
+  crearSalaOnline, 
+  unirseASalaOnline, 
+  suscribirASala, 
+  getOnlinePlayerProfile 
+} from "@/services/onlineMatchService";
 
 export default function ModosEnLinea() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const salaUrl = searchParams.get("sala") || "";
 
-  const [codigoSala, setCodigoSala] = useState(generarCodigoSala());
-  const [codigoIngresado, setCodigoIngresado] = useState("");
+  const [player] = useState(() => getOnlinePlayerProfile());
+  const [codigoSala, setCodigoSala] = useState("");
+  const [codigoIngresado, setCodigoIngresado] = useState(salaUrl.toUpperCase());
   const [copiado, setCopiado] = useState(false);
   const [enSalaEspera, setEnSalaEspera] = useState(false);
-  const [buscandoRival, setBuscandoRival] = useState(false);
+  const [creandoSala, setCreandoSala] = useState(false);
+  const [uniendose, setUniendose] = useState(false);
+  const [rivalConectado, setRivalConectado] = useState(null);
 
-  const enlaceSala = `https://mentrix.cl/duelo?sala=${codigoSala}`;
+  const enlaceSala = typeof window !== "undefined" 
+    ? `${window.location.origin}/modos-online?sala=${codigoSala}`
+    : `https://mentrixestudios.com/modos-online?sala=${codigoSala}`;
+
+  // Si el usuario entra por enlace compartido, pre-cargar el código
+  useEffect(() => {
+    if (salaUrl) {
+      setCodigoIngresado(salaUrl.toUpperCase());
+    }
+  }, [salaUrl]);
+
+  // Suscribirse a la sala mientras el anfitrión está en espera
+  useEffect(() => {
+    if (!enSalaEspera || !codigoSala) return;
+
+    const desuscribir = suscribirASala(codigoSala, (salaActualizada) => {
+      if (salaActualizada.estado === "jugando") {
+        setRivalConectado(salaActualizada.guest_nombre || "Rival");
+        toast.success(`⚔️ ¡${salaActualizada.guest_nombre || "Tu rival"} se ha unido! Iniciando batalla...`);
+        playSfx("victory");
+        setTimeout(() => {
+          navigate(`/juego-online?sala=${codigoSala}`);
+        }, 1200);
+      }
+    });
+
+    return () => desuscribir();
+  }, [enSalaEspera, codigoSala, navigate]);
 
   const copiarEnlace = () => {
     navigator.clipboard.writeText(enlaceSala);
@@ -45,28 +77,61 @@ export default function ModosEnLinea() {
 
   const compartirWhatsApp = () => {
     playSfx("tap");
-    const texto = `¡Te desafío a un Duelo de Línea de Tiempo en Mentrix! ⏳\nEntra a mi sala aquí: ${enlaceSala}`;
+    const texto = `¡Te desafío a un Duelo de Línea de Tiempo en Mentrix! ⏳\nEntra a mi sala de juego aquí: ${enlaceSala}\nO ingresa el código: ${codigoSala}`;
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
     window.open(url, "_blank");
   };
 
-  const handleCrearSala = () => {
-    playSfx("victory");
-    setEnSalaEspera(true);
+  const handleCrearSala = async () => {
+    playSfx("tap");
+    setCreandoSala(true);
+
+    try {
+      const res = await crearSalaOnline({
+        categoria: "todas",
+        hostNombre: player.name,
+      });
+
+      setCodigoSala(res.codigoSala);
+      setEnSalaEspera(true);
+      playSfx("victory");
+
+      if (res.isLocalDemo) {
+        toast.info("Sala creada en modo local entre pestañas (Supabase aún por conectar).");
+      } else {
+        toast.success(`Sala ${res.codigoSala} abierta en tiempo real.`);
+      }
+    } catch (err) {
+      toast.error(err.message || "Error al crear la sala.");
+    } finally {
+      setCreandoSala(false);
+    }
   };
 
-  const handleUnirseSala = () => {
-    if (!codigoIngresado.trim()) {
+  const handleUnirseSala = async () => {
+    const code = codigoIngresado.trim().toUpperCase();
+    if (!code) {
       toast.error("Ingresa un código de sala válido");
       return;
     }
+
     playSfx("tap");
-    setBuscandoRival(true);
-    setTimeout(() => {
-      setBuscandoRival(false);
-      setEnSalaEspera(true);
-      toast.success(`Conectado a la sala: ${codigoIngresado.toUpperCase()}`);
-    }, 1500);
+    setUniendose(true);
+
+    try {
+      await unirseASalaOnline({
+        codigoSala: code,
+        guestNombre: player.name,
+      });
+
+      playSfx("victory");
+      toast.success(`¡Conectado a la sala ${code}!`);
+      navigate(`/juego-online?sala=${code}`);
+    } catch (err) {
+      toast.error(err.message || "No se pudo conectar a la sala.");
+    } finally {
+      setUniendose(false);
+    }
   };
 
   return (
@@ -83,7 +148,7 @@ export default function ModosEnLinea() {
           className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center gap-1.5 text-xs font-black tracking-wide border border-white/10 cursor-pointer shadow-sm"
         >
           <ArrowLeft className="w-4 h-4 text-amber-400" />
-          <span>{enSalaEspera ? "Salir de Sala" : "Volver"}</span>
+          <span>{enSalaEspera ? "Cancelar Sala" : "Volver"}</span>
         </motion.button>
 
         <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border bg-emerald-500/20 border-emerald-400/40 text-emerald-300 flex items-center gap-1">
@@ -96,12 +161,17 @@ export default function ModosEnLinea() {
       <div className="w-full">
         <MentrixMascot
           layout="default"
-          customMessage="¡Bienvenido al Portal Multijugador! Crea tu sala privada con código único y envíalo por WhatsApp, o ingresa el código de un amigo para batallar a distancia."
+          customMessage={
+            enSalaEspera
+              ? "Sala abierta. Comparte el código o el link de WhatsApp con tu amigo. ¡En cuanto entre comenzará la batalla automáticamente!"
+              : "¡Bienvenido al Portal Multijugador! Crea tu sala privada con código único o ingresa la clave de un amigo para batallar a distancia."
+          }
         />
       </div>
 
       {!enSalaEspera ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+          
           {/* ── TARJETA 1: CREAR SALA COMO ANFITRIÓN ── */}
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0e2932] via-[#0b182c] to-[#080f1e] border-2 border-amber-400/60 p-4 sm:p-5 space-y-4 shadow-xl flex flex-col justify-between">
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400" />
@@ -123,150 +193,178 @@ export default function ModosEnLinea() {
                 </div>
               </div>
 
-              {/* Código generado estilo bóveda */}
-              <div className="p-3.5 bg-black/45 rounded-2xl border border-amber-400/30 text-center space-y-1 shadow-inner">
-                <span className="text-[9px] font-black uppercase tracking-widest text-amber-300/70 block">
-                  CLAVE DE TU SALA PRIVADA
-                </span>
-                <span className="text-2xl sm:text-3xl font-black text-amber-300 tracking-widest font-mono block">
-                  {codigoSala}
-                </span>
-              </div>
-
-              {/* Botones de compartir */}
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={compartirWhatsApp}
-                  className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>WhatsApp</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={copiarEnlace}
-                  className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-black text-xs uppercase flex items-center justify-center gap-1.5 border border-white/15 transition-all active:scale-95 cursor-pointer"
-                >
-                  {copiado ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiado ? "¡Copiado!" : "Copiar Link"}</span>
-                </button>
-              </div>
-            </div>
-
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              onClick={handleCrearSala}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Swords className="w-4 h-4 fill-slate-950" />
-              <span>Abrir Sala de Espera</span>
-            </motion.button>
-          </div>
-
-          {/* ── TARJETA 2: UNIRSE CON CÓDIGO DE AMIGO ── */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#102048] via-[#0c1633] to-[#080d1f] border-2 border-blue-400/50 p-4 sm:p-5 space-y-4 shadow-xl flex flex-col justify-between">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-500" />
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-blue-500/20 border border-blue-400/50 flex items-center justify-center text-xl shadow-md">
-                  🚀
-                </div>
-                <div>
-                  <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/25 text-blue-300 border border-blue-400/40">
-                    OPCIÓN 2 · INVITADO
-                  </span>
-                  <h3 className="text-sm sm:text-base font-black text-white mt-0.5">
-                    Unirse con Código
-                  </h3>
-                </div>
-              </div>
-
-              <p className="text-xs text-blue-100/70 font-medium leading-relaxed">
-                ¿Tu amigo ya creó una partida? Escribe aquí la clave de 6 a 7 caracteres para entrar directo al duelo:
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Genera una sala privada protegida con clave. Te daremos un código y un enlace de WhatsApp para invitar a tu rival.
               </p>
 
-              <input
-                type="text"
-                placeholder="EJ: CRONO42"
-                value={codigoIngresado}
-                onChange={(e) => setCodigoIngresado(e.target.value.toUpperCase())}
-                maxLength={8}
-                className="w-full px-4 py-3.5 rounded-2xl bg-black/45 border border-blue-400/35 text-base font-black text-white uppercase placeholder:text-white/25 focus:outline-none focus:border-amber-400 text-center tracking-widest shadow-inner"
-              />
+              <div className="p-3 bg-black/40 rounded-2xl border border-white/10 text-xs text-slate-300 space-y-1">
+                <div className="flex items-center gap-2 text-emerald-300 font-bold">
+                  <span>✓</span>
+                  <span>558 Eventos históricos balanceados</span>
+                </div>
+                <div className="flex items-center gap-2 text-emerald-300 font-bold">
+                  <span>✓</span>
+                  <span>Sincronización en tiempo real</span>
+                </div>
+              </div>
             </div>
 
             <motion.button
-              type="button"
-              whileTap={{ scale: 0.96 }}
-              onClick={handleUnirseSala}
-              disabled={buscandoRival}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-blue-500/25 cursor-pointer flex items-center justify-center gap-2 transition-all"
+              whileTap={{ scale: 0.98 }}
+              whileHover={{ y: -2 }}
+              disabled={creandoSala}
+              onClick={handleCrearSala}
+              className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 hover:from-amber-400 text-slate-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
             >
-              {buscandoRival ? (
+              {creandoSala ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Sincronizando Sala...</span>
+                  <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                  <span>Abriendo portal...</span>
                 </>
               ) : (
                 <>
-                  <Globe className="w-4 h-4" />
-                  <span>Conectar a la Sala</span>
+                  <Sparkles className="w-4 h-4 text-slate-950" />
+                  <span>Crear y Abrir Sala</span>
                 </>
               )}
             </motion.button>
           </div>
+
+          {/* ── TARJETA 2: UNIRSE A SALA EXISTENTE ── */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1c183a] via-[#10132b] to-[#080d1e] border-2 border-purple-400/50 p-4 sm:p-5 space-y-4 shadow-xl flex flex-col justify-between">
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-400 via-fuchsia-400 to-pink-400" />
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-2xl bg-purple-500/20 border border-purple-400/50 flex items-center justify-center text-xl shadow-md">
+                    ⚔️
+                  </div>
+                  <div>
+                    <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-400 text-slate-950">
+                      OPCIÓN 2 · INVITADO
+                    </span>
+                    <h3 className="text-sm sm:text-base font-black text-white mt-0.5">
+                      Unirse con Código
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed">
+                ¿Tu amigo ya creó una sala y te dio la clave? Escríbela aquí abajo para ingresar al duelo.
+              </p>
+
+              {/* Input estilizado de código de sala */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black uppercase tracking-wider text-purple-300 block">
+                  Ingresa el Código de Sala:
+                </label>
+                <input
+                  type="text"
+                  maxLength={10}
+                  value={codigoIngresado}
+                  onChange={(e) => setCodigoIngresado(e.target.value.toUpperCase())}
+                  placeholder="Ej: CRONO42"
+                  className="w-full py-3 px-4 rounded-2xl bg-black/50 border-2 border-purple-400/40 focus:border-purple-300 text-center text-xl font-black text-purple-200 tracking-widest placeholder:text-purple-300/30 uppercase outline-none shadow-inner"
+                />
+              </div>
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              whileHover={{ y: -2 }}
+              disabled={uniendose || !codigoIngresado.trim()}
+              onClick={handleUnirseSala}
+              className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 text-white font-black text-sm tracking-wide shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-40"
+            >
+              {uniendose ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Conectando...</span>
+                </>
+              ) : (
+                <>
+                  <Users className="w-4 h-4 text-purple-200" />
+                  <span>Unirme a la Batalla</span>
+                </>
+              )}
+            </motion.button>
+          </div>
+
         </div>
       ) : (
-        /* ── SALA DE ESPERA MULTIJUGADOR PREMIUM ── */
+        /* ── SALA DE ESPERA ACTIVA (ANFITRIÓN) ── */
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#102048] to-[#0a1228] border-2 border-blue-400 p-5 sm:p-6 text-center space-y-4 shadow-2xl"
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0e2932] via-[#0b182c] to-[#080f1e] border-2 border-emerald-400/70 p-6 space-y-6 shadow-2xl text-center"
         >
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500" />
-
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 text-xs font-black">
-            <Clock className="w-3.5 h-3.5 animate-spin" />
-            <span>SALA ACTIVA: {codigoSala}</span>
+          <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400/60 flex items-center justify-center text-3xl mx-auto animate-pulse">
+            ⏳
           </div>
 
-          <h2 className="text-lg sm:text-xl font-black text-white">
-            Esperando Conexión del Rival...
-          </h2>
-
-          <div className="grid grid-cols-2 gap-3 py-2 max-w-md mx-auto">
-            <div className="p-3.5 bg-emerald-950/30 rounded-2xl border border-emerald-400/50 space-y-1 shadow-md">
-              <div className="w-11 h-11 rounded-2xl bg-emerald-500/25 border border-emerald-400 mx-auto flex items-center justify-center text-xl">
-                👑
-              </div>
-              <p className="text-xs font-black text-white pt-1">Tú (Anfitrión)</p>
-              <span className="text-[9px] text-emerald-300 font-black uppercase bg-emerald-500/20 px-2 py-0.5 rounded-full inline-block">
-                ✓ Conectado
-              </span>
-            </div>
-
-            <div className="p-3.5 bg-black/40 rounded-2xl border border-dashed border-amber-400/40 space-y-1 flex flex-col justify-center items-center">
-              <Loader2 className="w-7 h-7 text-amber-400 animate-spin" />
-              <p className="text-xs text-white/70 font-black pt-1">Rival 1v1</p>
-              <span className="text-[9px] text-amber-300/90 font-bold">Esperando ingreso...</span>
-            </div>
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-400 text-slate-950 inline-block mb-2">
+              SALA ACTIVA Y ESPERANDO RIVAL
+            </span>
+            <h2 className="text-xl sm:text-2xl font-black text-white">
+              Esperando a que tu rival se conecte...
+            </h2>
+            <p className="text-xs text-slate-300 mt-1 max-w-sm mx-auto">
+              Envía el código o el link directo a tu amigo por WhatsApp. En cuanto entre a la sala, la partida empezará automáticamente.
+            </p>
           </div>
 
-          <div className="p-3 bg-black/35 rounded-2xl border border-white/10 text-xs text-blue-200/80 max-w-md mx-auto">
-            💡 Comparte el enlace por WhatsApp para que tu rival entre directo a la sala <strong className="text-amber-300">{codigoSala}</strong>.
+          {/* Código destacado */}
+          <div className="p-4 bg-black/50 rounded-2xl border border-amber-400/50 max-w-xs mx-auto shadow-inner">
+            <span className="text-[10px] font-black uppercase tracking-wider text-amber-300/70 block mb-1">
+              CÓDIGO DE LA SALA
+            </span>
+            <span className="text-3xl sm:text-4xl font-black text-amber-300 tracking-widest font-mono">
+              {codigoSala}
+            </span>
           </div>
 
-          <button
-            type="button"
-            onClick={compartirWhatsApp}
-            className="w-full max-w-md mx-auto py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg cursor-pointer transition-all"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>Enviar Invitación por WhatsApp</span>
-          </button>
+          {/* Botones de acción rápida */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+            <button
+              type="button"
+              onClick={compartirWhatsApp}
+              className="flex-1 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Invitar por WhatsApp</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={copiarEnlace}
+              className="flex-1 py-3 px-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
+            >
+              {copiado ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span>¡Enlace Copiado!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4 text-amber-400" />
+                  <span>Copiar Enlace</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={() => setEnSalaEspera(false)}
+              className="text-xs text-slate-400 hover:text-white underline cursor-pointer"
+            >
+              Cerrar y cancelar sala
+            </button>
+          </div>
         </motion.div>
       )}
     </div>

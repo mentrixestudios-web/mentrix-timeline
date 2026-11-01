@@ -43,7 +43,7 @@ export default function Layout({ children }) {
     };
   }, []);
 
-  const isGamePage = pathname === "/juego";
+  const isGamePage = pathname === "/juego" || pathname === "/juego-online";
   const showNav = !isGamePage;
 
   // Navegación principal (idéntica a Estudio Bíblico)
