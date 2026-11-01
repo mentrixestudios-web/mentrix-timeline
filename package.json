@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seed": "node scripts/seed_supabase.mjs",
+    "export-seed": "node scripts/export_sql_seed.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
