@@ -222,7 +222,38 @@ export default function Home() {
             </motion.div>
           </Link>
 
-          {/* MÓDULO 2: Duelo Histórico (Amigos, IA & Online) */}
+          {/* MÓDULO 2: Duelo Online 1v1 (Multijugador en Tiempo Real) */}
+          <Link to="/modos-online" onClick={() => playSfx("tap")}>
+            <motion.div
+              whileTap={{ scale: 0.99, y: 1 }}
+              whileHover={{ y: -2 }}
+              className="w-full bg-gradient-to-br from-[#0c2e3d]/90 via-[#0a2336]/80 to-[#071929]/90 border border-cyan-400/40 hover:border-cyan-300/60 hover:shadow-2xl hover:shadow-cyan-500/25 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+            >
+              <div className="absolute top-2.5 right-4 z-10 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-[10px] font-black text-cyan-300 tracking-wider uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                <span>ONLINE 1v1</span>
+              </div>
+
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-4">
+                  <span className="text-2xl lg:text-3xl drop-shadow-md filter group-hover:scale-110 transition-transform">
+                    🌐
+                  </span>
+                  <div className="text-left">
+                    <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
+                      <span>Duelo Online 1v1</span>
+                    </div>
+                    <div className="text-xs font-normal text-cyan-200/80 mt-0.5 line-clamp-1">
+                      Crea tu sala, invita a un amigo por WhatsApp o únete con código en tiempo real
+                    </div>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 text-cyan-300/70 group-hover:text-cyan-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+              </div>
+            </motion.div>
+          </Link>
+
+          {/* MÓDULO 3: Duelo Local (Pasa el Celular & IA) */}
           <Link to="/duelo-amigos" onClick={() => playSfx("tap")}>
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
@@ -236,10 +267,10 @@ export default function Home() {
                   </span>
                   <div className="text-left">
                     <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
-                      <span>Duelo Histórico</span>
+                      <span>Duelo Local & Menti IA</span>
                     </div>
                     <div className="text-xs font-normal text-blue-200/70 mt-0.5 line-clamp-1">
-                      Pasa el celular con amigos, reta a la IA de Menti o crea una sala en línea
+                      Pasa el celular con amigos en el mismo dispositivo o desafía a la IA de Menti
                     </div>
                   </div>
                 </div>

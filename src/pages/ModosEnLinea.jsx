@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
@@ -12,11 +12,13 @@ import {
   Loader2,
   Sparkles,
   Wifi,
-  Users
+  Users,
+  RotateCcw
 } from "lucide-react";
 import { toast } from "sonner";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import { playSfx } from "@/utils/soundSystem";
+import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { 
   crearSalaOnline, 
   unirseASalaOnline, 
@@ -37,10 +39,43 @@ export default function ModosEnLinea() {
   const [creandoSala, setCreandoSala] = useState(false);
   const [uniendose, setUniendose] = useState(false);
   const [rivalConectado, setRivalConectado] = useState(null);
+  const [salasActivas, setSalasActivas] = useState([]);
+  const [cargandoSalas, setCargandoSalas] = useState(false);
 
   const enlaceSala = typeof window !== "undefined" 
     ? `${window.location.origin}/modos-online?sala=${codigoSala}`
     : `https://mentrixestudios.com/modos-online?sala=${codigoSala}`;
+
+  // Cargar salas públicas en espera desde Supabase
+  const cargarSalasActivas = useCallback(async () => {
+    if (!isSupabaseConfigured() || !supabase) return;
+    setCargandoSalas(true);
+    try {
+      const haceDosHoras = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+      const { data, error } = await supabase
+        .from("timeline_rooms")
+        .select("id, codigo_sala, host_nombre, categoria, created_at")
+        .eq("estado", "esperando")
+        .is("guest_id", null)
+        .gte("created_at", haceDosHoras)
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      if (!error && data) {
+        setSalasActivas(data);
+      }
+    } catch (e) {
+      console.warn("Error consultando salas activas:", e);
+    } finally {
+      setCargandoSalas(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cargarSalasActivas();
+    const interval = setInterval(cargarSalasActivas, 8000);
+    return () => clearInterval(interval);
+  }, [cargarSalasActivas]);
 
   // Si el usuario entra por enlace compartido, pre-cargar el código
   useEffect(() => {
@@ -290,6 +325,89 @@ export default function ModosEnLinea() {
                 </>
               )}
             </motion.button>
+          </div>
+
+          {/* ── SECCIÓN 3: SALAS ACTIVAS EN ESPERA DE RIVAL ── */}
+          <div className="col-span-1 sm:col-span-2 rounded-3xl bg-slate-900/60 border border-cyan-400/25 p-4 sm:p-5 space-y-3.5 shadow-xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm">
+                  📡
+                </div>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-extrabold text-white flex items-center gap-2">
+                    <span>Salas Abiertas Esperando Rival</span>
+                    {salasActivas.length > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 text-[10px] font-black border border-cyan-400/40 animate-pulse">
+                        {salasActivas.length} DISPONIBLE{salasActivas.length > 1 ? "S" : ""}
+                      </span>
+                    )}
+                  </h4>
+                  <p className="text-[11px] text-slate-400 m-0">
+                    Únete directamente con un clic a jugadores en línea
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={cargarSalasActivas}
+                className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[11px] text-slate-300 flex items-center gap-1.5 transition-all cursor-pointer font-bold"
+              >
+                <RotateCcw className={`w-3.5 h-3.5 text-cyan-400 ${cargandoSalas ? "animate-spin" : ""}`} />
+                <span>Actualizar</span>
+              </button>
+            </div>
+
+            {salasActivas.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+                {salasActivas.map((s) => (
+                  <div
+                    key={s.id}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-slate-950/80 to-blue-950/50 border border-white/10 hover:border-cyan-400/50 transition-all group"
+                  >
+                    <div className="min-w-0 pr-2">
+                      <div className="text-xs font-black text-white flex items-center gap-2">
+                        <span className="text-amber-300 font-mono tracking-wider font-extrabold">{s.codigo_sala}</span>
+                        <span className="text-[10px] font-normal text-slate-400 truncate">· {s.host_nombre || "Anfitrión"}</span>
+                      </div>
+                      <div className="text-[10px] text-cyan-300/80 font-medium capitalize mt-0.5">
+                        Categoría: {s.categoria || "Todas"}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCodigoIngresado(s.codigo_sala);
+                        unirseASalaOnline({
+                          codigoSala: s.codigo_sala,
+                          guestNombre: player.name,
+                        }).then(() => {
+                          playSfx("victory");
+                          toast.success(`¡Conectado a la sala ${s.codigo_sala}!`);
+                          navigate(`/juego-online?sala=${s.codigo_sala}`);
+                        }).catch((err) => {
+                          toast.error(err.message || "No se pudo conectar");
+                        });
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-slate-950 font-black text-xs shadow-md shadow-cyan-500/20 transition-all cursor-pointer shrink-0 active:scale-95"
+                    >
+                      Unirme ⚔️
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4 px-3 rounded-2xl bg-black/20 border border-white/5">
+                <p className="text-xs text-slate-400 m-0">
+                  No hay salas abiertas en espera en este momento.
+                </p>
+                <p className="text-[11px] text-cyan-300/80 font-bold mt-1 mb-0">
+                  ¡Haz clic en "Crear Sala de Batalla" arriba y comparte el enlace de WhatsApp con un amigo!
+                </p>
+              </div>
+            )}
           </div>
 
         </div>

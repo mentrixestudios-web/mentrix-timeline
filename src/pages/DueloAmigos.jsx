@@ -331,6 +331,29 @@ export default function DueloAmigos() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
+          {/* BANNER ACCESO A MODO ONLINE */}
+          <Link
+            to="/modos-online"
+            onClick={() => playSfx("tap")}
+            className="w-full flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-[#0c2e3d] via-[#091f33] to-[#071524] border border-cyan-400/40 hover:border-cyan-300 shadow-md group transition-all"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="text-xl">🌐</span>
+              <div className="text-left">
+                <div className="text-xs font-black text-cyan-300 flex items-center gap-1.5">
+                  <span>¿Prefieres jugar a distancia en otro celular?</span>
+                  <span className="text-[9px] uppercase px-1.5 py-0.2 rounded-full bg-cyan-400/20 text-cyan-200 border border-cyan-400/40 font-bold">Online</span>
+                </div>
+                <div className="text-[11px] text-slate-300">
+                  Crea una sala privada y manda el enlace por WhatsApp
+                </div>
+              </div>
+            </div>
+            <span className="text-xs font-black text-cyan-400 group-hover:translate-x-1 transition-transform">
+              Ir a Online →
+            </span>
+          </Link>
+
           {/* Menti Asesor Temporal */}
           <div className="w-full">
             <MentrixMascot
