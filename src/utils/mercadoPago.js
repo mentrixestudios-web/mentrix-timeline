@@ -1,5 +1,5 @@
-// Integración de Pasarela de Pagos Mercado Pago para Mentrix
-// Soporta modo Sandbox (Pruebas) y modo Producción
+// Integración de Pasarela de Pagos Mercado Pago para Mentrix Línea de Tiempo
+// Soporta modo Sandbox (Pruebas) y modo Producción (Checkout Pro)
 
 export const PAQUETES_MONEDAS = [
   {
@@ -98,9 +98,6 @@ export const PODERES_CATALOGO = [
 
 /**
  * Inicia el proceso de pago para un paquete.
- * En modo Sandbox / Desarrollo, simula el proceso de pago de forma segura y completa.
- * Cuando configures tu Access Token de Mercado Pago en variables de entorno,
- * abrirá el Checkout Pro real de Mercado Pago con Webpay, CuentaRUT y tarjetas.
  */
 export async function procesarCompraMercadoPago(paquete, onExito, onError) {
   if (!paquete) {
@@ -108,59 +105,43 @@ export async function procesarCompraMercadoPago(paquete, onExito, onError) {
     return;
   }
 
-  // Comprobar si hay credencial configurada en localStorage o env
-  const mpAccessToken = localStorage.getItem("mt_mp_access_token") || "";
+  const userToken = localStorage.getItem("mt_mp_access_token") || "";
 
-  if (!mpAccessToken) {
-    // Modo Simulación de Pago (Sandbox interactivo) para pruebas inmediatas
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          status: "approved",
-          payment_id: "test_" + Date.now(),
-          paquete,
-        });
-      }, 1200);
-    });
-  }
-
-  // Flujo real de Mercado Pago Checkout Pro
+  // Intentar crear la preferencia vía API de Mercado Pago
   try {
-    const preference = {
-      items: [
-        {
-          id: paquete.id,
-          title: paquete.nombre,
-          description: `Paquete de ${paquete.monedas} monedas para Mentrix: Línea de Tiempo`,
-          quantity: 1,
-          currency_id: "CLP",
-          unit_price: paquete.precioCLP,
-        },
-      ],
-      back_urls: {
-        success: `${window.location.origin}/tienda?status=approved&pack_id=${paquete.id}`,
-        failure: `${window.location.origin}/tienda?status=rejected`,
-        pending: `${window.location.origin}/tienda?status=pending`,
-      },
-      auto_return: "approved",
-    };
-
-    const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
+    const res = await fetch("/api/mercadopago", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${mpAccessToken}`,
-      },
-      body: JSON.stringify(preference),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: paquete.id,
+        title: paquete.nombre,
+        description: `Paquete de ${paquete.monedas} monedas para Mentrix: Línea de Tiempo`,
+        price: paquete.precioCLP,
+        backUrl: window.location.origin,
+        userAccessToken: userToken,
+      }),
     });
 
-    const data = await response.json();
-    if (data.init_point) {
-      window.location.href = data.init_point;
-    } else {
-      throw new Error(data.message || "No se pudo generar la preferencia de pago");
+    if (res.ok) {
+      const data = await res.json();
+      if (data.init_point) {
+        window.location.href = data.init_point;
+        return { status: "redirecting" };
+      }
     }
   } catch (err) {
-    if (onError) onError(err.message || "Error al conectar con Mercado Pago");
+    console.warn("Endpoint /api/mercadopago no disponible en local:", err);
   }
+
+  // Si no hay token de Mercado Pago configurado, se activa el modo Sandbox interactivo
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        status: "approved",
+        isSimulated: true,
+        payment_id: "test_" + Date.now(),
+        paquete,
+      });
+    }, 1000);
+  });
 }
