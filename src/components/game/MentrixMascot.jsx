@@ -52,65 +52,79 @@ export default function MentrixMascot({
 
   const currentMessage = customMessage || pool[msgIndex % pool.length];
 
-  if (layout === "hero") {
+  if (layout === "compact") {
     return (
-      <div className="flex flex-col sm:flex-row items-center gap-4 bg-gradient-to-br from-[#0c162e] via-[#0b1328] to-[#121c3b] border border-amber-500/30 rounded-3xl p-5 shadow-[0_8px_30px_rgba(245,158,11,0.12)] max-w-2xl mx-auto backdrop-blur-md">
-        {/* Mascota con resplandor dorado */}
-        <div className="relative shrink-0 flex items-center justify-center">
-          <div className="absolute inset-0 bg-amber-500/15 rounded-full blur-xl scale-125" />
-          <motion.img
+      <div className="flex items-center gap-2.5 bg-blue-600/15 border border-amber-400/30 rounded-2xl p-2.5 max-w-md w-full shadow-md backdrop-blur-md">
+        <div className="w-10 h-10 shrink-0 relative flex items-center justify-center">
+          <img
             src="/mentrix-mascot.png"
-            alt="Menti Viajero del Tiempo"
-            className="w-28 h-28 sm:w-32 sm:h-32 object-contain relative z-10 filter drop-shadow-[0_8px_16px_rgba(234,179,8,0.25)]"
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            alt="Menti"
+            className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
           />
         </div>
-
-        {/* Diálogo pergamino digital */}
-        <div className="flex-1 text-center sm:text-left space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-amber-500/40 px-3 py-1 rounded-full text-xs font-black text-amber-300">
-            <Hourglass className="w-3.5 h-3.5 text-amber-400 animate-spin-slow" />
-            <span className="tracking-wider uppercase">Menti · Viajero del Tiempo</span>
+        <div className="flex-1 text-left min-w-0">
+          <div className="flex items-center gap-1 text-[10px] font-black text-amber-400 uppercase tracking-wider mb-0.5">
+            <Hourglass className="w-3 h-3 text-amber-400" />
+            <span>Menti</span>
           </div>
-
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={currentMessage}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.3 }}
-              className="text-sm sm:text-base font-semibold text-amber-50/90 leading-relaxed font-sans"
-            >
-              "{currentMessage}"
-            </motion.p>
-          </AnimatePresence>
+          <p className="text-xs text-amber-100/90 font-medium leading-tight truncate">
+            {currentMessage}
+          </p>
         </div>
       </div>
     );
   }
 
-  // Layout default / compacto
+  // Layout default / hero: ESTÁNDAR FLOTANTE DE MENTRIX ESTUDIO BÍBLICO (Sin contenedor cuadrado)
+  const isSm = size === "sm";
   return (
-    <div className="flex items-center gap-3 bg-gradient-to-br from-[#0c162e] to-[#0f172a] border border-amber-500/30 rounded-2xl p-3 max-w-md w-full shadow-lg backdrop-blur-md">
-      <div className="w-14 h-14 shrink-0 relative flex items-center justify-center">
-        <div className="absolute inset-0 bg-amber-500/10 rounded-full blur-md" />
-        <img
-          src="/mentrix-mascot.png"
-          alt="Menti"
-          className="w-full h-full object-contain relative z-10 filter drop-shadow-[0_4px_8px_rgba(245,158,11,0.2)]"
+    <div className="w-full flex flex-col items-center gap-2 max-w-md mx-auto relative select-none py-1">
+      {/* Núcleo Flotante con Resplandor Áureo */}
+      <div className="relative flex items-center justify-center">
+        {/* Anillo astrolabio giratorio tenue */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+          className={`absolute ${isSm ? "w-24 h-24" : "w-28 h-28 sm:w-32 sm:h-32"} rounded-full border border-dashed border-amber-400/25 pointer-events-none`}
         />
+        {/* Resplandor áureo y cósmico */}
+        <div className={`absolute ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} bg-gradient-to-r from-amber-500/20 via-blue-500/15 to-purple-500/15 rounded-full blur-2xl pointer-events-none`} />
+
+        {/* Mascota Menti Flotando Libre */}
+        <motion.div
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+          className={`relative z-10 ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} flex items-center justify-center cursor-pointer`}
+        >
+          <img
+            src="/mentrix-mascot.png"
+            alt="Menti Viajero del Tiempo"
+            className="w-full h-full object-contain filter drop-shadow-[0_10px_25px_rgba(245,158,11,0.35)]"
+          />
+        </motion.div>
       </div>
-      <div className="flex-1 text-left">
-        <div className="flex items-center gap-1 text-[11px] font-black text-amber-400 uppercase tracking-wider mb-0.5">
-          <Hourglass className="w-3 h-3 text-amber-400" />
-          <span>Menti · Guía Temporal</span>
-        </div>
-        <p className="text-xs sm:text-sm text-amber-100/90 font-medium leading-snug">
-          {currentMessage}
-        </p>
+
+      {/* Badge Menti Viajero del Tiempo */}
+      <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border border-amber-400/35 text-amber-300 text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-sm">
+        <Hourglass className="w-3 h-3 text-amber-400 animate-spin-slow" />
+        <span>Menti · Viajero del Tiempo</span>
       </div>
+
+      {/* Cápsula de Diálogo estilo Estudio Bíblico */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentMessage}
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 4 }}
+          transition={{ duration: 0.25 }}
+          className="relative bg-blue-600/20 border border-amber-400/25 backdrop-blur-md rounded-full px-5 py-2 shadow-lg shadow-blue-950/40 max-w-sm text-center"
+        >
+          <p className="text-white/95 text-xs sm:text-sm font-medium leading-relaxed">
+            "{currentMessage}"
+          </p>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
