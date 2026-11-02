@@ -81,7 +81,7 @@ export default function Home() {
         ══════════════════════════════════════════════════════════ */}
         <div className="w-full flex flex-col items-center gap-3 lg:col-span-5 lg:bg-slate-900/40 lg:border lg:border-white/10 lg:rounded-3xl lg:p-6">
           
-          {/* BRANDING: Título arriba, Menti centrado, burbuja abajo */}
+          {/* BRANDING: Título arriba, Menti centrado flotando libre, burbuja abajo (Idéntico a Estudio Bíblico) */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -93,18 +93,34 @@ export default function Home() {
                 <span>Mentrix Línea de Tiempo</span>
                 <Sparkles className="w-4 h-4 text-amber-400" />
               </span>
-              <p className="text-[10px] text-white/50 m-0">
+              <p className="text-[9px] text-white/35 m-0">
                 Aprende y desafía la historia de forma dinámica y divertida
               </p>
             </div>
 
-            {/* Menti centrado con burbuja de diálogo */}
-            <div className="w-full mt-2">
-              <MentrixMascot
-                status="idle"
-                layout="hero"
-                customMessage={getMentiMessage(nivel, racha)}
-              />
+            {/* Menti flotando libremente en el fondo con resplandor suave */}
+            <div className="relative flex flex-col items-center justify-center my-1.5 w-full">
+              <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
+                <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-2xl scale-125 pointer-events-none" />
+                <motion.img
+                  src="/mentrix-mascot.png"
+                  alt="Menti"
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-full h-full object-contain relative z-10 filter drop-shadow-[0_8px_30px_rgba(59,130,246,0.35)]"
+                />
+              </div>
+
+              {/* Cápsula de diálogo única (Formato idéntico a Estudio Bíblico) */}
+              <motion.div
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-2 relative bg-blue-600/20 backdrop-blur-md rounded-full px-6 py-2 shadow-lg shadow-blue-900/20 border border-blue-400/20 max-w-sm"
+              >
+                <p className="text-white/95 text-xs sm:text-sm text-center font-medium m-0">
+                  {getMentiMessage(nivel, racha)}
+                </p>
+              </motion.div>
             </div>
           </motion.div>
 
@@ -128,36 +144,24 @@ export default function Home() {
 
               {/* Cabecera de la Efeméride */}
               <div className="px-3.5 pt-3 flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-extrabold text-[#A78BFA] tracking-wider flex items-center gap-1">
-                    <span>✦ EFEMÉRIDE DEL DÍA</span>
-                  </span>
-                  {leidaHoy && (
-                    <span className="text-[8px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-0.5">
-                      ✓ Leída
-                    </span>
-                  )}
-                </div>
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#A78BFA] border border-[#a78bfa]/25 uppercase truncate max-w-[140px]">
-                  {efemeride.fechaTexto}
+                <span className="text-[9px] font-bold text-[#A78BFA] tracking-wider uppercase">
+                  ✦ EFEMÉRIDE DEL DÍA
+                </span>
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-[#a78bfa]/15 text-[#A78BFA] border border-[#a78bfa]/25">
+                  {efemeride.categoriaLabel || "Historia"}
                 </span>
               </div>
 
               {/* Contenido de la Efeméride */}
               <div className="p-3.5 pt-2">
-                <p className="text-xs lg:text-sm italic text-slate-200 leading-relaxed mb-2.5 line-clamp-3 lg:line-clamp-none font-normal">
+                <p className="text-xs lg:text-sm italic text-slate-200 leading-relaxed mb-2.5 line-clamp-2 lg:line-clamp-none font-normal">
                   "{efemeride.resumenCorto}"
                 </p>
 
-                <div className="flex justify-between items-center pt-1 border-t border-white/5">
-                  <div className="min-w-0 pr-2">
-                    <p className="text-xs font-black text-[#A78BFA] truncate m-0">
-                      {efemeride.anioTexto} · {efemeride.titulo}
-                    </p>
-                    <p className="text-[10px] text-slate-400 m-0">
-                      {efemeride.categoriaLabel}
-                    </p>
-                  </div>
+                <div className="flex justify-between items-center pt-1">
+                  <p className="text-[11px] font-bold text-[#A78BFA] truncate m-0 pr-2">
+                    {efemeride.anioTexto} · {efemeride.titulo}
+                  </p>
 
                   <div className="flex gap-1.5 items-center shrink-0">
                     <button
@@ -166,19 +170,18 @@ export default function Home() {
                         playSfx("tap");
                         setShowEfemerideModal(true);
                       }}
-                      className="px-2.5 py-1 rounded-lg bg-[#a78bfa]/15 border border-[#a78bfa]/30 text-[#A78BFA] hover:bg-[#a78bfa]/25 text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1"
+                      className="px-2.5 py-1 rounded-md bg-[#a78bfa]/15 border border-[#a78bfa]/30 text-[#A78BFA] hover:bg-[#a78bfa]/25 text-[9px] font-semibold transition-all cursor-pointer flex items-center gap-1"
                     >
-                      <BookOpen className="w-3 h-3" />
-                      <span>Leer efeméride →</span>
+                      📖 Leer efeméride →
                     </button>
                     <button
                       type="button"
                       onClick={handleShuffleEfemeride}
-                      className="p-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/15 text-xs text-slate-300 transition-all cursor-pointer"
+                      className="p-1 rounded-md bg-white/5 border border-white/10 hover:bg-white/15 text-xs text-slate-300 transition-all cursor-pointer"
                       title="Ver otra efeméride histórica"
                       aria-label="Otra efeméride"
                     >
-                      <Shuffle className="w-3.5 h-3.5" />
+                      🔀
                     </button>
                   </div>
                 </div>
@@ -188,7 +191,7 @@ export default function Home() {
         </div>
 
         {/* ══════════════════════════════════════════════════════════
-            COLUMNA DERECHA EN PC: Los 4 Módulos Principales de Juego
+            COLUMNA DERECHA EN PC: Botones Principales de Juego
         ══════════════════════════════════════════════════════════ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -201,23 +204,18 @@ export default function Home() {
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
               whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-purple-950/80 via-purple-900/70 to-indigo-950/80 border border-purple-400/35 hover:border-purple-300/50 hover:shadow-2xl hover:shadow-purple-500/20 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+              className="w-full bg-gradient-to-br from-purple-950/80 via-purple-900/70 to-indigo-950/80 border border-purple-400/35 hover:border-purple-300/50 hover:shadow-2xl hover:shadow-purple-500/20 active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden"
             >
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl lg:text-3xl drop-shadow-md filter group-hover:scale-110 transition-transform" style={{ color: "#A78BFA" }}>
-                    ⏳
-                  </span>
-                  <div className="text-left">
-                    <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
-                      <span>Línea de Tiempo Clásica</span>
-                    </div>
-                    <div className="text-xs font-normal text-purple-200/70 mt-0.5 line-clamp-1">
-                      Ubica eventos cronológicamente, construye tu racha y gana monedas
-                    </div>
+              <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
+                <span className="text-xl lg:text-2xl drop-shadow-lg" style={{ color: "#A78BFA" }}>
+                  ⏳
+                </span>
+                <div className="text-left">
+                  <div>Línea de Tiempo Clásica</div>
+                  <div className="hidden lg:block text-xs font-normal text-purple-200/70">
+                    Ubica eventos cronológicamente, construye tu racha y gana monedas
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-purple-300/70 group-hover:text-purple-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
               </div>
             </motion.div>
           </Link>
@@ -227,106 +225,88 @@ export default function Home() {
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
               whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-[#0c2e3d]/90 via-[#0a2336]/80 to-[#071929]/90 border border-cyan-400/40 hover:border-cyan-300/60 hover:shadow-2xl hover:shadow-cyan-500/25 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+              className="w-full bg-gradient-to-br from-blue-950/80 via-blue-900/70 to-blue-950/80 border border-amber-600/30 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-600/15 active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden"
             >
-              <div className="absolute top-2.5 right-4 z-10 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-[10px] font-black text-cyan-300 tracking-wider uppercase">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                <span>ONLINE 1v1</span>
-              </div>
-
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl lg:text-3xl drop-shadow-md filter group-hover:scale-110 transition-transform">
-                    🌐
-                  </span>
-                  <div className="text-left">
-                    <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
-                      <span>Duelo Online 1v1</span>
-                    </div>
-                    <div className="text-xs font-normal text-cyan-200/80 mt-0.5 line-clamp-1">
-                      Crea tu sala, invita a un amigo por WhatsApp o únete con código en tiempo real
-                    </div>
+              <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
+                <span className="text-xl lg:text-2xl drop-shadow-lg" style={{ color: "#67e8f9" }}>
+                  🌐
+                </span>
+                <div className="text-left">
+                  <div>Duelo Online 1v1</div>
+                  <div className="hidden lg:block text-xs font-normal text-blue-200/70">
+                    Salas en tiempo real, invita a un amigo por WhatsApp o únete con código
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-cyan-300/70 group-hover:text-cyan-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
               </div>
             </motion.div>
           </Link>
 
-          {/* MÓDULO 3: Duelo Local (Pasa el Celular & IA) */}
+          {/* MÓDULO 3: Duelo Local & Menti IA */}
           <Link to="/duelo-amigos" onClick={() => playSfx("tap")}>
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
               whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-blue-950/80 via-blue-900/70 to-blue-950/80 border border-amber-600/30 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-600/15 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+              className="w-full bg-gradient-to-br from-indigo-950/80 via-indigo-900/70 to-slate-950/80 border border-indigo-400/30 hover:border-indigo-300/45 hover:shadow-2xl hover:shadow-indigo-500/15 active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden"
             >
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl lg:text-3xl drop-shadow-md filter group-hover:scale-110 transition-transform">
-                    ⚔️
-                  </span>
-                  <div className="text-left">
-                    <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
-                      <span>Duelo Local & Menti IA</span>
-                    </div>
-                    <div className="text-xs font-normal text-blue-200/70 mt-0.5 line-clamp-1">
-                      Pasa el celular con amigos en el mismo dispositivo o desafía a la IA de Menti
-                    </div>
+              <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
+                <span className="text-xl lg:text-2xl drop-shadow-lg text-amber-400">
+                  ⚔️
+                </span>
+                <div className="text-left">
+                  <div>Duelo Local & Menti IA</div>
+                  <div className="hidden lg:block text-xs font-normal text-indigo-200/70">
+                    Pasa el celular con amigos en el mismo dispositivo o desafía a la IA de Menti
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-amber-300/70 group-hover:text-amber-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
               </div>
             </motion.div>
           </Link>
 
-          {/* MÓDULO 3: Desafío Diario & Retos */}
+          {/* MÓDULO 4: Desafío Diario & Retos */}
           <Link to="/desafio" onClick={() => playSfx("tap")}>
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
               whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-emerald-950/80 via-emerald-900/70 to-teal-950/80 border border-emerald-500/30 hover:border-emerald-400/50 hover:shadow-2xl hover:shadow-emerald-500/20 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+              className="w-full bg-gradient-to-br from-emerald-950/80 via-emerald-900/70 to-teal-950/80 border border-emerald-400/30 hover:border-emerald-300/45 hover:shadow-2xl hover:shadow-emerald-500/15 active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden"
             >
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl lg:text-3xl drop-shadow-md filter group-hover:scale-110 transition-transform">
-                    📅
-                  </span>
-                  <div className="text-left">
-                    <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
-                      <span>Desafío Diario & Retos</span>
-                    </div>
-                    <div className="text-xs font-normal text-emerald-200/70 mt-0.5 line-clamp-1">
-                      Desafío del día con calendario de racha, Contrarreloj 60s y Supervivencia
-                    </div>
+              <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
+                <span className="text-xl lg:text-2xl drop-shadow-lg" style={{ color: "#34d399" }}>
+                  📅
+                </span>
+                <div className="text-left">
+                  <div>Desafío Diario & Retos</div>
+                  <div className="hidden lg:block text-xs font-normal text-emerald-200/70">
+                    Desafío del día con calendario de racha, Contrarreloj 60s y Supervivencia
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-emerald-300/70 group-hover:text-emerald-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
               </div>
             </motion.div>
           </Link>
 
-          {/* MÓDULO 4: Museo del Tiempo (Códices y Reliquias) */}
+          {/* MÓDULO 5: Museo del Tiempo (Tarjeta destacada con marco dorado estilo "Biblia Interactiva") */}
           <Link to="/estadisticas" onClick={() => playSfx("tap")}>
             <motion.div
               whileTap={{ scale: 0.99, y: 1 }}
               whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-[#1a1040]/80 via-[#151a3d]/70 to-[#0e172e]/80 border border-blue-400/30 hover:border-blue-300/40 hover:shadow-2xl hover:shadow-blue-500/15 active:shadow-lg rounded-2xl py-3.5 lg:py-4 px-5 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden group"
+              className="w-full bg-gradient-to-br from-blue-900/60 via-blue-950/70 to-blue-950/60 border-2 border-amber-500/50 hover:border-amber-400/70 hover:shadow-2xl hover:shadow-amber-600/25 rounded-2xl py-4 lg:py-5 px-5 transition-all duration-200"
             >
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl lg:text-3xl drop-shadow-md filter group-hover:scale-110 transition-transform">
-                    🏛️
-                  </span>
-                  <div className="text-left">
-                    <div className="font-extrabold text-white text-base lg:text-lg tracking-wide flex items-center gap-2">
-                      <span>Museo del Tiempo</span>
-                    </div>
-                    <div className="text-xs font-normal text-blue-200/70 mt-0.5 line-clamp-1">
-                      Colecciona y explora los 72 códices y reliquias históricas desbloqueables
-                    </div>
+              <div className="flex items-center gap-5">
+                <div className="shrink-0 bg-amber-600/15 p-2.5 rounded-xl border border-amber-500/35">
+                  <BookOpen className="w-5 h-5 lg:w-6 lg:h-6 text-amber-500" />
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <div className="text-lg font-semibold text-white leading-tight">Museo del Tiempo</div>
+                  <div className="text-xs text-slate-300 font-normal truncate sm:text-clip">
+                    Colecciona y explora los 72 códices y reliquias históricas
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-blue-300/70 group-hover:text-blue-200 group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                <div className="shrink-0">
+                  <img
+                    src="/icons/icon-192.png"
+                    alt="Museo"
+                    className="w-12 h-12 lg:w-14 lg:h-14 object-contain rounded-xl drop-shadow-lg border border-amber-400/30"
+                  />
+                </div>
               </div>
             </motion.div>
           </Link>
@@ -335,10 +315,9 @@ export default function Home() {
 
       {/* ── PIE DE PÁGINA MOTIVACIONAL (Idéntico a Estudio Bíblico) ── */}
       <div className="w-full text-center mt-6 py-2">
-        <p className="text-[11px] sm:text-xs text-slate-400/60 font-medium flex items-center justify-center gap-2 m-0">
-          <span>⏳</span>
-          <span>Explora · Deduce · Conquista la historia</span>
-          <span>⏳</span>
+        <p className="text-[11px] sm:text-xs text-slate-400/50 font-medium flex items-center justify-center gap-2 m-0">
+          <span>👥</span>
+          <span>Aprende · Deduce · Conquista la historia</span>
         </p>
       </div>
 
