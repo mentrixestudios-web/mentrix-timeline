@@ -57,7 +57,9 @@ function repartirCartasPartida(categoria = "todas") {
     description: e.description || e.descripcion || "",
     category: e.category || e.categoria || "historia",
     icon: e.icon || e.icono || "Pyramid",
-    siglo: e.siglo || ""
+    siglo: e.siglo || "",
+    datoCurioso: e.datoCurioso || e.pista || "",
+    personajeClave: e.personajeClave || ""
   });
 
   const mesaInicial = [formatear(bolsa[0])];
@@ -357,6 +359,7 @@ export async function colocarCartaEnLinea({
         tipo: "victoria",
         esCorrecto: true,
         cartaTitulo: carta.title,
+        carta,
         anio: carta.year,
         mensaje: `¡${esHost ? sala.host_nombre : sala.guest_nombre} colocó su última carta y ganó el duelo! 👑`,
         timestamp: Date.now(),
@@ -366,6 +369,7 @@ export async function colocarCartaEnLinea({
         tipo: "acierto",
         esCorrecto: true,
         cartaTitulo: carta.title,
+        carta,
         anio: carta.year,
         mensaje: `¡Acierto! ${carta.title} (${carta.yearFormatted}) colocado correctamente.`,
         timestamp: Date.now(),
@@ -396,6 +400,7 @@ export async function colocarCartaEnLinea({
         tipo: "derrota_vidas",
         esCorrecto: false,
         cartaTitulo: carta.title,
+        carta,
         anio: carta.year,
         mensaje: `¡${esHost ? sala.host_nombre : sala.guest_nombre} se quedó sin vidas!`,
         timestamp: Date.now(),
@@ -405,6 +410,7 @@ export async function colocarCartaEnLinea({
         tipo: "error",
         esCorrecto: false,
         cartaTitulo: carta.title,
+        carta,
         anio: carta.year,
         mensaje: `¡Error! ${carta.title} era de ${carta.yearFormatted}. -1 Vida y roba nueva carta.`,
         timestamp: Date.now(),

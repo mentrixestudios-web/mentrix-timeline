@@ -65,11 +65,19 @@ export default function CurrentCardHand({
         )}
       </AnimatePresence>
 
-      {/* RESEÑA BREVE DE PISTA */}
+      {/* RESEÑA HISTÓRICA COMPLETA DE CONTEXTO */}
       {event.description && !lupaActive && (
-        <p className="text-[11px] text-amber-100/75 mt-1.5 line-clamp-2 leading-relaxed font-medium relative z-10">
+        <p className="text-xs text-amber-100/90 mt-2 leading-relaxed font-normal relative z-10 bg-black/25 p-2 rounded-xl border border-amber-400/20">
           {event.description}
         </p>
+      )}
+
+      {/* PERSONAJE CLAVE (SI EXISTE) */}
+      {event.personajeClave && !lupaActive && (
+        <div className="mt-1.5 flex items-center gap-1 text-[11px] text-amber-300/80 font-semibold relative z-10">
+          <span>👤 Figura clave:</span>
+          <span className="text-amber-100">{event.personajeClave}</span>
+        </div>
       )}
 
       {/* FOOTER INTERACTIVO: LLAMADA A LA ACCIÓN CON FLECHA */}

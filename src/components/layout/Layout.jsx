@@ -205,7 +205,7 @@ export default function Layout({ children }) {
       )}
 
       {/* Botón flotante PWA estilo ARANPRO */}
-      <PwaFloatingBanner />
+      {showNav && <PwaFloatingBanner />}
 
       {/* Modal tutorial de instalación para iOS y navegadores */}
       <PwaInstallModal

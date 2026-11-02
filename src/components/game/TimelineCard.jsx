@@ -54,43 +54,33 @@ export default function TimelineCard({
         </div>
       </div>
 
-      {/* CUERPO: TÍTULO DEL ACONTECIMIENTO */}
+      {/* CUERPO: TÍTULO DEL ACONTECIMIENTO Y CRÓNICA */}
       <div className="mt-3 relative z-10">
         <h3 className="text-white font-black text-base sm:text-lg leading-snug tracking-tight">
           {event.title}
         </h3>
+        {event.description && (
+          <p className="mt-1.5 text-xs text-amber-100/85 leading-relaxed font-normal">
+            {event.description}
+          </p>
+        )}
       </div>
 
-      {/* FOOTER DE LA CARTA: BOTÓN DESPLEGABLE DE RESEÑA */}
-      {event.description && (
-        <div className="mt-2.5 pt-2 border-t border-white/10 relative z-10">
-          <button
-            type="button"
-            onClick={() => setShowDetails(!showDetails)}
-            className="flex items-center justify-between w-full text-[11px] font-bold text-amber-300/80 hover:text-amber-200 transition-colors cursor-pointer group"
-          >
-            <span className="flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-              <span>{showDetails ? "Ocultar crónica histórica" : "Leer crónica histórica"}</span>
-            </span>
-            <ChevronDown className={`w-3.5 h-3.5 text-amber-400 transition-transform duration-200 ${showDetails ? "rotate-180" : ""}`} />
-          </button>
+      {/* DATO CURIOSO O DETALLE HISTÓRICO */}
+      {event.datoCurioso && (
+        <div className="mt-2.5 pt-2 border-t border-amber-500/20 relative z-10 flex items-start gap-2 text-[11px] text-amber-200/90 bg-black/30 p-2 rounded-xl border border-amber-400/25">
+          <span className="text-amber-400 shrink-0 text-xs">💡</span>
+          <p className="leading-relaxed">
+            <strong className="text-amber-300">Dato curioso:</strong> {event.datoCurioso}
+          </p>
+        </div>
+      )}
 
-          {/* Reseña desplegable estilo códice digital */}
-          <AnimatePresence>
-            {showDetails && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden mt-2 pt-2 border-t border-amber-500/20"
-              >
-                <div className="p-2.5 rounded-xl bg-black/40 border border-amber-500/20 text-xs text-amber-100/90 leading-relaxed font-sans font-medium">
-                  {event.description}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+      {/* PERSONAJE CLAVE (SI EXISTE) */}
+      {event.personajeClave && (
+        <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-amber-300/70 font-semibold relative z-10">
+          <span>👤 Figura:</span>
+          <span className="text-amber-100">{event.personajeClave}</span>
         </div>
       )}
     </motion.div>
