@@ -75,7 +75,7 @@ export default function Layout({ children }) {
           {/* Logo y Encabezado */}
           <Link
             to="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-gradient-to-r from-blue-950/80 to-indigo-950/60 border border-blue-400/20 mb-6 hover:border-blue-400/40 transition-all group"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-gradient-to-r from-[#1a1405]/80 to-blue-950/70 border border-amber-500/40 mb-6 hover:border-amber-400/70 shadow-[0_0_18px_rgba(245,158,11,0.08)] transition-all group"
           >
             <img
               src="./icons/icon-192.png"
@@ -84,7 +84,7 @@ export default function Layout({ children }) {
             />
             <div className="min-w-0">
               <div className="text-sm font-extrabold text-white truncate">Mentrix Cronos</div>
-              <div className="text-[11px] text-blue-300/80 font-medium truncate">Línea de Tiempo Histórica</div>
+              <div className="text-[11px] text-amber-300/80 font-medium truncate">Línea de Tiempo Histórica</div>
             </div>
           </Link>
 
@@ -103,11 +103,11 @@ export default function Layout({ children }) {
                     to={item.path}
                     className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-all ${
                       active
-                        ? "bg-blue-600/25 text-blue-300 border border-blue-400/35 shadow-lg shadow-blue-950/50"
+                        ? "bg-amber-500/15 text-amber-200 border border-amber-400/45 shadow-lg shadow-amber-900/20"
                         : "text-slate-300/75 hover:text-white hover:bg-white/5 border border-transparent"
                     }`}
                   >
-                    <Icon className={`w-5 h-5 ${active ? "text-blue-400" : "text-slate-400"}`} />
+                    <Icon className={`w-5 h-5 ${active ? "text-amber-400" : "text-slate-400"}`} />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -129,7 +129,7 @@ export default function Layout({ children }) {
                     to={mod.path}
                     className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                       active
-                        ? "bg-purple-600/25 text-white border border-purple-400/35 shadow-md shadow-purple-950/50"
+                        ? "bg-amber-500/10 text-white border border-amber-400/35 shadow-md shadow-amber-950/30"
                         : "text-slate-300/80 hover:text-white hover:bg-white/5 border border-transparent"
                     }`}
                   >
@@ -192,11 +192,11 @@ export default function Layout({ children }) {
                 to={item.path}
                 className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl transition-all ${
                   active
-                    ? "text-blue-400 font-extrabold scale-105"
+                    ? "text-amber-400 font-extrabold scale-105"
                     : "text-white/40 hover:text-white"
                 }`}
               >
-                <Icon className={`w-5 h-5 ${active ? "text-blue-400 fill-blue-400/20" : "text-white/40"}`} />
+                <Icon className={`w-5 h-5 ${active ? "text-amber-400 fill-amber-400/20" : "text-white/40"}`} />
                 <span className="text-[10px]">{item.mobileLabel}</span>
               </Link>
             );

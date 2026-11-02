@@ -37,7 +37,8 @@ export default function TopBar() {
           className="flex items-center w-full rounded-[14px] px-2.5 py-1.5 backdrop-blur-md"
           style={{
             background: "rgba(30,45,77,0.7)",
-            border: "1px solid rgba(255,255,255,0.07)",
+            border: "1px solid rgba(245,158,11,0.22)",
+            boxShadow: "0 0 14px rgba(245,158,11,0.06), inset 0 1px 0 rgba(253,230,138,0.06)",
           }}
         >
           {/* 1. Monedas / Tienda */}

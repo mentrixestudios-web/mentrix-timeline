@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Sparkles, ChevronRight, Lock } from "lucide-react";
+import { ChevronRight, Lock } from "lucide-react";
 import EfemerideModal from "@/components/home/EfemerideModal";
 import { getStreakInfo, getLevelInfo, getUnlockedCardIds } from "@/utils/gameStorage";
 import {
@@ -22,7 +22,7 @@ const GAME_MODES = [
     title: "Línea de Tiempo Clásica",
     desc: "Ubica eventos cronológicamente, construye tu racha y gana monedas",
     className:
-      "from-purple-950/80 via-purple-900/70 to-indigo-950/80 border-purple-400/35 hover:border-purple-300/50 hover:shadow-purple-500/20",
+      "from-purple-950/80 via-purple-900/70 to-indigo-950/80 border-2 border-amber-400/60 hover:border-amber-300/85 hover:shadow-amber-500/25",
     descClass: "text-purple-200/70",
     glow: "bg-purple-400/15",
   },
@@ -33,7 +33,7 @@ const GAME_MODES = [
     title: "Duelo Online 1v1",
     desc: "Crea una sala, invita por WhatsApp o únete con código en tiempo real",
     className:
-      "from-cyan-950/80 via-blue-950/80 to-blue-950/80 border-cyan-400/35 hover:border-cyan-300/55 hover:shadow-cyan-500/20",
+      "from-cyan-950/80 via-blue-950/80 to-blue-950/80 border border-amber-500/45 hover:border-amber-300/75 hover:shadow-cyan-500/20",
     descClass: "text-cyan-200/70",
     glow: "bg-cyan-400/15",
     badge: "live",
@@ -45,7 +45,7 @@ const GAME_MODES = [
     title: "Duelo Local & Menti IA",
     desc: "Pasa el celular con amigos o desafía a la IA de Menti",
     className:
-      "from-blue-950/80 via-blue-900/70 to-blue-950/80 border-amber-600/30 hover:border-amber-500/50 hover:shadow-amber-600/15",
+      "from-blue-950/80 via-blue-900/70 to-blue-950/80 border border-amber-500/45 hover:border-amber-300/75 hover:shadow-amber-600/20",
     descClass: "text-blue-200/70",
     glow: "bg-amber-400/10",
   },
@@ -56,7 +56,7 @@ const GAME_MODES = [
     title: "Desafío Diario & Retos",
     desc: "Desafío del día, Contrarreloj 60s y Supervivencia",
     className:
-      "from-emerald-950/80 via-emerald-900/70 to-teal-950/80 border-emerald-400/30 hover:border-emerald-300/45 hover:shadow-emerald-500/15",
+      "from-emerald-950/80 via-emerald-900/70 to-teal-950/80 border border-amber-500/45 hover:border-amber-300/75 hover:shadow-emerald-500/20",
     descClass: "text-emerald-200/70",
     glow: "bg-emerald-400/10",
     badge: "+50 🪙",
@@ -133,36 +133,54 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             className="w-full flex flex-col items-center gap-1 mb-1 px-1 text-center"
           >
-            <span className="text-base font-extrabold text-[#e8f0ff] tracking-wide flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>Mentrix Línea de Tiempo</span>
-              <Sparkles className="w-4 h-4 text-amber-400" />
+            <span className="text-base font-extrabold tracking-wide flex items-center gap-1.5">
+              <span className="text-amber-400 text-sm">✦</span>
+              <span className="bg-gradient-to-b from-amber-100 via-amber-300 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,158,11,0.25)]">
+                Mentrix Línea de Tiempo
+              </span>
+              <span className="text-amber-400 text-sm">✦</span>
             </span>
-            <p className="text-[9px] text-white/35 m-0">
-              Aprende y desafía la historia de forma dinámica y divertida
+            <p className="text-[9px] text-amber-100/40 m-0 tracking-wide">
+              Viaja por la historia · Ordena los siglos · Conquista el tiempo
             </p>
 
-            {/* Menti flotando con aura y elementos orbitando */}
-            <div className="relative w-40 h-40 sm:w-44 sm:h-44 mt-1 flex items-center justify-center">
+            {/* Menti flotando dentro de un anillo de reloj/astrolabio dorado */}
+            <div className="relative w-44 h-44 sm:w-48 sm:h-48 mt-1 flex items-center justify-center">
               <div className="absolute inset-0 -m-6 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute inset-4 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute inset-4 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
+
+              {/* Anillo exterior punteado girando lento (engranaje temporal) */}
+              <motion.div
+                className="absolute inset-0 rounded-full border border-dashed border-amber-400/45 pointer-events-none"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              />
+              {/* Anillo interior sólido con marcas de hora */}
+              <div className="absolute inset-3 rounded-full border border-amber-300/25 pointer-events-none" />
+              {[0, 90, 180, 270].map((deg) => (
+                <span
+                  key={deg}
+                  className="absolute left-1/2 top-1/2 w-1.5 h-1.5 rounded-full bg-amber-300/80 shadow-[0_0_6px_rgba(252,211,77,0.8)] pointer-events-none"
+                  style={{ transform: `translate(-50%,-50%) rotate(${deg}deg) translateY(-5.4rem)` }}
+                />
+              ))}
 
               <motion.span
-                className="absolute -left-1 top-6 text-xl pointer-events-none"
+                className="absolute -left-2 top-6 text-xl pointer-events-none"
                 animate={{ y: [0, -8, 0], rotate: [0, 12, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 📜
               </motion.span>
               <motion.span
-                className="absolute -right-1 top-10 text-xl pointer-events-none"
+                className="absolute -right-2 top-10 text-xl pointer-events-none"
                 animate={{ y: [0, -10, 0], rotate: [0, -12, 0] }}
                 transition={{ duration: 4.6, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
               >
                 ⏳
               </motion.span>
               <motion.span
-                className="absolute right-3 bottom-4 text-base pointer-events-none"
+                className="absolute right-4 bottom-3 text-base pointer-events-none"
                 animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.15, 0.9] }}
                 transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
               >
@@ -172,23 +190,27 @@ export default function Home() {
               <motion.picture
                 animate={{ y: [0, -7, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-10 w-full h-full"
+                className="relative z-10 w-[82%] h-[82%]"
               >
                 <source srcSet="/mentrix-mascot.webp" type="image/webp" />
                 <img
                   src="/mentrix-mascot.png"
                   alt="Menti, viajero del tiempo"
-                  className="w-full h-full object-contain drop-shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
+                  className="w-full h-full object-contain drop-shadow-[0_10px_30px_rgba(245,158,11,0.3)]"
                 />
               </motion.picture>
             </div>
 
-            {/* Cápsula de diálogo (misma forma que Estudio Bíblico) */}
+            {/* Insignia dorada + cápsula de diálogo */}
+            <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-amber-500/45 px-3 py-0.5 rounded-full text-[10px] font-black text-amber-300 tracking-wider uppercase">
+              <span>⌛</span>
+              <span>Menti · Viajero del Tiempo</span>
+            </div>
             <motion.div
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mt-1 bg-blue-600/20 backdrop-blur-md rounded-full px-6 py-2.5 shadow-lg shadow-blue-900/20 max-w-sm"
+              className="mt-0.5 bg-blue-600/20 backdrop-blur-md rounded-full px-6 py-2.5 shadow-lg shadow-blue-900/20 border border-amber-400/25 max-w-sm"
             >
               <p className="text-white/95 text-xs sm:text-sm text-center font-medium m-0">
                 {getMentiMessage(nivel, racha)}
@@ -204,19 +226,20 @@ export default function Home() {
               transition={{ delay: 0.15 }}
               className="w-full rounded-2xl overflow-hidden relative shadow-lg"
               style={{
-                background: "linear-gradient(135deg, #1a1040 0%, #0f1a35 100%)",
-                border: "1px solid rgba(167, 139, 250, 0.25)",
+                background: "linear-gradient(135deg, #2a1d08 0%, #12183a 55%, #0f1a35 100%)",
+                border: "1px solid rgba(245, 158, 11, 0.4)",
+                boxShadow: "0 0 18px rgba(245,158,11,0.08), inset 0 1px 0 rgba(253,230,138,0.08)",
               }}
             >
               <div
                 className="absolute -top-5 -right-5 w-20 h-20 rounded-full pointer-events-none"
-                style={{ background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)" }}
+                style={{ background: "radial-gradient(circle, rgba(245, 158, 11, 0.22), transparent)" }}
               />
               <div className="px-3 pt-2.5 flex items-center justify-between">
-                <span className="text-[9px] font-bold text-[#A78BFA] tracking-[0.12em] uppercase">
+                <span className="text-[9px] font-bold text-amber-300 tracking-[0.12em] uppercase">
                   ✦ Efeméride del día
                 </span>
-                <span className="text-[9px] px-2 py-0.5 rounded bg-[#a78bfa]/15 text-[#A78BFA] border border-[#a78bfa]/20">
+                <span className="text-[9px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-200 border border-amber-400/30">
                   {efemeride.categoriaLabel || "Historia"}
                 </span>
               </div>
@@ -225,7 +248,7 @@ export default function Home() {
                   "{efemeride.resumenCorto}"
                 </p>
                 <div className="flex justify-between items-center gap-2 mt-2">
-                  <p className="text-[11px] font-bold text-[#A78BFA] truncate m-0 min-w-0">
+                  <p className="text-[11px] font-bold text-amber-300 truncate m-0 min-w-0">
                     {efemeride.anioTexto} · {efemeride.titulo}
                   </p>
                   <div className="flex gap-1.5 items-center shrink-0">
@@ -235,7 +258,7 @@ export default function Home() {
                         playSfx("tap");
                         setShowEfemerideModal(true);
                       }}
-                      className="px-2 py-1 rounded-md bg-[#a78bfa]/10 border border-[#a78bfa]/25 text-[#A78BFA] hover:bg-[#a78bfa]/20 text-[9px] font-semibold cursor-pointer"
+                      className="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-400/35 text-amber-200 hover:bg-amber-500/20 text-[9px] font-semibold cursor-pointer"
                     >
                       📖 Leer efeméride →
                     </button>
@@ -262,13 +285,22 @@ export default function Home() {
           transition={{ delay: 0.25, duration: 0.4 }}
           className="w-full flex flex-col gap-3 lg:col-span-7 lg:gap-4"
         >
+          {/* Divisor ornamental: modos de juego */}
+          <div className="hidden lg:flex items-center gap-2 px-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-400/40" />
+            <span className="text-amber-400/70 text-[8px]">◆</span>
+            <span className="text-[9px] font-bold tracking-[0.25em] text-amber-300/80 uppercase">Elige tu época</span>
+            <span className="text-amber-400/70 text-[8px]">◆</span>
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-400/40" />
+          </div>
+
           {/* Modos de juego */}
           {GAME_MODES.map((m) => (
             <Link key={m.to} to={m.to} onClick={() => playSfx("tap")}>
               <motion.div
                 whileTap={{ scale: 0.99, y: 1 }}
                 whileHover={{ y: -2 }}
-                className={`w-full bg-gradient-to-br ${m.className} border hover:shadow-2xl active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden`}
+                className={`w-full bg-gradient-to-br ${m.className} border hover:shadow-2xl active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden ring-1 ring-inset ring-amber-200/10`}
               >
                 <div className={`absolute -right-6 -top-8 w-24 h-24 rounded-full blur-2xl pointer-events-none ${m.glow}`} />
 
@@ -285,7 +317,10 @@ export default function Home() {
                 )}
 
                 <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
-                  <span className="text-xl lg:text-2xl drop-shadow-lg" style={{ color: m.iconColor }}>
+                  <span
+                    className="w-9 h-9 lg:w-10 lg:h-10 rounded-full flex items-center justify-center text-lg lg:text-xl bg-black/25 border border-amber-400/40 shadow-[0_0_10px_rgba(245,158,11,0.15)] shrink-0"
+                    style={{ color: m.iconColor }}
+                  >
                     {m.icon}
                   </span>
                   <div className="text-left">
@@ -299,9 +334,11 @@ export default function Home() {
 
           {/* ── GALERÍA DEL MUSEO: colección, no es un modo de juego ── */}
           <div className="mt-2 flex items-center gap-2 px-1">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-400/30" />
-            <span className="text-[9px] font-bold tracking-[0.2em] text-amber-300/70 uppercase">Tu colección</span>
-            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-400/30" />
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-400/40" />
+            <span className="text-amber-400/70 text-[8px]">◆</span>
+            <span className="text-[9px] font-bold tracking-[0.25em] text-amber-300/80 uppercase">Tu colección</span>
+            <span className="text-amber-400/70 text-[8px]">◆</span>
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-400/40" />
           </div>
 
           <div
@@ -389,8 +426,9 @@ export default function Home() {
       {/* ── PIE DE PÁGINA MOTIVACIONAL ── */}
       <div className="w-full text-center mt-4 py-2">
         <p className="text-[11px] sm:text-xs text-slate-400/50 font-medium flex items-center justify-center gap-2 m-0">
-          <span>👥</span>
+          <span className="text-amber-400/70">⏳</span>
           <span>Aprende · Deduce · Conquista la historia</span>
+          <span className="text-amber-400/70">⏳</span>
         </p>
       </div>
 
