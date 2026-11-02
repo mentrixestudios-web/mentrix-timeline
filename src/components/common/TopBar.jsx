@@ -34,24 +34,24 @@ export default function TopBar() {
     <>
       <header className="w-full mb-3 select-none">
         <div
-          className="flex items-center justify-between w-full rounded-2xl px-2 py-1.5 sm:px-3 sm:py-2 backdrop-blur-md shadow-lg"
+          className="flex items-center w-full rounded-[14px] px-2.5 py-1.5 backdrop-blur-md"
           style={{
             background: "rgba(30,45,77,0.7)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.07)",
           }}
         >
           {/* 1. Monedas / Tienda */}
-          <div className="shrink-0 flex items-center justify-start">
+          <div className="flex-1 flex items-center justify-start">
             <CoinDisplay amount={coins} size="sm" clickable={true} />
           </div>
 
           {/* Divisor */}
-          <div className="w-px h-5 bg-white/10 shrink-0 mx-1 sm:mx-1.5" />
+          <div className="w-px h-6 bg-white/[0.08] shrink-0" />
 
           {/* 2. Racha diaria */}
-          <div className="shrink-0 flex items-center justify-center gap-1 px-0.5">
+          <div className="flex-1 flex items-center justify-center gap-1.5 px-2">
             <span
-              className="text-base sm:text-lg leading-none shrink-0"
+              className="text-lg leading-none shrink-0"
               style={{
                 filter:
                   racha > 0
@@ -69,7 +69,7 @@ export default function TopBar() {
                 >
                   {racha}
                 </span>
-                <span className="text-[8px] text-slate-400">d</span>
+                <span className="text-[9px] text-slate-400">días</span>
               </div>
               <div
                 className="text-[7px] sm:text-[8px] font-bold uppercase tracking-wider leading-none mt-0.5"
@@ -81,10 +81,10 @@ export default function TopBar() {
           </div>
 
           {/* Divisor */}
-          <div className="w-px h-5 bg-white/10 shrink-0 mx-1 sm:mx-1.5" />
+          <div className="w-px h-6 bg-white/[0.08] shrink-0" />
 
           {/* 3. Nivel y XP */}
-          <div className="flex-1 min-w-[70px] max-w-[110px] flex flex-col items-center justify-center px-1 gap-0.5">
+          <div className="flex-1 flex flex-col items-center justify-center px-2 gap-[3px]">
             <span className="text-[9px] sm:text-[10px] font-bold text-purple-300 leading-tight">
               ⚡ Nivel {nivel}
             </span>
@@ -103,10 +103,10 @@ export default function TopBar() {
           </div>
 
           {/* Divisor */}
-          <div className="w-px h-5 bg-white/10 shrink-0 mx-1 sm:mx-1.5" />
+          <div className="w-px h-6 bg-white/[0.08] shrink-0" />
 
           {/* 4. Botones de acción / funciones */}
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0 ml-2">
             <AudioSettingsButton
               buttonClassName="rounded-lg bg-white/10 border border-white/15 p-1 sm:p-1.5 hover:bg-white/20 transition-all flex items-center justify-center cursor-pointer"
               iconClassName="w-3.5 h-3.5"

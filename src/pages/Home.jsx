@@ -1,48 +1,84 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  Sparkles, 
-  ArrowRight,
-  Shuffle,
-  BookOpen,
-  CheckCircle,
-  Flame
-} from "lucide-react";
-import MentrixMascot from "@/components/game/MentrixMascot";
+import { Sparkles, ChevronRight, Lock } from "lucide-react";
 import EfemerideModal from "@/components/home/EfemerideModal";
-import { 
-  getHighScore, 
-  getStreakInfo, 
-  getLevelInfo, 
-  getUnlockedCardIds 
-} from "@/utils/gameStorage";
-import { 
-  getEphemerisForDate, 
-  getRandomEphemeris, 
-  isDailyEphemerisReadToday 
+import { getStreakInfo, getLevelInfo, getUnlockedCardIds } from "@/utils/gameStorage";
+import {
+  getEphemerisForDate,
+  getRandomEphemeris,
+  isDailyEphemerisReadToday,
 } from "@/utils/dailyEphemeris";
+import { LEARNING_CARDS } from "@/data/learningCards";
 import { playSfx } from "@/utils/soundSystem";
+
+// Modos de juego: misma forma que Estudio Bíblico (icono + título centrados, esquinas redondeadas),
+// cada juego conserva su propia paleta de color.
+const GAME_MODES = [
+  {
+    to: "/config-ronda?modo=clasico",
+    icon: "⏳",
+    iconColor: "#A78BFA",
+    title: "Línea de Tiempo Clásica",
+    desc: "Ubica eventos cronológicamente, construye tu racha y gana monedas",
+    className:
+      "from-purple-950/80 via-purple-900/70 to-indigo-950/80 border-purple-400/35 hover:border-purple-300/50 hover:shadow-purple-500/20",
+    descClass: "text-purple-200/70",
+    glow: "bg-purple-400/15",
+  },
+  {
+    to: "/modos-online",
+    icon: "🌐",
+    iconColor: "#67e8f9",
+    title: "Duelo Online 1v1",
+    desc: "Crea una sala, invita por WhatsApp o únete con código en tiempo real",
+    className:
+      "from-cyan-950/80 via-blue-950/80 to-blue-950/80 border-cyan-400/35 hover:border-cyan-300/55 hover:shadow-cyan-500/20",
+    descClass: "text-cyan-200/70",
+    glow: "bg-cyan-400/15",
+    badge: "live",
+  },
+  {
+    to: "/duelo-amigos",
+    icon: "⚔️",
+    iconColor: "#fbbf24",
+    title: "Duelo Local & Menti IA",
+    desc: "Pasa el celular con amigos o desafía a la IA de Menti",
+    className:
+      "from-blue-950/80 via-blue-900/70 to-blue-950/80 border-amber-600/30 hover:border-amber-500/50 hover:shadow-amber-600/15",
+    descClass: "text-blue-200/70",
+    glow: "bg-amber-400/10",
+  },
+  {
+    to: "/desafio",
+    icon: "📅",
+    iconColor: "#34d399",
+    title: "Desafío Diario & Retos",
+    desc: "Desafío del día, Contrarreloj 60s y Supervivencia",
+    className:
+      "from-emerald-950/80 via-emerald-900/70 to-teal-950/80 border-emerald-400/30 hover:border-emerald-300/45 hover:shadow-emerald-500/15",
+    descClass: "text-emerald-200/70",
+    glow: "bg-emerald-400/10",
+    badge: "+50 🪙",
+  },
+];
 
 export default function Home() {
   const navigate = useNavigate();
-  const [highScore, setHighScore] = useState(getHighScore());
   const [streakData, setStreakData] = useState(getStreakInfo());
   const [levelData, setLevelData] = useState(getLevelInfo());
-  const [unlockedCardsCount, setUnlockedCardsCount] = useState(getUnlockedCardIds().length);
-  
+  const [unlockedIds, setUnlockedIds] = useState(getUnlockedCardIds());
+
   // Estado de la efeméride diaria
   const [efemeride, setEfemeride] = useState(() => getEphemerisForDate());
   const [showEfemerideModal, setShowEfemerideModal] = useState(false);
-  const [leidaHoy, setLeidaHoy] = useState(() => isDailyEphemerisReadToday());
 
   useEffect(() => {
     const handleUpdate = () => {
-      setHighScore(getHighScore());
       setStreakData(getStreakInfo());
       setLevelData(getLevelInfo());
-      setUnlockedCardsCount(getUnlockedCardIds().length);
-      setLeidaHoy(isDailyEphemerisReadToday());
+      setUnlockedIds(getUnlockedCardIds());
+      isDailyEphemerisReadToday();
     };
     window.addEventListener("mt_storage_updated", handleUpdate);
     return () => window.removeEventListener("mt_storage_updated", handleUpdate);
@@ -70,61 +106,97 @@ export default function Home() {
     navigate(`/config-ronda?categoria=${categoria || "todas"}`);
   };
 
+  // Vista previa de la galería: primero las desbloqueadas, luego siluetas bloqueadas
+  const totalCards = LEARNING_CARDS.length;
+  const unlockedCount = unlockedIds.length;
+  const museumPct = totalCards ? Math.min((unlockedCount / totalCards) * 100, 100) : 0;
+  const previewCards = useMemo(() => {
+    const unlocked = LEARNING_CARDS.filter((c) => unlockedIds.includes(c.id));
+    const locked = LEARNING_CARDS.filter((c) => !unlockedIds.includes(c.id));
+    return [...unlocked, ...locked].slice(0, 8).map((c) => ({
+      id: c.id,
+      icon: c.icono || c.icon || "📜",
+      title: c.title || c.titulo,
+      tier: c.tier,
+      unlocked: unlockedIds.includes(c.id),
+    }));
+  }, [unlockedIds]);
+
   return (
     <div className="w-full flex flex-col items-center gap-2 select-none pt-0">
-      
-      {/* ── CONTENEDOR RESPONSIVO: En móvil 1 columna, en PC 2 columnas (Idéntico a Estudio Bíblico) ── */}
       <div className="w-full flex flex-col gap-3 lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
-
-        {/* ══════════════════════════════════════════════════════════
-            COLUMNA IZQUIERDA EN PC: Menti + Efeméride Histórica del Día
-        ══════════════════════════════════════════════════════════ */}
+        {/* ══════════════ COLUMNA IZQUIERDA: Menti + Efeméride ══════════════ */}
         <div className="w-full flex flex-col items-center gap-3 lg:col-span-5 lg:bg-slate-900/40 lg:border lg:border-white/10 lg:rounded-3xl lg:p-6">
-          
-          {/* BRANDING: Título arriba, Menti centrado flotando libre, burbuja abajo (Idéntico a Estudio Bíblico) */}
+          {/* BRANDING: título, Menti flotando libre (sin caja) y cápsula de diálogo */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="w-full flex flex-col items-center gap-1 mb-1 px-1 text-center"
           >
-            <div className="flex flex-col items-center gap-0.5">
-              <span className="text-base font-extrabold text-[#e8f0ff] tracking-wide flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <span>Mentrix Línea de Tiempo</span>
-                <Sparkles className="w-4 h-4 text-amber-400" />
-              </span>
-              <p className="text-[9px] text-white/35 m-0">
-                Aprende y desafía la historia de forma dinámica y divertida
-              </p>
-            </div>
+            <span className="text-base font-extrabold text-[#e8f0ff] tracking-wide flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>Mentrix Línea de Tiempo</span>
+              <Sparkles className="w-4 h-4 text-amber-400" />
+            </span>
+            <p className="text-[9px] text-white/35 m-0">
+              Aprende y desafía la historia de forma dinámica y divertida
+            </p>
 
-            {/* Menti flotando libremente en el fondo con resplandor suave */}
-            <div className="relative flex flex-col items-center justify-center my-1.5 w-full">
-              <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
-                <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-2xl scale-125 pointer-events-none" />
-                <motion.img
-                  src="/mentrix-mascot.png"
-                  alt="Menti"
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-full h-full object-contain relative z-10 filter drop-shadow-[0_8px_30px_rgba(59,130,246,0.35)]"
-                />
-              </div>
+            {/* Menti flotando con aura y elementos orbitando */}
+            <div className="relative w-40 h-40 sm:w-44 sm:h-44 mt-1 flex items-center justify-center">
+              <div className="absolute inset-0 -m-6 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute inset-4 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
 
-              {/* Cápsula de diálogo única (Formato idéntico a Estudio Bíblico) */}
-              <motion.div
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-2 relative bg-blue-600/20 backdrop-blur-md rounded-full px-6 py-2 shadow-lg shadow-blue-900/20 border border-blue-400/20 max-w-sm"
+              <motion.span
+                className="absolute -left-1 top-6 text-xl pointer-events-none"
+                animate={{ y: [0, -8, 0], rotate: [0, 12, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
-                <p className="text-white/95 text-xs sm:text-sm text-center font-medium m-0">
-                  {getMentiMessage(nivel, racha)}
-                </p>
-              </motion.div>
+                📜
+              </motion.span>
+              <motion.span
+                className="absolute -right-1 top-10 text-xl pointer-events-none"
+                animate={{ y: [0, -10, 0], rotate: [0, -12, 0] }}
+                transition={{ duration: 4.6, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+              >
+                ⏳
+              </motion.span>
+              <motion.span
+                className="absolute right-3 bottom-4 text-base pointer-events-none"
+                animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.15, 0.9] }}
+                transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+              >
+                ✨
+              </motion.span>
+
+              <motion.picture
+                animate={{ y: [0, -7, 0] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                className="relative z-10 w-full h-full"
+              >
+                <source srcSet="/mentrix-mascot.webp" type="image/webp" />
+                <img
+                  src="/mentrix-mascot.png"
+                  alt="Menti, viajero del tiempo"
+                  className="w-full h-full object-contain drop-shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
+                />
+              </motion.picture>
             </div>
+
+            {/* Cápsula de diálogo (misma forma que Estudio Bíblico) */}
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-1 bg-blue-600/20 backdrop-blur-md rounded-full px-6 py-2.5 shadow-lg shadow-blue-900/20 max-w-sm"
+            >
+              <p className="text-white/95 text-xs sm:text-sm text-center font-medium m-0">
+                {getMentiMessage(nivel, racha)}
+              </p>
+            </motion.div>
           </motion.div>
 
-          {/* ── EFEMÉRIDE HISTÓRICA DEL DÍA (Idéntica al Versículo del Día) ── */}
+          {/* ── EFEMÉRIDE DEL DÍA (equivalente al Versículo del Día) ── */}
           {efemeride && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -133,36 +205,29 @@ export default function Home() {
               className="w-full rounded-2xl overflow-hidden relative shadow-lg"
               style={{
                 background: "linear-gradient(135deg, #1a1040 0%, #0f1a35 100%)",
-                border: "1px solid rgba(167, 139, 250, 0.25)"
+                border: "1px solid rgba(167, 139, 250, 0.25)",
               }}
             >
-              {/* Resplandor decorativo de fondo */}
-              <div 
+              <div
                 className="absolute -top-5 -right-5 w-20 h-20 rounded-full pointer-events-none"
                 style={{ background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)" }}
               />
-
-              {/* Cabecera de la Efeméride */}
-              <div className="px-3.5 pt-3 flex items-center justify-between">
-                <span className="text-[9px] font-bold text-[#A78BFA] tracking-wider uppercase">
-                  ✦ EFEMÉRIDE DEL DÍA
+              <div className="px-3 pt-2.5 flex items-center justify-between">
+                <span className="text-[9px] font-bold text-[#A78BFA] tracking-[0.12em] uppercase">
+                  ✦ Efeméride del día
                 </span>
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-[#a78bfa]/15 text-[#A78BFA] border border-[#a78bfa]/25">
+                <span className="text-[9px] px-2 py-0.5 rounded bg-[#a78bfa]/15 text-[#A78BFA] border border-[#a78bfa]/20">
                   {efemeride.categoriaLabel || "Historia"}
                 </span>
               </div>
-
-              {/* Contenido de la Efeméride */}
-              <div className="p-3.5 pt-2">
-                <p className="text-xs lg:text-sm italic text-slate-200 leading-relaxed mb-2.5 line-clamp-2 lg:line-clamp-none font-normal">
+              <div className="px-3 pt-2 pb-2.5">
+                <p className="text-xs lg:text-sm italic text-slate-200 leading-relaxed mb-2 line-clamp-2 lg:line-clamp-none m-0">
                   "{efemeride.resumenCorto}"
                 </p>
-
-                <div className="flex justify-between items-center pt-1">
-                  <p className="text-[11px] font-bold text-[#A78BFA] truncate m-0 pr-2">
+                <div className="flex justify-between items-center gap-2 mt-2">
+                  <p className="text-[11px] font-bold text-[#A78BFA] truncate m-0 min-w-0">
                     {efemeride.anioTexto} · {efemeride.titulo}
                   </p>
-
                   <div className="flex gap-1.5 items-center shrink-0">
                     <button
                       type="button"
@@ -170,15 +235,15 @@ export default function Home() {
                         playSfx("tap");
                         setShowEfemerideModal(true);
                       }}
-                      className="px-2.5 py-1 rounded-md bg-[#a78bfa]/15 border border-[#a78bfa]/30 text-[#A78BFA] hover:bg-[#a78bfa]/25 text-[9px] font-semibold transition-all cursor-pointer flex items-center gap-1"
+                      className="px-2 py-1 rounded-md bg-[#a78bfa]/10 border border-[#a78bfa]/25 text-[#A78BFA] hover:bg-[#a78bfa]/20 text-[9px] font-semibold cursor-pointer"
                     >
                       📖 Leer efeméride →
                     </button>
                     <button
                       type="button"
                       onClick={handleShuffleEfemeride}
-                      className="p-1 rounded-md bg-white/5 border border-white/10 hover:bg-white/15 text-xs text-slate-300 transition-all cursor-pointer"
-                      title="Ver otra efeméride histórica"
+                      className="px-1.5 py-1 rounded-md bg-white/5 border border-white/10 hover:bg-white/15 text-[11px] cursor-pointer"
+                      title="Otra efeméride"
                       aria-label="Otra efeméride"
                     >
                       🔀
@@ -190,131 +255,139 @@ export default function Home() {
           )}
         </div>
 
-        {/* ══════════════════════════════════════════════════════════
-            COLUMNA DERECHA EN PC: Botones Principales de Juego
-        ══════════════════════════════════════════════════════════ */}
+        {/* ══════════════ COLUMNA DERECHA: Modos de juego + Galería ══════════════ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.4 }}
           className="w-full flex flex-col gap-3 lg:col-span-7 lg:gap-4"
         >
-          {/* MÓDULO 1: Línea de Tiempo Clásica */}
-          <Link to="/config-ronda?modo=clasico" onClick={() => playSfx("tap")}>
-            <motion.div
-              whileTap={{ scale: 0.99, y: 1 }}
-              whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-purple-950/80 via-purple-900/70 to-indigo-950/80 border border-purple-400/35 hover:border-purple-300/50 hover:shadow-2xl hover:shadow-purple-500/20 active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden"
-            >
-              <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
-                <span className="text-xl lg:text-2xl drop-shadow-lg" style={{ color: "#A78BFA" }}>
-                  ⏳
-                </span>
-                <div className="text-left">
-                  <div>Línea de Tiempo Clásica</div>
-                  <div className="hidden lg:block text-xs font-normal text-purple-200/70">
-                    Ubica eventos cronológicamente, construye tu racha y gana monedas
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </Link>
+          {/* Modos de juego */}
+          {GAME_MODES.map((m) => (
+            <Link key={m.to} to={m.to} onClick={() => playSfx("tap")}>
+              <motion.div
+                whileTap={{ scale: 0.99, y: 1 }}
+                whileHover={{ y: -2 }}
+                className={`w-full bg-gradient-to-br ${m.className} border hover:shadow-2xl active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden`}
+              >
+                <div className={`absolute -right-6 -top-8 w-24 h-24 rounded-full blur-2xl pointer-events-none ${m.glow}`} />
 
-          {/* MÓDULO 2: Duelo Online 1v1 (Multijugador en Tiempo Real) */}
-          <Link to="/modos-online" onClick={() => playSfx("tap")}>
-            <motion.div
-              whileTap={{ scale: 0.99, y: 1 }}
-              whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-blue-950/80 via-blue-900/70 to-blue-950/80 border border-amber-600/30 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-600/15 active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden"
-            >
-              <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
-                <span className="text-xl lg:text-2xl drop-shadow-lg" style={{ color: "#67e8f9" }}>
-                  🌐
-                </span>
-                <div className="text-left">
-                  <div>Duelo Online 1v1</div>
-                  <div className="hidden lg:block text-xs font-normal text-blue-200/70">
-                    Salas en tiempo real, invita a un amigo por WhatsApp o únete con código
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </Link>
+                {m.badge === "live" && (
+                  <span className="absolute top-2 right-3 z-10 flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-400/15 border border-cyan-300/40 text-[8px] font-black tracking-wider text-cyan-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 animate-pulse" />
+                    EN VIVO
+                  </span>
+                )}
+                {m.badge && m.badge !== "live" && (
+                  <span className="absolute top-2 right-3 z-10 px-2 py-0.5 rounded-full bg-emerald-400/15 border border-emerald-300/35 text-[9px] font-black text-emerald-200">
+                    {m.badge}
+                  </span>
+                )}
 
-          {/* MÓDULO 3: Duelo Local & Menti IA */}
-          <Link to="/duelo-amigos" onClick={() => playSfx("tap")}>
-            <motion.div
-              whileTap={{ scale: 0.99, y: 1 }}
-              whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-indigo-950/80 via-indigo-900/70 to-slate-950/80 border border-indigo-400/30 hover:border-indigo-300/45 hover:shadow-2xl hover:shadow-indigo-500/15 active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden"
-            >
-              <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
-                <span className="text-xl lg:text-2xl drop-shadow-lg text-amber-400">
-                  ⚔️
-                </span>
-                <div className="text-left">
-                  <div>Duelo Local & Menti IA</div>
-                  <div className="hidden lg:block text-xs font-normal text-indigo-200/70">
-                    Pasa el celular con amigos en el mismo dispositivo o desafía a la IA de Menti
+                <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
+                  <span className="text-xl lg:text-2xl drop-shadow-lg" style={{ color: m.iconColor }}>
+                    {m.icon}
+                  </span>
+                  <div className="text-left">
+                    <div>{m.title}</div>
+                    <div className={`hidden lg:block text-xs font-normal ${m.descClass}`}>{m.desc}</div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          </Link>
+              </motion.div>
+            </Link>
+          ))}
 
-          {/* MÓDULO 4: Desafío Diario & Retos */}
-          <Link to="/desafio" onClick={() => playSfx("tap")}>
-            <motion.div
-              whileTap={{ scale: 0.99, y: 1 }}
-              whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-emerald-950/80 via-emerald-900/70 to-teal-950/80 border border-emerald-400/30 hover:border-emerald-300/45 hover:shadow-2xl hover:shadow-emerald-500/15 active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden"
-            >
-              <div className="flex items-center justify-center lg:justify-start gap-4 relative z-10">
-                <span className="text-xl lg:text-2xl drop-shadow-lg" style={{ color: "#34d399" }}>
-                  📅
-                </span>
-                <div className="text-left">
-                  <div>Desafío Diario & Retos</div>
-                  <div className="hidden lg:block text-xs font-normal text-emerald-200/70">
-                    Desafío del día con calendario de racha, Contrarreloj 60s y Supervivencia
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </Link>
+          {/* ── GALERÍA DEL MUSEO: colección, no es un modo de juego ── */}
+          <div className="mt-2 flex items-center gap-2 px-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-400/30" />
+            <span className="text-[9px] font-bold tracking-[0.2em] text-amber-300/70 uppercase">Tu colección</span>
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-400/30" />
+          </div>
 
-          {/* MÓDULO 5: Museo del Tiempo (Tarjeta destacada con marco dorado estilo "Biblia Interactiva") */}
-          <Link to="/estadisticas" onClick={() => playSfx("tap")}>
-            <motion.div
-              whileTap={{ scale: 0.99, y: 1 }}
-              whileHover={{ y: -2 }}
-              className="w-full bg-gradient-to-br from-blue-900/60 via-blue-950/70 to-blue-950/60 border-2 border-amber-500/50 hover:border-amber-400/70 hover:shadow-2xl hover:shadow-amber-600/25 rounded-2xl py-4 lg:py-5 px-5 transition-all duration-200"
-            >
-              <div className="flex items-center gap-5">
-                <div className="shrink-0 bg-amber-600/15 p-2.5 rounded-xl border border-amber-500/35">
-                  <BookOpen className="w-5 h-5 lg:w-6 lg:h-6 text-amber-500" />
+          <div
+            className="w-full rounded-2xl p-3.5 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, rgba(120,80,20,0.18) 0%, rgba(15,23,42,0.85) 60%)",
+              border: "1px solid rgba(245,158,11,0.35)",
+            }}
+          >
+            <div className="absolute -left-8 -bottom-10 w-28 h-28 rounded-full bg-amber-400/10 blur-2xl pointer-events-none" />
+
+            <div className="flex items-center justify-between gap-3 relative z-10">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="shrink-0 w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/35 flex items-center justify-center text-xl">
+                  🏛️
                 </div>
-                <div className="flex-1 text-left min-w-0">
-                  <div className="text-lg font-semibold text-white leading-tight">Museo del Tiempo</div>
-                  <div className="text-xs text-slate-300 font-normal truncate sm:text-clip">
-                    Colecciona y explora los 72 códices y reliquias históricas
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-white leading-tight">Museo del Tiempo</div>
+                  <div className="text-[10px] text-slate-400 leading-tight">
+                    Códices y reliquias que desbloqueas jugando
                   </div>
                 </div>
-                <div className="shrink-0">
-                  <img
-                    src="/icons/icon-192.png"
-                    alt="Museo"
-                    className="w-12 h-12 lg:w-14 lg:h-14 object-contain rounded-xl drop-shadow-lg border border-amber-400/30"
-                  />
-                </div>
               </div>
-            </motion.div>
-          </Link>
+              <div className="shrink-0 text-right">
+                <div className="text-sm font-black text-amber-300 leading-none">
+                  {unlockedCount}
+                  <span className="text-[10px] font-semibold text-slate-400">/{totalCards}</span>
+                </div>
+                <div className="text-[8px] uppercase tracking-wider text-slate-500 mt-0.5">cartas</div>
+              </div>
+            </div>
+
+            <div className="mt-2.5 h-1 rounded-full bg-slate-800 overflow-hidden relative z-10">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${museumPct}%`, background: "linear-gradient(90deg,#F59E0B,#FCD34D)" }}
+              />
+            </div>
+
+            {/* Tira de vistas previas */}
+            <div
+              className="mt-3 flex gap-2 overflow-x-auto pb-1 relative z-10"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {previewCards.map((c) => (
+                <Link
+                  key={c.id}
+                  to="/estadisticas?tab=galeria"
+                  onClick={() => playSfx("tap")}
+                  title={c.unlocked ? c.title : "Carta bloqueada"}
+                  className={`shrink-0 w-14 h-[74px] rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${
+                    c.unlocked
+                      ? c.tier === "reliquia"
+                        ? "bg-gradient-to-b from-amber-500/25 to-amber-900/20 border-amber-400/50 shadow-md shadow-amber-500/10"
+                        : "bg-gradient-to-b from-indigo-500/25 to-indigo-900/20 border-indigo-400/45"
+                      : "bg-slate-900/70 border-white/10 opacity-70"
+                  }`}
+                >
+                  {c.unlocked ? (
+                    <>
+                      <span className="text-xl leading-none">{c.icon}</span>
+                      <span className="text-[7px] px-1 text-center text-slate-300 leading-tight line-clamp-2">
+                        {c.title}
+                      </span>
+                    </>
+                  ) : (
+                    <Lock className="w-4 h-4 text-slate-500" />
+                  )}
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              to="/estadisticas?tab=galeria"
+              onClick={() => playSfx("tap")}
+              className="mt-2 relative z-10 flex items-center justify-center gap-1 py-2 rounded-xl bg-amber-500/10 border border-amber-400/30 hover:bg-amber-500/20 text-amber-200 text-xs font-bold transition-all"
+            >
+              Ver galería completa
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </motion.div>
       </div>
 
-      {/* ── PIE DE PÁGINA MOTIVACIONAL (Idéntico a Estudio Bíblico) ── */}
-      <div className="w-full text-center mt-6 py-2">
+      {/* ── PIE DE PÁGINA MOTIVACIONAL ── */}
+      <div className="w-full text-center mt-4 py-2">
         <p className="text-[11px] sm:text-xs text-slate-400/50 font-medium flex items-center justify-center gap-2 m-0">
           <span>👥</span>
           <span>Aprende · Deduce · Conquista la historia</span>
