@@ -10,8 +10,12 @@ import {
   BellOff, 
   X, 
   Sparkles,
-  Info
+  Info,
+  FileText,
+  Shield
 } from "lucide-react";
+import TermsAndConditionsModal from "./TermsAndConditionsModal";
+import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import { 
   isSoundEnabled, 
   setSoundEnabled, 
@@ -28,6 +32,8 @@ export default function AudioSettingsButton({
   iconClassName = "w-3.5 h-3.5",
 }) {
   const [open, setOpen] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [sound, setSound] = useState(isSoundEnabled());
   const [music, setMusic] = useState(isMusicEnabled());
   const [volume, setVolume] = useState(getMasterVolume());
@@ -228,6 +234,38 @@ export default function AudioSettingsButton({
                       {notifEnabled ? "Activo ✓" : "Activar"}
                     </button>
                   </div>
+                  {/* Aspectos Legales */}
+                  <div className="pt-2 space-y-2 border-t border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playSfx("tap");
+                        setShowTerms(true);
+                      }}
+                      className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-colors text-left cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5 text-[11px] font-bold text-amber-200/90">
+                        <FileText className="w-4 h-4 text-amber-400" />
+                        <span>Términos y Condiciones</span>
+                      </div>
+                      <span className="text-[10px] text-white/40">›</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playSfx("tap");
+                        setShowPrivacy(true);
+                      }}
+                      className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-colors text-left cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5 text-[11px] font-bold text-cyan-200/90">
+                        <Shield className="w-4 h-4 text-cyan-400" />
+                        <span>Política de Privacidad</span>
+                      </div>
+                      <span className="text-[10px] text-white/40">›</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* App Info Footer */}
@@ -244,6 +282,10 @@ export default function AudioSettingsButton({
         </AnimatePresence>,
         document.body
       )}
+
+      {/* Modales Legales independientes */}
+      <TermsAndConditionsModal open={showTerms} onClose={() => setShowTerms(false)} />
+      <PrivacyPolicyModal open={showPrivacy} onClose={() => setShowPrivacy(false)} />
     </>
   );
 }
