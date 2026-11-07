@@ -25,6 +25,11 @@ import {
   setMasterVolume, 
   playSfx 
 } from "@/utils/soundSystem";
+import { 
+  setNotificationsEnabled, 
+  sendTestNotification, 
+  isNotificationsEnabled 
+} from "@/utils/notificationSystem";
 import { toast } from "sonner";
 
 export default function AudioSettingsButton({
@@ -67,19 +72,37 @@ export default function AudioSettingsButton({
       toast.error("Notificaciones no soportadas en este navegador");
       return;
     }
+    if (notifEnabled) {
+      setNotifEnabled(false);
+      setNotificationsEnabled(false);
+      toast.message("Notificaciones desactivadas", { duration: 2500 });
+      return;
+    }
     try {
       const res = await Notification.requestPermission();
       if (res === "granted") {
         setNotifEnabled(true);
-        toast.success("¡Notificaciones activadas!");
+        setNotificationsEnabled(true);
+        toast.success("¡Notificaciones activadas con éxito! ⏳✨");
         playSfx("correct");
       } else {
         setNotifEnabled(false);
+        setNotificationsEnabled(false);
         toast.info("Permiso de notificaciones denegado");
       }
     } catch {
       toast.error("Error al solicitar notificaciones");
     }
+  };
+
+  const handleTestNotification = async () => {
+    playSfx("tap");
+    const ok = await sendTestNotification();
+    if (!ok) {
+      toast.error("Activa las notificaciones primero para probar");
+      return;
+    }
+    toast.message("Te llegará una notificación de prueba en 5 segundos.", { duration: 3000 });
   };
 
   return (
@@ -212,27 +235,38 @@ export default function AudioSettingsButton({
                   </div>
 
                   {/* Notificaciones */}
-                  <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-2.5">
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${notifEnabled ? "bg-emerald-500/20 text-emerald-300" : "bg-white/5 text-white/40"}`}>
-                        {notifEnabled ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
+                  <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${notifEnabled ? "bg-emerald-500/20 text-emerald-300" : "bg-white/5 text-white/40"}`}>
+                          {notifEnabled ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-white leading-tight">Notificaciones PWA</p>
+                          <p className="text-[10px] text-white/50">Desafíos y récord diario</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-xs font-bold text-white leading-tight">Notificaciones</p>
-                        <p className="text-[10px] text-white/50">Desafíos y récord diario</p>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={requestNotif}
+                        className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-colors cursor-pointer ${
+                          notifEnabled
+                            ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                            : "bg-white/10 text-white/80 hover:bg-white/20 border border-white/10"
+                        }`}
+                      >
+                        {notifEnabled ? "Activo ✓" : "Activar"}
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={requestNotif}
-                      className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-colors cursor-pointer ${
-                        notifEnabled
-                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                          : "bg-white/10 text-white/80 hover:bg-white/20 border border-white/10"
-                      }`}
-                    >
-                      {notifEnabled ? "Activo ✓" : "Activar"}
-                    </button>
+                    {notifEnabled && (
+                      <button
+                        type="button"
+                        onClick={handleTestNotification}
+                        className="w-full text-[10px] py-1.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-amber-200 font-semibold transition-all cursor-pointer border border-white/10 text-center"
+                      >
+                        Probar notificación (5s) ⏳
+                      </button>
+                    )}
                   </div>
                   {/* Aspectos Legales */}
                   <div className="pt-2 space-y-2 border-t border-white/10">

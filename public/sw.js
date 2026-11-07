@@ -86,14 +86,15 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = event.notification?.data?.target || "./";
+  const target = event.notification?.data?.target || "/";
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
       for (const client of windowClients) {
         if ("focus" in client) {
-          if (client.url.includes(target) || target === "./") {
-            return client.focus();
+          if ("navigate" in client && target && target !== "/" && !client.url.includes(target)) {
+            client.navigate(target);
           }
+          return client.focus();
         }
       }
       if (clients.openWindow) {

@@ -35,9 +35,11 @@ export async function showTimelineNotification(title, options = {}) {
   }
 
   const payload = {
-    icon: "./icons/icon-192.png",
-    badge: "./icons/icon-192.png",
+    icon: "/icons/icon-192.png",
+    badge: "/icons/icon-192.png",
     vibrate: [200, 100, 200],
+    tag: options.tag || "timeline-notif",
+    renotify: true,
     ...options,
   };
 
