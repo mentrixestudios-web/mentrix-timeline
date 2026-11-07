@@ -149,9 +149,9 @@ export function playSfx(type = "click") {
 }
 
 let bgmAudio = null;
-let currentBgmTrack = "/audio/bgm/home.mp3";
+let currentBgmTrack = "/audio/bgm/timeline_era_v1.mp3";
 
-export function playBgm(track = "/audio/bgm/home.mp3") {
+export function playBgm(track = "/audio/bgm/timeline_era_v1.mp3") {
   currentBgmTrack = track;
   if (!musicEnabled) return;
   if (typeof window === "undefined") return;
