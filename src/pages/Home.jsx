@@ -5,6 +5,7 @@ import { ChevronRight, Lock, Download } from "lucide-react";
 import { usePwaInstall, PwaInstallModal } from "@/components/pwa/InstallPwaBanner";
 import { playBgm } from "@/utils/soundSystem";
 import EfemerideModal from "@/components/home/EfemerideModal";
+import TutorialModal from "@/components/tutorial/TutorialModal";
 import { getStreakInfo, getLevelInfo, getUnlockedCardIds } from "@/utils/gameStorage";
 import {
   getEphemerisForDate,
@@ -79,6 +80,9 @@ export default function Home() {
   // Estado de la efeméride diaria
   const [efemeride, setEfemeride] = useState(() => getEphemerisForDate());
   const [showEfemerideModal, setShowEfemerideModal] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(() => {
+    return typeof localStorage !== "undefined" && localStorage.getItem("mt_tutorial_seen") !== "true";
+  });
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -464,6 +468,7 @@ export default function Home() {
         onClose={() => setShowInstructionsModal(false)}
         isIos={isIos}
       />
+      <TutorialModal open={showTutorial} onClose={() => setShowTutorial(false)} />
     </div>
   );
 }

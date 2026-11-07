@@ -1,4 +1,7 @@
 import MentrixAccountBanner from "@/components/auth/MentrixAccountBanner";
+import TermsAndConditionsModal from "@/components/settings/TermsAndConditionsModal";
+import PrivacyPolicyModal from "@/components/settings/PrivacyPolicyModal";
+import TutorialModal from "@/components/tutorial/TutorialModal";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -50,6 +53,9 @@ export default function Perfil() {
   const navigate = useNavigate();
   const [notifEnabled, setNotifEnabled] = useState(() => isNotificationsEnabled());
   const [showConfirmReset, setShowConfirmReset] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const [stats, setStats] = useState(getStats());
   const [highScore, setHighScore] = useState(getHighScore());
@@ -357,6 +363,44 @@ export default function Perfil() {
           )}
         </div>
       </div>
+
+      {/* ── GUÍA Y ASPECTOS LEGALES ── */}
+      <div className="bg-[#0b1328]/80 border border-white/10 rounded-2xl p-4 space-y-3 shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-base">⚖️</span>
+            <span className="text-white font-black text-sm">Información Legal & Guías</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowTutorial(true)}
+            className="px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            📖 Ver Tutorial
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 pt-1">
+          <button
+            type="button"
+            onClick={() => setShowTerms(true)}
+            className="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/90 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            📄 Términos
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowPrivacy(true)}
+            className="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/90 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            🛡️ Privacidad
+          </button>
+        </div>
+      </div>
+
+      <TermsAndConditionsModal open={showTerms} onClose={() => setShowTerms(false)} />
+      <PrivacyPolicyModal open={showPrivacy} onClose={() => setShowPrivacy(false)} />
+      <TutorialModal open={showTutorial} onClose={() => setShowTutorial(false)} />
 
       {/* ── SELLO OFICIAL MENTRIX STUDIOS ── */}
       <div className="rounded-2xl bg-[#0b1328]/80 border border-white/10 p-3.5 flex items-center justify-between text-xs">
