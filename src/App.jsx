@@ -19,6 +19,9 @@ import { scheduleTimelineNotifications } from "@/utils/notificationSystem";
 export default function App() {
   useEffect(() => {
     scheduleTimelineNotifications();
+    if (typeof navigator !== "undefined" && navigator.storage?.persist) {
+      navigator.storage.persist().catch(() => {});
+    }
   }, []);
 
   return (

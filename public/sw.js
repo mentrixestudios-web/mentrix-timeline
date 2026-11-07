@@ -1,11 +1,13 @@
-const CACHE_NAME = "mentrix-timeline-v2.6.1";
+const CACHE_NAME = "mentrix-timeline-v2.6.2";
 const CORE_ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./icons/apple-touch-icon.png"
+  "./icons/apple-touch-icon.png",
+  "./icons/badge-monochrome.png",
+  "./icons/menti-192.png"
 ];
 
 self.addEventListener("install", (event) => {

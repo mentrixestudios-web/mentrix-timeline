@@ -35,6 +35,11 @@ export function isMusicEnabled() {
 export function setMusicEnabled(val) {
   musicEnabled = !!val;
   localStorage.setItem("mt_music_enabled", String(musicEnabled));
+  if (musicEnabled) {
+    playBgm(currentBgmTrack);
+  } else {
+    pauseBgm();
+  }
 }
 
 export function getMasterVolume() {
@@ -44,6 +49,9 @@ export function getMasterVolume() {
 export function setMasterVolume(val) {
   masterVolume = Math.max(0, Math.min(1, parseFloat(val) || 0.7));
   localStorage.setItem("mt_volume", String(masterVolume));
+  if (bgmAudio) {
+    bgmAudio.volume = masterVolume * 0.35;
+  }
 }
 
 export function playSfx(type = "click") {
@@ -137,5 +145,31 @@ export function playSfx(type = "click") {
     }
   } catch (e) {
     console.warn("Audio SFX notice:", e);
+  }
+}
+
+let bgmAudio = null;
+let currentBgmTrack = "/audio/bgm/home.mp3";
+
+export function playBgm(track = "/audio/bgm/home.mp3") {
+  currentBgmTrack = track;
+  if (!musicEnabled) return;
+  if (typeof window === "undefined") return;
+  try {
+    if (!bgmAudio) {
+      bgmAudio = new Audio(track);
+      bgmAudio.loop = true;
+      bgmAudio.volume = masterVolume * 0.35;
+    } else if (bgmAudio.src !== new URL(track, window.location.href).href) {
+      bgmAudio.src = track;
+    }
+    bgmAudio.volume = masterVolume * 0.35;
+    bgmAudio.play().catch(() => {});
+  } catch {}
+}
+
+export function pauseBgm() {
+  if (bgmAudio) {
+    try { bgmAudio.pause(); } catch {}
   }
 }

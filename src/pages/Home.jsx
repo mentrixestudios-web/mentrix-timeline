@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight, Lock } from "lucide-react";
+import { ChevronRight, Lock, Download } from "lucide-react";
+import { usePwaInstall, PwaInstallModal } from "@/components/pwa/InstallPwaBanner";
+import { playBgm } from "@/utils/soundSystem";
 import EfemerideModal from "@/components/home/EfemerideModal";
 import { getStreakInfo, getLevelInfo, getUnlockedCardIds } from "@/utils/gameStorage";
 import {
@@ -64,6 +66,11 @@ const GAME_MODES = [
 ];
 
 export default function Home() {
+  const { isStandalone, isIos, showInstructionsModal, setShowInstructionsModal, triggerInstall } = usePwaInstall();
+
+  useEffect(() => {
+    playBgm("/audio/bgm/home.mp3");
+  }, []);
   const navigate = useNavigate();
   const [streakData, setStreakData] = useState(getStreakInfo());
   const [levelData, setLevelData] = useState(getLevelInfo());
@@ -423,6 +430,17 @@ export default function Home() {
         </motion.div>
       </div>
 
+      {/* Botón Instalar en móvil si no está instalada */}
+            {!isStandalone && (
+              <button
+                onClick={triggerInstall}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-400/30 text-purple-200 font-semibold text-xs transition-all cursor-pointer mt-3"
+              >
+                <Download className="w-4 h-4 text-purple-400" />
+                <span>Instalar Línea de Tiempo como App</span>
+              </button>
+            )}
+
       {/* ── PIE DE PÁGINA MOTIVACIONAL ── */}
       <div className="w-full text-center mt-4 py-2">
         <p className="text-[11px] sm:text-xs text-slate-400/50 font-medium flex items-center justify-center gap-2 m-0">
@@ -439,6 +457,12 @@ export default function Home() {
         efemeride={efemeride}
         onShuffle={handleShuffleEfemeride}
         onPlayCategory={handlePlayCategory}
+      />
+
+      <PwaInstallModal
+        open={showInstructionsModal}
+        onClose={() => setShowInstructionsModal(false)}
+        isIos={isIos}
       />
     </div>
   );
