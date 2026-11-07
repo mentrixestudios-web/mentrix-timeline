@@ -1,4 +1,4 @@
-const CACHE_NAME = "mentrix-timeline-v2.6.7";
+const CACHE_NAME = "mentrix-timeline-v2.6.8";
 const CORE_ASSETS = [
   "./",
   "./index.html",

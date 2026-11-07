@@ -100,38 +100,54 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       return;
     }
 
-    const initAuth = async () => {
-      try {
-        if (typeof window !== "undefined" && window.location.search) {
-          const params = new URLSearchParams(window.location.search);
-          const code = params.get("code");
-          if (code) {
-            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-            if (!error && data?.session?.user) {
-              setUser(data.session.user);
-              syncWithCloud(data.session.user);
-              const cleanUrl = window.location.origin + window.location.pathname;
-              window.history.replaceState(null, "", cleanUrl);
-              setLoading(false);
-              return;
-            }
+    // 1. Detectar si la URL trajo algún error de OAuth
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(
+        window.location.hash.startsWith("#") ? window.location.hash.substring(1) : window.location.hash
+      );
+      const errorMsg =
+        searchParams.get("error_description") ||
+        hashParams.get("error_description") ||
+        searchParams.get("error") ||
+        hashParams.get("error");
+      if (errorMsg) {
+        toast.error(`Error al autenticar: ${decodeURIComponent(errorMsg)}`, { duration: 6000 });
+      }
+    }
+
+    // 2. Suscribirse síncronamente a los cambios de estado de Supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const u = session?.user ?? null;
+      setUser(u);
+      setLoading(false);
+
+      if (u) {
+        await syncWithCloud(u);
+      }
+
+      if (event === "SIGNED_IN" && u) {
+        const name = u.user_metadata?.full_name || u.email?.split("@")[0] || "Jugador";
+        toast.success(`☁️ ¡Bienvenido, ${name}! Sesión iniciada con éxito.`);
+        if (typeof window !== "undefined") {
+          if (window.location.hash.includes("access_token") || window.location.search.includes("code=")) {
+            window.history.replaceState(null, "", window.location.pathname);
           }
         }
-
-        const { data: { session } } = await supabase.auth.getSession();
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          syncWithCloud(session.user);
-        }
-      } catch (e) {
-        console.warn("Mentrix initAuth error:", e);
-      } finally {
-        setLoading(false);
       }
-    };
+    });
 
-    initAuth();
+    // 3. Obtener sesión almacenada localmente
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        syncWithCloud(u);
+      }
+      setLoading(false);
+    });
 
+    // 4. Reconectar inmediatamente si el usuario vuelve a la app (ej. tras autenticarse en Chrome)
     const handleAppResume = async () => {
       if (document.visibilityState === "visible") {
         try {
@@ -145,34 +161,12 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
               return prev;
             });
           }
-        } catch {
-          // ignore
-        }
+        } catch {}
       }
     };
 
     document.addEventListener("visibilitychange", handleAppResume);
     window.addEventListener("focus", handleAppResume);
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      const u = session?.user ?? null;
-      setUser(u);
-      if (u) {
-        await syncWithCloud(u);
-      }
-      if (event === "SIGNED_IN") {
-        const name = u?.user_metadata?.full_name || u?.email?.split("@")[0] || "Usuario";
-        toast.success(`☁️ ¡Sesión iniciada con éxito! Bienvenido, ${name}.`);
-        if (typeof window !== "undefined") {
-          if (window.location.hash.includes("access_token")) {
-            window.history.replaceState(null, "", window.location.pathname);
-          }
-          if (window.location.search.includes("code=")) {
-            window.history.replaceState(null, "", window.location.pathname);
-          }
-        }
-      }
-    });
 
     return () => {
       subscription.unsubscribe();
@@ -188,14 +182,17 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       return;
     }
     try {
-      const cleanRedirect = window.location.origin + window.location.pathname;
-      const { error } = await supabase.auth.signInWithOAuth({
+      const cleanRedirect = `${window.location.origin}/Perfil`;
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: cleanRedirect,
         },
       });
       if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
     } catch (err) {
       toast.error(err?.message || "Error al conectar con Google.");
     }
@@ -211,6 +208,10 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       password,
     });
     if (error) throw error;
+    if (data?.user) {
+      setUser(data.user);
+      await syncWithCloud(data.user);
+    }
     return data;
   };
 
@@ -229,6 +230,10 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       },
     });
     if (error) throw error;
+    if (data?.user) {
+      setUser(data.user);
+      await syncWithCloud(data.user);
+    }
     return data;
   };
 
