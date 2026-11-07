@@ -53,9 +53,16 @@ export default function MentrixAccountBanner({ compact = false }) {
             </div>
 
             <div className="text-right shrink-0">
-              <span className="text-[11px] font-bold text-emerald-400 group-hover:underline">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick();
+                }}
+                className="text-[11px] font-bold text-emerald-400 group-hover:underline bg-transparent border-0 cursor-pointer p-0"
+              >
                 Gestionar
-              </span>
+              </button>
             </div>
           </div>
         ) : (
@@ -85,7 +92,11 @@ export default function MentrixAccountBanner({ compact = false }) {
             <div className="relative z-10 shrink-0">
               <button
                 type="button"
-                className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[11px] shadow-md shadow-amber-500/25 group-hover:scale-102 transition-transform cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick();
+                }}
+                className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[11px] shadow-md shadow-amber-500/25 hover:brightness-110 active:scale-95 transition-all cursor-pointer"
               >
                 Conectar
               </button>

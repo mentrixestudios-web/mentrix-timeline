@@ -37,12 +37,22 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
     event: "mt_storage_updated",
   };
 
-  // Función de sincronización bidireccional inteligente
+  // Función de sincronización bidireccional inteligente (Billetera Global Unificada Mentrix)
   const syncWithCloud = useCallback(async (currentUser) => {
     if (!currentUser || !supabase) return;
     try {
       const meta = currentUser.user_metadata || {};
-      const cloudCoins = meta[`${gameId}_coins`];
+      
+      // Monedas unificadas en la nube: busca balance global o el mayor entre los juegos
+      const candidateCoins = [
+        meta.mentrix_global_coins,
+        meta.timeline_coins,
+        meta.eb_coins,
+        meta.mind_coins,
+        meta[`${gameId}_coins`],
+      ].filter((v) => v !== undefined && v !== null && Number.isFinite(Number(v))).map(Number);
+
+      const cloudGlobalCoins = candidateCoins.length > 0 ? Math.max(...candidateCoins) : undefined;
       const cloudStarter = meta[`${gameId}_starter_claimed`];
       const cloudStreak = meta[`${gameId}_streak`];
 
@@ -50,10 +60,10 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       const localStarter = localStorage.getItem(storageKeys.starter) === "true";
       const localStreak = parseInt(localStorage.getItem(storageKeys.streak) || "0", 10);
 
-      // Determinar balance definitivo (el mayor entre local y nube)
+      // Balance definitivo: el mayor entre local y nube global para nunca perder monedas
       let finalCoins = localCoins;
-      if (cloudCoins !== undefined && Number.isFinite(Number(cloudCoins))) {
-        finalCoins = Math.max(localCoins, Number(cloudCoins));
+      if (cloudGlobalCoins !== undefined) {
+        finalCoins = Math.max(localCoins, cloudGlobalCoins);
       }
 
       const finalStarter = Boolean(localStarter || cloudStarter);
@@ -70,17 +80,20 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
         localStorage.setItem(storageKeys.streak, finalStreak.toString());
       }
 
-      // Notificar a la UI
+      // Notificar a todos los escuchadores de almacenamiento locales
       window.dispatchEvent(new Event(storageKeys.event));
+      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new Event("mt_storage_updated"));
 
-      // Si local tiene datos más recientes o no estaban en la nube, actualizar la nube
       if (
-        cloudCoins !== finalCoins ||
+        meta.mentrix_global_coins !== finalCoins ||
+        meta[`${gameId}_coins`] !== finalCoins ||
         cloudStarter !== finalStarter ||
         cloudStreak !== finalStreak
       ) {
         await supabase.auth.updateUser({
           data: {
+            mentrix_global_coins: finalCoins,
             [`${gameId}_coins`]: finalCoins,
             [`${gameId}_starter_claimed`]: finalStarter,
             [`${gameId}_streak`]: finalStreak,
@@ -147,42 +160,64 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       setLoading(false);
     });
 
-    // 4. Reconectar inmediatamente si el usuario vuelve a la app (ej. tras autenticarse en Chrome)
+    // Reconectar e importar cambios inmediatamente si el usuario vuelve a la app
     const handleAppResume = async () => {
       if (document.visibilityState === "visible") {
         try {
           const { data: { session } } = await supabase.auth.getSession();
           if (session?.user) {
-            setUser((prev) => {
-              if (prev?.id !== session.user.id) {
-                syncWithCloud(session.user);
-                return session.user;
-              }
-              return prev;
-            });
+            setUser(session.user);
+            await syncWithCloud(session.user);
           }
         } catch {}
       }
     };
 
+    // Auto-backup de monedas cuando cambian localmente mientras el usuario está conectado
+    let saveTimeout = null;
+    const handleCoinsChange = () => {
+      const currentCoins = parseInt(localStorage.getItem(storageKeys.coins) || "0", 10);
+      if (saveTimeout) clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(async () => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user && currentCoins >= 0) {
+            await supabase.auth.updateUser({
+              data: {
+                mentrix_global_coins: currentCoins,
+                [`${gameId}_coins`]: currentCoins,
+                last_backup_at: new Date().toISOString(),
+              },
+            });
+          }
+        } catch {}
+      }, 1000);
+    };
+
     document.addEventListener("visibilitychange", handleAppResume);
     window.addEventListener("focus", handleAppResume);
+    window.addEventListener(storageKeys.event, handleCoinsChange);
+    window.addEventListener("storage", handleCoinsChange);
 
     return () => {
+      if (saveTimeout) clearTimeout(saveTimeout);
       subscription.unsubscribe();
       document.removeEventListener("visibilitychange", handleAppResume);
       window.removeEventListener("focus", handleAppResume);
+      window.removeEventListener(storageKeys.event, handleCoinsChange);
+      window.removeEventListener("storage", handleCoinsChange);
     };
-  }, [syncWithCloud]);
+  }, [syncWithCloud, storageKeys.event, storageKeys.coins, gameId]);
 
-  // Login con Google
+  // Login con Google (redirige de vuelta a la misma pantalla donde estaba el usuario)
   const loginWithGoogle = async () => {
     if (!isSupabaseConfigured() || !supabase) {
       toast.error("El servicio de cuentas no está configurado.");
       return;
     }
     try {
-      const cleanRedirect = `${window.location.origin}/Perfil`;
+      const currentPath = typeof window !== "undefined" ? window.location.pathname : "/Perfil";
+      const cleanRedirect = `${window.location.origin}${currentPath}`;
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -249,13 +284,15 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
     }
   };
 
-  // Guardar balance en la nube tras compras o partidas
+  // Guardar balance en la nube tras compras o partidas (Billetera Unificada)
   const backupCoinsToCloud = async (newCoinsAmount) => {
     if (!user || !supabase) return;
     try {
+      const cleanAmount = Math.max(0, parseInt(newCoinsAmount, 10) || 0);
       await supabase.auth.updateUser({
         data: {
-          [`${gameId}_coins`]: newCoinsAmount,
+          mentrix_global_coins: cleanAmount,
+          [`${gameId}_coins`]: cleanAmount,
           last_backup_at: new Date().toISOString(),
         },
       });
