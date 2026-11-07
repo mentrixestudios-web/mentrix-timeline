@@ -116,8 +116,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || "Mentrix Línea de Tiempo", {
       body: data.body,
-      icon: "./icons/icon-192.png",
-      badge: "./icons/icon-192.png",
+      icon: "/icons/menti-192.png",
+      badge: "/icons/badge-monochrome.png",
       data: data.data || { target: "./" },
     })
   );
