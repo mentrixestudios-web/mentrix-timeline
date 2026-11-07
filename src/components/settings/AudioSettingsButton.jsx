@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -12,7 +12,10 @@ import {
   Sparkles,
   Info,
   FileText,
-  Shield
+  Shield,
+  Download,
+  RefreshCw,
+  CheckCircle2
 } from "lucide-react";
 import TermsAndConditionsModal from "./TermsAndConditionsModal";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
@@ -30,6 +33,7 @@ import {
   sendTestNotification, 
   isNotificationsEnabled 
 } from "@/utils/notificationSystem";
+import { compareVersionStrings, fetchLatestAppInfo, getInstalledAppInfo } from "@/lib/appVersion";
 import { toast } from "sonner";
 
 export default function AudioSettingsButton({
@@ -42,9 +46,89 @@ export default function AudioSettingsButton({
   const [sound, setSound] = useState(isSoundEnabled());
   const [music, setMusic] = useState(isMusicEnabled());
   const [volume, setVolume] = useState(getMasterVolume());
+  const [updating, setUpdating] = useState(false);
   const [notifEnabled, setNotifEnabled] = useState(
     typeof Notification !== "undefined" && Notification.permission === "granted"
   );
+
+  const [appInfo, setAppInfo] = useState({
+    version: "2.6.7",
+    build: "27",
+    appName: "Mentrix Línea de Tiempo",
+  });
+
+  const [updateState, setUpdateState] = useState({
+    checking: false,
+    checked: false,
+    available: false,
+    latestVersion: null,
+    message: "Toca para buscar si existe una versión más reciente.",
+  });
+
+  useEffect(() => {
+    let mounted = true;
+    getInstalledAppInfo().then((info) => {
+      if (mounted) setAppInfo(info);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleCheckUpdates = useCallback(async () => {
+    setUpdateState((prev) => ({
+      ...prev,
+      checking: true,
+      checked: true,
+      message: "Buscando actualizaciones disponibles...",
+    }));
+
+    try {
+      const latest = await fetchLatestAppInfo();
+      const isNewerVersion = compareVersionStrings(latest.version, appInfo.version) > 0;
+      const isNewerBuild =
+        compareVersionStrings(latest.version, appInfo.version) === 0 &&
+        Number(latest.build || 0) > Number(appInfo.build || 0);
+      const available = isNewerVersion || isNewerBuild;
+
+      setUpdateState({
+        checking: false,
+        checked: true,
+        available,
+        latestVersion: `${latest.version} (build ${latest.build})`,
+        message: available
+          ? `¡Hay una nueva versión disponible: ${latest.version} (build ${latest.build})!`
+          : "Tu app ya cuenta con la última versión disponible.",
+      });
+    } catch {
+      setUpdateState({
+        checking: false,
+        checked: true,
+        available: false,
+        latestVersion: null,
+        message: "No fue posible verificar actualizaciones en este momento.",
+      });
+    }
+  }, [appInfo.build, appInfo.version]);
+
+  const handleApplyUpdate = useCallback(async () => {
+    setUpdating(true);
+    try {
+      if ("serviceWorker" in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const reg of registrations) {
+          await reg.unregister();
+        }
+      }
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      }
+    } catch (err) {
+      console.warn("Error al limpiar caché:", err);
+    }
+    window.location.reload();
+  }, []);
 
   const toggleSound = () => {
     const next = !sound;
@@ -120,12 +204,10 @@ export default function AudioSettingsButton({
         <Settings className={`${iconClassName} ${sound || music ? "text-cyan-300" : "text-white/60"}`} />
       </motion.button>
 
-      {/* Renderizado mediante Portal en document.body para evitar que cualquier elemento lo tape */}
       {typeof document !== "undefined" && createPortal(
         <AnimatePresence>
           {open && (
             <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-              {/* Fondo oscuro con desenfoque que cierra al hacer clic */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -134,18 +216,15 @@ export default function AudioSettingsButton({
                 onClick={() => setOpen(false)}
               />
 
-              {/* Modal Centrado */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 15 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 15 }}
                 transition={{ duration: 0.2 }}
-                className="relative z-10 w-full max-w-sm bg-gradient-to-b from-[#0c162e] via-[#091124] to-[#070b18] border-2 border-amber-400/50 rounded-3xl p-5 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-white select-none overflow-hidden"
+                className="relative z-10 w-full max-w-sm max-h-[90vh] overflow-y-auto bg-gradient-to-b from-[#0c162e] via-[#091124] to-[#070b18] border-2 border-amber-400/50 rounded-3xl p-5 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-white select-none"
               >
-                {/* Luz ambiental dorada en la esquina */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
-                {/* Header del modal */}
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-amber-500/20">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center">
@@ -156,7 +235,7 @@ export default function AudioSettingsButton({
                         Configuración
                       </h3>
                       <p className="text-[10px] text-amber-300/70 font-semibold">
-                        Ajustes de Sonido y Sistema
+                        Ajustes de Sonido, Nube y Sistema
                       </p>
                     </div>
                   </div>
@@ -169,8 +248,75 @@ export default function AudioSettingsButton({
                   </button>
                 </div>
 
-                {/* Opciones de Audio */}
                 <div className="space-y-3.5">
+                  {/* SECCIÓN VERSIÓN Y ACTUALIZACIONES */}
+                  <div className="rounded-2xl border border-white/15 bg-white/[0.04] p-3 shadow-inner">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-[11px] font-extrabold text-white">Versión de la app</div>
+                        <div className="mt-0.5 text-[10px] text-amber-300 font-mono font-bold">
+                          v{appInfo.version} · build {appInfo.build}
+                        </div>
+                      </div>
+                      <div className="rounded-lg bg-emerald-500/20 border border-emerald-400/30 px-2 py-0.5 text-[9px] font-extrabold text-emerald-300 flex items-center gap-1">
+                        <CheckCircle2 className="w-2.5 h-2.5" />
+                        <span>Instalada</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-2.5 rounded-xl border border-white/10 bg-black/30 p-2.5">
+                      <div className="flex items-start gap-2">
+                        <Download
+                          className={`mt-0.5 h-4 w-4 shrink-0 ${
+                            updateState.available ? "text-emerald-300 animate-bounce" : "text-white/45"
+                          }`}
+                        />
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold text-white/90">Estado de actualización</div>
+                          <div className="text-[10px] leading-relaxed text-white/60">
+                            {updateState.message}
+                          </div>
+                          {updateState.latestVersion ? (
+                            <div className="mt-1 text-[10px] font-semibold text-amber-300">
+                              Última detectada: {updateState.latestVersion}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+
+                    {updateState.available && (
+                      <button
+                        type="button"
+                        onClick={handleApplyUpdate}
+                        disabled={updating}
+                        className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 px-3 py-2.5 text-[11px] font-black text-slate-950 shadow-lg shadow-emerald-500/30 transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
+                      >
+                        <RefreshCw className={`h-4 w-4 ${updating ? "animate-spin" : ""}`} />
+                        {updating ? "Actualizando e instalando..." : "¡Actualizar ahora!"}
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={handleCheckUpdates}
+                      disabled={updateState.checking || updating}
+                      className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-amber-300/25 bg-amber-500/10 px-3 py-1.5 text-[10px] font-extrabold text-amber-200 transition-colors hover:bg-amber-500/20 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+                    >
+                      <RefreshCw className={`h-3.5 w-3.5 ${updateState.checking ? "animate-spin" : ""}`} />
+                      {updateState.checking ? "Verificando..." : "Buscar actualizaciones"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleApplyUpdate}
+                      disabled={updating}
+                      className="mt-1.5 text-[9px] text-slate-400 hover:text-amber-300 underline text-center w-full block cursor-pointer transition-colors"
+                    >
+                      Forzar recarga / Refrescar caché
+                    </button>
+                  </div>
+
                   {/* Efectos de sonido */}
                   <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10">
                     <div className="flex items-center gap-2.5">
@@ -268,6 +414,7 @@ export default function AudioSettingsButton({
                       </button>
                     )}
                   </div>
+
                   {/* Aspectos Legales */}
                   <div className="pt-2 space-y-2 border-t border-white/10">
                     <button
@@ -302,13 +449,12 @@ export default function AudioSettingsButton({
                   </div>
                 </div>
 
-                {/* App Info Footer */}
                 <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-white/50">
                   <span className="flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                    <strong className="text-amber-200">Mentrix Línea de Tiempo</strong>
+                    <strong className="text-amber-200">{appInfo.appName}</strong>
                   </span>
-                  <span className="font-mono">v1.0.0</span>
+                  <span className="font-mono">v{appInfo.version}</span>
                 </div>
               </motion.div>
             </div>
@@ -317,7 +463,6 @@ export default function AudioSettingsButton({
         document.body
       )}
 
-      {/* Modales Legales independientes */}
       <TermsAndConditionsModal open={showTerms} onClose={() => setShowTerms(false)} />
       <PrivacyPolicyModal open={showPrivacy} onClose={() => setShowPrivacy(false)} />
     </>

@@ -50,13 +50,12 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       const localStarter = localStorage.getItem(storageKeys.starter) === "true";
       const localStreak = parseInt(localStorage.getItem(storageKeys.streak) || "0", 10);
 
-      // Determinar balance definitivo (máximo entre local y nube para nunca perder monedas)
+      // Determinar balance definitivo (el mayor entre local y nube)
       let finalCoins = localCoins;
-      if (cloudCoins !== undefined && Number.isFinite(cloudCoins)) {
+      if (cloudCoins !== undefined && Number.isFinite(Number(cloudCoins))) {
         finalCoins = Math.max(localCoins, Number(cloudCoins));
       }
 
-      // Si la nube ya marcó el starter pack como reclamado, proteger localmente
       const finalStarter = Boolean(localStarter || cloudStarter);
       const finalStreak = Math.max(localStreak, Number(cloudStreak) || 0);
 
@@ -101,13 +100,59 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       return;
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        syncWithCloud(session.user);
+    const initAuth = async () => {
+      try {
+        if (typeof window !== "undefined" && window.location.search) {
+          const params = new URLSearchParams(window.location.search);
+          const code = params.get("code");
+          if (code) {
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+            if (!error && data?.session?.user) {
+              setUser(data.session.user);
+              syncWithCloud(data.session.user);
+              const cleanUrl = window.location.origin + window.location.pathname;
+              window.history.replaceState(null, "", cleanUrl);
+              setLoading(false);
+              return;
+            }
+          }
+        }
+
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          syncWithCloud(session.user);
+        }
+      } catch (e) {
+        console.warn("Mentrix initAuth error:", e);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
+
+    initAuth();
+
+    const handleAppResume = async () => {
+      if (document.visibilityState === "visible") {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            setUser((prev) => {
+              if (prev?.id !== session.user.id) {
+                syncWithCloud(session.user);
+                return session.user;
+              }
+              return prev;
+            });
+          }
+        } catch {
+          // ignore
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleAppResume);
+    window.addEventListener("focus", handleAppResume);
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       const u = session?.user ?? null;
@@ -118,15 +163,21 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       if (event === "SIGNED_IN") {
         const name = u?.user_metadata?.full_name || u?.email?.split("@")[0] || "Usuario";
         toast.success(`☁️ ¡Sesión iniciada con éxito! Bienvenido, ${name}.`);
-        // Limpiar tokens del hash de la URL si venía volviendo de OAuth
-        if (window.location.hash.includes("access_token")) {
-          window.history.replaceState(null, "", window.location.pathname);
+        if (typeof window !== "undefined") {
+          if (window.location.hash.includes("access_token")) {
+            window.history.replaceState(null, "", window.location.pathname);
+          }
+          if (window.location.search.includes("code=")) {
+            window.history.replaceState(null, "", window.location.pathname);
+          }
         }
       }
     });
 
     return () => {
       subscription.unsubscribe();
+      document.removeEventListener("visibilitychange", handleAppResume);
+      window.removeEventListener("focus", handleAppResume);
     };
   }, [syncWithCloud]);
 
@@ -188,7 +239,7 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       await supabase.auth.signOut();
       setUser(null);
       toast.info("Has cerrado sesión. Tus datos locales siguen en tu dispositivo.");
-    } catch (err) {
+    } catch {
       toast.error("Error al cerrar sesión.");
     }
   };
