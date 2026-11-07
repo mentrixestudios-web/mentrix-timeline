@@ -24,7 +24,7 @@ import TimelineCard from "@/components/game/TimelineCard";
 import TimelineSlot from "@/components/game/TimelineSlot";
 import CurrentCardHand from "@/components/game/CurrentCardHand";
 import MentrixMascot from "@/components/game/MentrixMascot";
-import { playSfx } from "@/utils/soundSystem";
+import { playSfx, playBgm } from "@/utils/soundSystem";
 import { addCoins, recordGameResult } from "@/utils/gameStorage";
 
 // Configuración de Mazos TCG
@@ -123,6 +123,9 @@ const PLAYER_COLORS = [
 ];
 
 export default function DueloAmigos() {
+  useEffect(() => {
+    playBgm("game");
+  }, []);
   const navigate = useNavigate();
 
   // Estados de configuración de partida

@@ -20,7 +20,7 @@ import {
   getOnlinePlayerProfile,
 } from "@/services/onlineMatchService";
 import { addCoins, addXp } from "@/utils/gameStorage";
-import { playSfx } from "@/utils/soundSystem";
+import { playSfx, playBgm } from "@/utils/soundSystem";
 
 // ─────────────────────────────────────────────────────────────
 // Utilidades de presentación (todo el texto se muestra completo)
@@ -63,6 +63,9 @@ const splitYear = (c) => {
 };
 
 export default function JuegoOnline() {
+  useEffect(() => {
+    playBgm("game");
+  }, []);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const codigoSala = (searchParams.get("sala") || "").toUpperCase();

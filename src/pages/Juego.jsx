@@ -27,9 +27,12 @@ import LivesDisplay from "@/components/game/LivesDisplay";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import PowerupsBar from "@/components/game/PowerupsBar";
 import { addCoins, recordGameResult, getPowerups, usePowerup, spendCoins } from "@/utils/gameStorage";
-import { playSfx } from "@/utils/soundSystem";
+import { playSfx, playBgm } from "@/utils/soundSystem";
 
 export default function Juego() {
+  useEffect(() => {
+    playBgm("game");
+  }, []);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 

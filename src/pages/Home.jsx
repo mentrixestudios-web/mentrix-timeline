@@ -69,7 +69,7 @@ export default function Home() {
   const { isStandalone, isIos, showInstructionsModal, setShowInstructionsModal, triggerInstall } = usePwaInstall();
 
   useEffect(() => {
-    playBgm("/audio/bgm/timeline_era_v1.mp3");
+    playBgm("home");
   }, []);
   const navigate = useNavigate();
   const [streakData, setStreakData] = useState(getStreakInfo());

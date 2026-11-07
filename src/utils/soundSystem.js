@@ -149,19 +149,25 @@ export function playSfx(type = "click") {
 }
 
 let bgmAudio = null;
-let currentBgmTrack = "/audio/bgm/timeline_era_v1.mp3";
+const BGM_TRACKS = {
+  home: "/audio/bgm/timeline_era_v1.mp3",
+  game: "/audio/bgm/timeline_crusade_v1.mp3",
+};
+let currentBgmTrack = BGM_TRACKS.home;
 
-export function playBgm(track = "/audio/bgm/timeline_era_v1.mp3") {
+export function playBgm(track = "home") {
+  const resolved = BGM_TRACKS[track] || track;
+  currentBgmTrack = resolved;
   currentBgmTrack = track;
   if (!musicEnabled) return;
   if (typeof window === "undefined") return;
   try {
     if (!bgmAudio) {
-      bgmAudio = new Audio(track);
+      bgmAudio = new Audio(resolved);
       bgmAudio.loop = true;
       bgmAudio.volume = masterVolume * 0.35;
-    } else if (bgmAudio.src !== new URL(track, window.location.href).href) {
-      bgmAudio.src = track;
+    } else if (bgmAudio.src !== new URL(resolved, window.location.href).href) {
+      bgmAudio.src = resolved;
     }
     bgmAudio.volume = masterVolume * 0.35;
     bgmAudio.play().catch(() => {});

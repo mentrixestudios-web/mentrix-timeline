@@ -15,9 +15,12 @@ import {
 } from "lucide-react";
 import { getStreakInfo, getCoins } from "@/utils/gameStorage";
 import MentrixMascot from "@/components/game/MentrixMascot";
-import { playSfx } from "@/utils/soundSystem";
+import { playSfx, playBgm } from "@/utils/soundSystem";
 
 export default function DesafioDiario() {
+  useEffect(() => {
+    playBgm("game");
+  }, []);
   const navigate = useNavigate();
   const todayKey = new Date().toISOString().slice(0, 10);
   const storageKey = `timeline_daily_done_${todayKey}`;
