@@ -118,6 +118,10 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       if (event === "SIGNED_IN") {
         const name = u?.user_metadata?.full_name || u?.email?.split("@")[0] || "Usuario";
         toast.success(`☁️ ¡Sesión iniciada con éxito! Bienvenido, ${name}.`);
+        // Limpiar tokens del hash de la URL si venía volviendo de OAuth
+        if (window.location.hash.includes("access_token")) {
+          window.history.replaceState(null, "", window.location.pathname);
+        }
       }
     });
 
@@ -133,10 +137,11 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       return;
     }
     try {
+      const cleanRedirect = window.location.origin + window.location.pathname;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.href,
+          redirectTo: cleanRedirect,
         },
       });
       if (error) throw error;

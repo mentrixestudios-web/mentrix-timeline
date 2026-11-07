@@ -15,6 +15,12 @@ export const isSupabaseConfigured = () => {
 
 export const supabase = isSupabaseConfigured()
   ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        flowType: "implicit",
+        detectSessionInUrl: true,
+        persistSession: true,
+        autoRefreshToken: true,
+      },
       realtime: {
         params: {
           eventsPerSecond: 10,
