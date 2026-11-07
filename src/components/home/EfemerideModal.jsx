@@ -17,6 +17,7 @@ import {
   isDailyEphemerisReadToday, 
   markDailyEphemerisAsRead 
 } from "@/utils/dailyEphemeris";
+import HistoryShareModal from "@/components/share/HistoryShareModal";
 
 export default function EfemerideModal({ 
   open, 
@@ -26,6 +27,7 @@ export default function EfemerideModal({
   onPlayCategory 
 }) {
   const [leidaHoy, setLeidaHoy] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -50,9 +52,7 @@ export default function EfemerideModal({
 
   const handleCompartir = () => {
     playSfx("tap");
-    const texto = `⏳ *Un día como hoy en la historia:* (${efemeride.fechaTexto} · ${efemeride.anioTexto})\n\n*"${efemeride.titulo}"*\n${efemeride.resumenCorto}\n\n💡 _Dato curioso:_ ${efemeride.curiosidad}\n\nDescubre más y desafía el tiempo en *Mentrix: Línea de Tiempo* 📜`;
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-    window.open(url, "_blank");
+    setShowShareModal(true);
   };
 
   return (
@@ -205,6 +205,14 @@ export default function EfemerideModal({
           </div>
         </div>
       </div>
+
+      {/* Modal de Compartir Tarjeta Ilustrada */}
+      <HistoryShareModal
+        open={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        mode="efemeride"
+        efemeride={efemeride}
+      />
     </div>
   );
 }

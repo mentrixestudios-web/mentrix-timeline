@@ -25,6 +25,7 @@ import {
   suscribirASala, 
   getOnlinePlayerProfile 
 } from "@/services/onlineMatchService";
+import HistoryShareModal from "@/components/share/HistoryShareModal";
 
 export default function ModosEnLinea() {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ export default function ModosEnLinea() {
   const [rivalConectado, setRivalConectado] = useState(null);
   const [salasActivas, setSalasActivas] = useState([]);
   const [cargandoSalas, setCargandoSalas] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const enlaceSala = typeof window !== "undefined" 
     ? `${window.location.origin}/modos-online?sala=${codigoSala}`
@@ -445,33 +447,47 @@ export default function ModosEnLinea() {
           </div>
 
           {/* Botones de acción rápida */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+          <div className="flex flex-col gap-2.5 max-w-md mx-auto">
             <button
               type="button"
-              onClick={compartirWhatsApp}
-              className="flex-1 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer"
+              onClick={() => {
+                playSfx("tap");
+                setShowShareModal(true);
+              }}
+              className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-all cursor-pointer active:scale-95"
             >
-              <Share2 className="w-4 h-4" />
-              <span>Invitar por WhatsApp</span>
+              <Swords className="w-4 h-4" />
+              <span>Tarjeta de Desafío (Imagen con Menti)</span>
             </button>
 
-            <button
-              type="button"
-              onClick={copiarEnlace}
-              className="flex-1 py-3 px-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              {copiado ? (
-                <>
-                  <Check className="w-4 h-4 text-emerald-400" />
-                  <span>¡Enlace Copiado!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4 text-amber-400" />
-                  <span>Copiar Enlace</span>
-                </>
-              )}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-2.5 justify-center">
+              <button
+                type="button"
+                onClick={compartirWhatsApp}
+                className="flex-1 py-2.5 px-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-600/30 transition-all cursor-pointer"
+              >
+                <Share2 className="w-4 h-4" />
+                <span>Invitar por WhatsApp</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={copiarEnlace}
+                className="flex-1 py-2.5 px-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+              >
+                {copiado ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span>¡Enlace Copiado!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4 text-amber-400" />
+                    <span>Copiar Enlace</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="pt-2 text-center">
@@ -485,6 +501,17 @@ export default function ModosEnLinea() {
           </div>
         </motion.div>
       )}
+
+      {/* Modal para Compartir Tarjeta de Desafío */}
+      <HistoryShareModal
+        open={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        mode="batalla"
+        battleInfo={{
+          roomCode: codigoSala,
+          hostName: player?.nombre || "Jugador Mentrix",
+        }}
+      />
     </div>
   );
 }

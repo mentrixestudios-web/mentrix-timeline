@@ -16,8 +16,10 @@ import {
   ShoppingBag,
   Timer,
   Swords,
-  Skull
+  Skull,
+  Share2
 } from "lucide-react";
+import HistoryShareModal from "@/components/share/HistoryShareModal";
 import { getEventsByCategory } from "@/data/eventsData";
 import { CATEGORIES } from "@/data/categories";
 import TimelineCard from "@/components/game/TimelineCard";
@@ -47,6 +49,7 @@ export default function Juego() {
   const [currentCard, setCurrentCard] = useState(null);
   const [lives, setLives] = useState(maxLives);
   const [score, setScore] = useState(0);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Estados específicos para Duelo vs Menti (IA)
   const [mentiScore, setMentiScore] = useState(0);
@@ -703,6 +706,21 @@ export default function Juego() {
                 </button>
               )}
 
+              {/* Compartir Hazaña en Victoria */}
+              {gameState === "victory" && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSfx("tap");
+                    setShowShareModal(true);
+                  }}
+                  className="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-black text-xs tracking-wider uppercase shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
+                >
+                  <Share2 className="w-4 h-4 text-cyan-200" />
+                  <span>Compartir Hazaña (Tarjeta Ilustrada)</span>
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={startNewGame}
@@ -723,6 +741,17 @@ export default function Juego() {
           </div>
         </div>
       )}
+
+      {/* Modal para Compartir Victoria */}
+      <HistoryShareModal
+        open={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        mode="victoria"
+        gameStats={{
+          score,
+          categoryName: categoryInfo?.name || "Historia General",
+        }}
+      />
     </div>
   );
 }
