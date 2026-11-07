@@ -1,3 +1,4 @@
+import MentrixAccountBanner from "@/components/auth/MentrixAccountBanner";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -271,6 +272,9 @@ export default function TiendaMonedas() {
             <CoinDisplay amount={coins} size="sm" clickable={false} />
           </div>
         </div>
+
+        {/* ── CUENTA MENTRIX CLOUD SYNC ── */}
+        <MentrixAccountBanner />
 
         {/* ── BANNER VISUAL ── */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-950/40 via-[#0f1936] to-slate-900 border border-amber-500/30 p-2.5 flex items-center justify-between shadow-lg">

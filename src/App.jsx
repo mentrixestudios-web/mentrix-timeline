@@ -15,6 +15,7 @@ import ModosIndividuales from "@/pages/ModosIndividuales";
 import ModosEnLinea from "@/pages/ModosEnLinea";
 import TiendaMonedas from "@/pages/TiendaMonedas";
 import { scheduleTimelineNotifications } from "@/utils/notificationSystem";
+import { MentrixAuthProvider } from "@/context/MentrixAuthContext";
 
 export default function App() {
   useEffect(() => {
@@ -25,37 +26,39 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/juego" element={<Juego />} />
-          <Route path="/juego-online" element={<JuegoOnline />} />
-          <Route path="/config-ronda" element={<ConfigRonda />} />
-          <Route path="/ConfigRonda" element={<ConfigRonda />} />
-          <Route path="/categorias" element={<ConfigRonda />} />
-          <Route path="/duelo-amigos" element={<DueloAmigos />} />
-          <Route path="/modos-individuales" element={<ModosIndividuales />} />
-          <Route path="/modos-online" element={<ModosEnLinea />} />
-          <Route path="/desafio" element={<DesafioDiario />} />
-          <Route path="/estadisticas" element={<Estadisticas />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/tienda" element={<TiendaMonedas />} />
-          <Route path="/TiendaMonedas" element={<TiendaMonedas />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
-      <Toaster 
-        theme="dark" 
-        position="top-center" 
-        toastOptions={{
-          style: {
-            background: "#0f172a",
-            color: "#f8fafc",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-          }
-        }} 
-      />
-    </Router>
+    <MentrixAuthProvider gameId="timeline">
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/juego" element={<Juego />} />
+            <Route path="/juego-online" element={<JuegoOnline />} />
+            <Route path="/config-ronda" element={<ConfigRonda />} />
+            <Route path="/ConfigRonda" element={<ConfigRonda />} />
+            <Route path="/categorias" element={<ConfigRonda />} />
+            <Route path="/duelo-amigos" element={<DueloAmigos />} />
+            <Route path="/modos-individuales" element={<ModosIndividuales />} />
+            <Route path="/modos-online" element={<ModosEnLinea />} />
+            <Route path="/desafio" element={<DesafioDiario />} />
+            <Route path="/estadisticas" element={<Estadisticas />} />
+            <Route path="/perfil" element={<Perfil />} />
+            <Route path="/tienda" element={<TiendaMonedas />} />
+            <Route path="/TiendaMonedas" element={<TiendaMonedas />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+        <Toaster 
+          theme="dark" 
+          position="top-center" 
+          toastOptions={{
+            style: {
+              background: "#0f172a",
+              color: "#f8fafc",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+            }
+          }} 
+        />
+      </Router>
+    </MentrixAuthProvider>
   );
 }

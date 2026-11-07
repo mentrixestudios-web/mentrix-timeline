@@ -1,7 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+const rawUrl = import.meta.env.VITE_SUPABASE_URL || "https://rxaxptszsytnanfixfst.supabase.co";
+const supabaseUrl = rawUrl.replace(/['"]/g, "").replace(/\/rest\/v1\/?$/, "").trim();
+const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4YXhwdHN6c3l0bmFuZml4ZnN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MDg5MzYsImV4cCI6MjA4Nzk4NDkzNn0.8SI6VvZ5Kr_ZsYahb9KEa2Y08m_YhjPxZTgZki_zq9M").replace(/['"]/g, "").trim();
 
 export const isSupabaseConfigured = () => {
   return (
@@ -12,7 +13,6 @@ export const isSupabaseConfigured = () => {
   );
 };
 
-// Si no está configurado, creamos un dummy client seguro para evitar errores en importaciones
 export const supabase = isSupabaseConfigured()
   ? createClient(supabaseUrl, supabaseAnonKey, {
       realtime: {
