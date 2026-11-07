@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -24,8 +24,27 @@ import {
 import MentrixMascot from "@/components/game/MentrixMascot";
 import { playSfx } from "@/utils/soundSystem";
 
-export default function InteractiveTutorial({ onComplete }) {
+export default function InteractiveTutorial({ onComplete, onClose }) {
   const [step, setStep] = useState(0);
+
+  const handleClose = () => {
+    playSfx("tap");
+    try {
+      localStorage.setItem("mt_tutorial_seen", "true");
+    } catch {}
+    if (onComplete) onComplete();
+    else if (onClose) onClose();
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") handleClose();
+      if (e.key === "ArrowRight") handleNext();
+      if (e.key === "ArrowLeft") handlePrev();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [step]);
 
   const steps = [
     {
@@ -249,8 +268,7 @@ export default function InteractiveTutorial({ onComplete }) {
       setStep(step + 1);
     } else {
       playSfx("victory");
-      localStorage.setItem("mt_tutorial_seen", "true");
-      onComplete?.();
+      handleClose();
     }
   };
 
@@ -259,21 +277,19 @@ export default function InteractiveTutorial({ onComplete }) {
     if (step > 0) setStep(step - 1);
   };
 
-  const handleSkip = () => {
-    playSfx("tap");
-    localStorage.setItem("mt_tutorial_seen", "true");
-    onComplete?.();
-  };
-
   const modalContent = (
     <div className="fixed inset-0 z-[10030] flex items-center justify-center p-3 sm:p-4 bg-slate-950/90 backdrop-blur-md select-none">
+      {/* Cierre al tocar el fondo exterior */}
+      <div className="absolute inset-0 bg-transparent" onClick={handleClose} />
+
       <motion.div
         key={step}
         initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: -12 }}
         transition={{ duration: 0.2 }}
-        className="relative w-full max-w-md bg-gradient-to-b from-[#0e172e] via-[#091124] to-[#060a16] border-2 border-amber-400/50 rounded-3xl p-5 shadow-[0_20px_70px_rgba(0,0,0,0.9)] text-white overflow-hidden flex flex-col justify-between min-h-[520px] max-h-[92vh]"
+        onClick={(e) => e.stopPropagation()}
+        className="relative z-10 w-full max-w-md bg-gradient-to-b from-[#0e172e] via-[#091124] to-[#060a16] border-2 border-amber-400/50 rounded-3xl p-5 shadow-[0_20px_70px_rgba(0,0,0,0.9)] text-white overflow-hidden flex flex-col justify-between min-h-[520px] max-h-[92vh]"
       >
         {/* Resplandor decorativo */}
         <div className="absolute top-0 right-0 w-36 h-36 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -290,13 +306,23 @@ export default function InteractiveTutorial({ onComplete }) {
             </span>
           </div>
 
-          <button
-            type="button"
-            onClick={handleSkip}
-            className="text-[11px] font-bold text-white/50 hover:text-white transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-white/5"
-          >
-            Saltar
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="text-[11px] font-bold text-white/50 hover:text-white transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-white/5"
+            >
+              Saltar
+            </button>
+            <button
+              type="button"
+              onClick={handleClose}
+              className="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors cursor-pointer"
+              aria-label="Cerrar tutorial"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* ── CUERPO PRINCIPAL DEL PASO ── */}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
@@ -8,6 +8,7 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const isSyncingRef = useRef(false);
 
   // Claves de almacenamiento según el juego
   const storageKeys = {
@@ -40,6 +41,9 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
   // Función de sincronización bidireccional inteligente (Billetera Global Unificada Mentrix)
   const syncWithCloud = useCallback(async (currentUser) => {
     if (!currentUser || !supabase) return;
+    if (isSyncingRef.current) return;
+    isSyncingRef.current = true;
+
     try {
       const meta = currentUser.user_metadata || {};
       
@@ -80,17 +84,16 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
         localStorage.setItem(storageKeys.streak, finalStreak.toString());
       }
 
-      // Notificar a todos los escuchadores de almacenamiento locales
+      // Notificar a la UI
       window.dispatchEvent(new Event(storageKeys.event));
-      window.dispatchEvent(new Event("storage"));
-      window.dispatchEvent(new Event("mt_storage_updated"));
 
-      if (
+      const needsCloudUpdate =
         meta.mentrix_global_coins !== finalCoins ||
         meta[`${gameId}_coins`] !== finalCoins ||
         cloudStarter !== finalStarter ||
-        cloudStreak !== finalStreak
-      ) {
+        cloudStreak !== finalStreak;
+
+      if (needsCloudUpdate) {
         await supabase.auth.updateUser({
           data: {
             mentrix_global_coins: finalCoins,
@@ -103,6 +106,8 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       }
     } catch (err) {
       console.warn("Mentrix Cloud Sync error:", err);
+    } finally {
+      isSyncingRef.current = false;
     }
   }, [gameId, storageKeys]);
 
@@ -131,15 +136,20 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
 
     // 2. Suscribirse síncronamente a los cambios de estado de Supabase
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // PREVENCIÓN DE BUCLE INFINITO:
+      // Cuando nosotros actualizamos el usuario (updateUser), Supabase dispara "USER_UPDATED".
+      // NO volvemos a sincronizar en ese evento para evitar que la app se quede pegada.
+      if (event === "USER_UPDATED") {
+        setUser(session?.user ?? null);
+        return;
+      }
+
       const u = session?.user ?? null;
       setUser(u);
       setLoading(false);
 
-      if (u) {
-        await syncWithCloud(u);
-      }
-
       if (event === "SIGNED_IN" && u) {
+        await syncWithCloud(u);
         const name = u.user_metadata?.full_name || u.email?.split("@")[0] || "Jugador";
         toast.success(`☁️ ¡Bienvenido, ${name}! Sesión iniciada con éxito.`);
         if (typeof window !== "undefined") {
@@ -147,6 +157,8 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
             window.history.replaceState(null, "", window.location.pathname);
           }
         }
+      } else if (event === "INITIAL_SESSION" && u) {
+        await syncWithCloud(u);
       }
     });
 
@@ -173,41 +185,15 @@ export function MentrixAuthProvider({ children, gameId = "timeline" }) {
       }
     };
 
-    // Auto-backup de monedas cuando cambian localmente mientras el usuario está conectado
-    let saveTimeout = null;
-    const handleCoinsChange = () => {
-      const currentCoins = parseInt(localStorage.getItem(storageKeys.coins) || "0", 10);
-      if (saveTimeout) clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(async () => {
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user && currentCoins >= 0) {
-            await supabase.auth.updateUser({
-              data: {
-                mentrix_global_coins: currentCoins,
-                [`${gameId}_coins`]: currentCoins,
-                last_backup_at: new Date().toISOString(),
-              },
-            });
-          }
-        } catch {}
-      }, 1000);
-    };
-
     document.addEventListener("visibilitychange", handleAppResume);
     window.addEventListener("focus", handleAppResume);
-    window.addEventListener(storageKeys.event, handleCoinsChange);
-    window.addEventListener("storage", handleCoinsChange);
 
     return () => {
-      if (saveTimeout) clearTimeout(saveTimeout);
       subscription.unsubscribe();
       document.removeEventListener("visibilitychange", handleAppResume);
       window.removeEventListener("focus", handleAppResume);
-      window.removeEventListener(storageKeys.event, handleCoinsChange);
-      window.removeEventListener("storage", handleCoinsChange);
     };
-  }, [syncWithCloud, storageKeys.event, storageKeys.coins, gameId]);
+  }, [syncWithCloud]);
 
   // Login con Google (redirige de vuelta a la misma pantalla donde estaba el usuario)
   const loginWithGoogle = async () => {
