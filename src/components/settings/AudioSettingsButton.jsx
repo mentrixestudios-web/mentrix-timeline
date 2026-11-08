@@ -52,8 +52,8 @@ export default function AudioSettingsButton({
   );
 
   const [appInfo, setAppInfo] = useState({
-    version: "2.6.7",
-    build: "27",
+    version: "2.6.9",
+    build: "29",
     appName: "Mentrix Línea de Tiempo",
   });
 
@@ -421,6 +421,7 @@ export default function AudioSettingsButton({
                       type="button"
                       onClick={() => {
                         playSfx("tap");
+                        setOpen(false);
                         setShowTerms(true);
                       }}
                       className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-colors text-left cursor-pointer"
@@ -436,6 +437,7 @@ export default function AudioSettingsButton({
                       type="button"
                       onClick={() => {
                         playSfx("tap");
+                        setOpen(false);
                         setShowPrivacy(true);
                       }}
                       className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-colors text-left cursor-pointer"
