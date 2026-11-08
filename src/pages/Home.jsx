@@ -151,16 +151,14 @@ export default function Home() {
               Viaja por la historia · Ordena los siglos · Conquista el tiempo
             </p>
 
-            {/* Menti flotando dentro de un anillo de reloj/astrolabio dorado */}
+            {/* Menti flotando dentro de un anillo de reloj/astrolabio dorado (100% Acelerado por GPU) */}
             <div className="relative w-44 h-44 sm:w-48 sm:h-48 mt-1 flex items-center justify-center">
-              <div className="absolute inset-0 -m-6 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute inset-4 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute inset-0 bg-blue-600/10 rounded-full pointer-events-none" />
+              <div className="absolute inset-4 bg-amber-400/10 rounded-full pointer-events-none" />
 
-              {/* Anillo exterior punteado girando lento (engranaje temporal) */}
-              <motion.div
-                className="absolute inset-0 rounded-full border border-dashed border-amber-400/45 pointer-events-none"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              {/* Anillo exterior punteado girando lento en CSS puro */}
+              <div
+                className="absolute inset-0 rounded-full border border-dashed border-amber-400/45 pointer-events-none animate-spin-slow"
               />
               {/* Anillo interior sólido con marcas de hora */}
               <div className="absolute inset-3 rounded-full border border-amber-300/25 pointer-events-none" />
@@ -172,40 +170,24 @@ export default function Home() {
                 />
               ))}
 
-              <motion.span
-                className="absolute -left-2 top-6 text-xl pointer-events-none"
-                animate={{ y: [0, -8, 0], rotate: [0, 12, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              >
+              <span className="absolute -left-2 top-6 text-xl pointer-events-none animate-float-slow">
                 📜
-              </motion.span>
-              <motion.span
-                className="absolute -right-2 top-10 text-xl pointer-events-none"
-                animate={{ y: [0, -10, 0], rotate: [0, -12, 0] }}
-                transition={{ duration: 4.6, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-              >
+              </span>
+              <span className="absolute -right-2 top-10 text-xl pointer-events-none animate-float-slow" style={{ animationDelay: "1s" }}>
                 ⏳
-              </motion.span>
-              <motion.span
-                className="absolute right-4 bottom-3 text-base pointer-events-none"
-                animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.15, 0.9] }}
-                transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-              >
+              </span>
+              <span className="absolute right-4 bottom-3 text-base pointer-events-none animate-pulse-glow">
                 ✨
-              </motion.span>
+              </span>
 
-              <motion.picture
-                animate={{ y: [0, -7, 0] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-10 w-[82%] h-[82%]"
-              >
+              <picture className="relative z-10 w-[82%] h-[82%] animate-float-slow">
                 <source srcSet="/mentrix-mascot.webp" type="image/webp" />
                 <img
                   src="/mentrix-mascot.png"
                   alt="Menti, viajero del tiempo"
-                  className="w-full h-full object-contain drop-shadow-[0_10px_30px_rgba(245,158,11,0.3)]"
+                  className="w-full h-full object-contain drop-shadow-[0_8px_20px_rgba(245,158,11,0.3)]"
                 />
-              </motion.picture>
+              </picture>
             </div>
 
             {/* Insignia dorada + cápsula de diálogo */}

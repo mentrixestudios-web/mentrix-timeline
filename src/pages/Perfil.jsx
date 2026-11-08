@@ -152,7 +152,7 @@ export default function Perfil() {
         className="relative overflow-hidden rounded-3xl p-4 sm:p-5 bg-gradient-to-br from-[#162652] via-[#0e1938] to-[#080e20] border-2 border-amber-400/60 shadow-xl space-y-4"
       >
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-300 via-yellow-400 to-purple-500" />
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full pointer-events-none" />
 
         <div className="flex items-center justify-between gap-3 relative z-10">
           <div className="flex items-center gap-3.5 min-w-0">

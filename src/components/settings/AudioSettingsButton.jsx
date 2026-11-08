@@ -52,8 +52,8 @@ export default function AudioSettingsButton({
   );
 
   const [appInfo, setAppInfo] = useState({
-    version: "2.6.9",
-    build: "29",
+    version: "2.7.0",
+    build: "30",
     appName: "Mentrix Línea de Tiempo",
   });
 
@@ -212,7 +212,7 @@ export default function AudioSettingsButton({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/85"
                 onClick={() => setOpen(false)}
               />
 
@@ -223,7 +223,7 @@ export default function AudioSettingsButton({
                 transition={{ duration: 0.2 }}
                 className="relative z-10 w-full max-w-sm max-h-[90vh] overflow-y-auto bg-gradient-to-b from-[#0c162e] via-[#091124] to-[#070b18] border-2 border-amber-400/50 rounded-3xl p-5 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-white select-none"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-28 h-28 bg-amber-500/10 rounded-full pointer-events-none" />
 
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-amber-500/20">
                   <div className="flex items-center gap-2.5">

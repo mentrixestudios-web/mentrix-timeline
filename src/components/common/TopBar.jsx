@@ -34,11 +34,10 @@ export default function TopBar() {
     <>
       <header className="w-full mb-3 select-none">
         <div
-          className="flex items-center w-full rounded-[14px] px-2.5 py-1.5 backdrop-blur-md"
+          className="flex items-center w-full rounded-[14px] px-2.5 py-1.5 bg-[#142038]/95"
           style={{
-            background: "rgba(30,45,77,0.7)",
             border: "1px solid rgba(245,158,11,0.22)",
-            boxShadow: "0 0 14px rgba(245,158,11,0.06), inset 0 1px 0 rgba(253,230,138,0.06)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
           }}
         >
           {/* 1. Monedas / Tienda */}

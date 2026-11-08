@@ -163,15 +163,7 @@ export default function Layout({ children }) {
       {/* =======================================================
           ÁREA PRINCIPAL DE CONTENIDO
          ======================================================= */}
-      <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-24 lg:pb-8 lg:pl-72" : "pb-4"} overflow-x-hidden relative bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900`}>
-        
-        {/* Glows de fondo atmosférico cósmico idénticos a Estudio Bíblico */}
-        <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-20 left-10 lg:left-80 w-44 h-44 bg-blue-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl" />
-        </div>
-
+      <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-24 lg:pb-8 lg:pl-72" : "pb-4"} overflow-x-hidden relative bg-gradient-to-br from-[#070b16] via-[#091124] to-[#050812]`}>
         <div className="flex-1 w-full max-w-md lg:!max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 relative z-10">
           {showNav && <TopBar />}
           {children}
@@ -182,7 +174,7 @@ export default function Layout({ children }) {
           BARRA INFERIOR MÓVIL (Visible en celulares < 1024px)
          ======================================================= */}
       {showNav && (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-white/10 backdrop-blur-lg px-2 py-1.5 flex items-center justify-around shadow-2xl">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070c18]/98 border-t border-white/10 px-2 py-1.5 flex items-center justify-around shadow-2xl">
           {mainNavItems.map((item, idx) => {
             const Icon = item.icon;
             const active = location.pathname === item.path && (idx === 0 ? location.pathname === "/" : true);

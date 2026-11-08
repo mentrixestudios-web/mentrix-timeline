@@ -79,29 +79,25 @@ export default function MentrixMascot({
   const isSm = size === "sm";
   return (
     <div className="w-full flex flex-col items-center gap-2 max-w-md mx-auto relative select-none py-1">
-      {/* Núcleo Flotante con Resplandor Áureo */}
+      {/* Núcleo Flotante con Resplandor Áureo (Acelerado por Hardware GPU) */}
       <div className="relative flex items-center justify-center">
-        {/* Anillo astrolabio giratorio tenue */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-          className={`absolute ${isSm ? "w-24 h-24" : "w-28 h-28 sm:w-32 sm:h-32"} rounded-full border border-dashed border-amber-400/25 pointer-events-none`}
+        {/* Anillo astrolabio giratorio tenue en CSS puro */}
+        <div
+          className={`absolute ${isSm ? "w-24 h-24" : "w-28 h-28 sm:w-32 sm:h-32"} rounded-full border border-dashed border-amber-400/25 pointer-events-none animate-spin-slow`}
         />
         {/* Resplandor áureo y cósmico */}
-        <div className={`absolute ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} bg-gradient-to-r from-amber-500/20 via-blue-500/15 to-purple-500/15 rounded-full blur-2xl pointer-events-none`} />
+        <div className={`absolute ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} bg-amber-500/15 rounded-full pointer-events-none`} />
 
-        {/* Mascota Menti Flotando Libre */}
-        <motion.div
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-          className={`relative z-10 ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} flex items-center justify-center cursor-pointer`}
+        {/* Mascota Menti Flotando Libre con CSS puro GPU */}
+        <div
+          className={`relative z-10 ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} flex items-center justify-center cursor-pointer animate-float-slow`}
         >
           <img
             src="/mentrix-mascot.png"
             alt="Menti Viajero del Tiempo"
-            className="w-full h-full object-contain filter drop-shadow-[0_10px_25px_rgba(245,158,11,0.35)]"
+            className="w-full h-full object-contain filter drop-shadow-[0_8px_20px_rgba(245,158,11,0.3)]"
           />
-        </motion.div>
+        </div>
       </div>
 
       {/* Badge Menti Viajero del Tiempo */}
@@ -117,8 +113,8 @@ export default function MentrixMascot({
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 4 }}
-          transition={{ duration: 0.25 }}
-          className="relative bg-blue-600/20 border border-amber-400/25 backdrop-blur-md rounded-full px-5 py-2 shadow-lg shadow-blue-950/40 max-w-sm text-center"
+          transition={{ duration: 0.2 }}
+          className="relative bg-[#0c1630]/95 border border-amber-400/35 rounded-full px-5 py-2 shadow-lg shadow-blue-950/40 max-w-sm text-center"
         >
           <p className="text-white/95 text-xs sm:text-sm font-medium leading-relaxed">
             "{currentMessage}"

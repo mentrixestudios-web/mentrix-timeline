@@ -278,7 +278,7 @@ export default function InteractiveTutorial({ onComplete, onClose }) {
   };
 
   const modalContent = (
-    <div className="fixed inset-0 z-[10030] flex items-center justify-center p-3 sm:p-4 bg-slate-950/90 backdrop-blur-md select-none">
+    <div className="fixed inset-0 z-[10030] flex items-center justify-center p-3 sm:p-4 bg-slate-950/95 select-none">
       {/* Cierre al tocar el fondo exterior */}
       <div className="absolute inset-0 bg-transparent" onClick={handleClose} />
 
@@ -291,9 +291,9 @@ export default function InteractiveTutorial({ onComplete, onClose }) {
         onClick={(e) => e.stopPropagation()}
         className="relative z-10 w-full max-w-md bg-gradient-to-b from-[#0e172e] via-[#091124] to-[#060a16] border-2 border-amber-400/50 rounded-3xl p-5 shadow-[0_20px_70px_rgba(0,0,0,0.9)] text-white overflow-hidden flex flex-col justify-between min-h-[520px] max-h-[92vh]"
       >
-        {/* Resplandor decorativo */}
-        <div className="absolute top-0 right-0 w-36 h-36 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-36 h-36 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Resplandor decorativo optimizado */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-600/10 rounded-full pointer-events-none" />
 
         {/* ── TOP BAR DEL TUTORIAL ── */}
         <div className="flex items-center justify-between pb-3 border-b border-white/10 relative z-10">

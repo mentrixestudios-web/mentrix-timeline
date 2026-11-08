@@ -53,7 +53,7 @@ export default function TermsAndConditionsModal({ open, onClose }) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[10030] flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-sm cursor-pointer"
+      className="fixed inset-0 z-[10030] flex items-center justify-center p-3 sm:p-4 bg-slate-950/90 cursor-pointer"
       onClick={onClose}
     >
       <motion.div
@@ -64,9 +64,9 @@ export default function TermsAndConditionsModal({ open, onClose }) {
         onClick={(e) => e.stopPropagation()}
         className="relative z-10 flex h-[86vh] max-h-[740px] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border-2 border-amber-400/40 bg-gradient-to-b from-[#0e172e] via-[#091124] to-[#060a16] shadow-[0_20px_70px_rgba(0,0,0,0.9)] text-white cursor-default"
       >
-        {/* Resplandor decorativo */}
-        <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Resplandor decorativo optimizado */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-600/10 rounded-full pointer-events-none" />
 
         {/* Encabezado */}
         <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-white/[0.03] px-5 py-4 relative z-10">
