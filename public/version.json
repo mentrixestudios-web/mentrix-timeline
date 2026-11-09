@@ -1,6 +1,7 @@
 {
-  "version": "2.7.3",
-  "build": "33",
+  "appName": "Mentrix Línea de Tiempo",
+  "version": "2.7.4",
+  "build": "34",
   "publishedAt": "2026-11-09",
-  "notes": "Rediseño de la barra inferior móvil con alto contraste y margen ergonómico para los 3 botones de Android, más separación de vistas dedicadas para Logros y Museo."
+  "notes": "Solución definitiva al bloqueo en inicio de PWA móvil: corrección de bucle infinito en MentrixAuthContext con sesión activa, eliminación de sobrecarga de Framer Motion y bloqueo de audio en primer toque."
 }

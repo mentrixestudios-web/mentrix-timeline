@@ -152,24 +152,23 @@ export default function DesafioDiario() {
                 <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                 <span>Reto Diario Completado · Puedes practicar de nuevo</span>
               </div>
-              <motion.button
-                whileTap={{ scale: 0.97 }}
+              <button
+                type="button"
                 onClick={handleStartDaily}
-                className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-black text-xs uppercase tracking-wider border border-white/15 cursor-pointer transition-all"
+                className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-95 text-white font-black text-xs uppercase tracking-wider border border-white/15 cursor-pointer transition-all"
               >
                 🔄 Volver a Jugar por Diversión
-              </motion.button>
+              </button>
             </div>
           ) : (
-            <motion.button
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.96 }}
+            <button
+              type="button"
               onClick={handleStartDaily}
-              className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-sm sm:text-base uppercase tracking-wider py-4 rounded-2xl shadow-xl shadow-amber-500/35 cursor-pointer transition-all"
+              className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 active:scale-95 text-slate-950 font-black text-sm sm:text-base uppercase tracking-wider py-4 rounded-2xl shadow-xl shadow-amber-500/35 cursor-pointer transition-all"
             >
               <Play className="w-5 h-5 fill-slate-950" />
               <span>¡Comenzar Desafío del Día!</span>
-            </motion.button>
+            </button>
           )}
         </div>
       </motion.div>

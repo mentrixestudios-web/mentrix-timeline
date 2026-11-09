@@ -45,9 +45,14 @@ export async function showTimelineNotification(title, options = {}) {
 
   try {
     if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-      const reg = await navigator.serviceWorker.ready;
-      await reg.showNotification(title, payload);
-      return true;
+      const reg = await Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_, reject) => setTimeout(() => reject(new Error("SW timeout")), 2000)),
+      ]);
+      if (reg && reg.showNotification) {
+        await reg.showNotification(title, payload);
+        return true;
+      }
     }
   } catch (e) {
     console.warn("ServiceWorker showNotification fallback", e);
@@ -119,5 +124,5 @@ export function scheduleTimelineNotifications() {
     schedulerTimer = setTimeout(check, 60000);
   };
 
-  check();
+  schedulerTimer = setTimeout(check, 6000);
 }

@@ -1,6 +1,6 @@
 const FALLBACK_INFO = {
-  version: "2.7.3",
-  build: "33",
+  version: "2.7.4",
+  build: "34",
   appName: "Mentrix Línea de Tiempo",
 };
 

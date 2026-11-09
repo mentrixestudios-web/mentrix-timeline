@@ -246,12 +246,11 @@ export default function ModosEnLinea() {
               </div>
             </div>
 
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              whileHover={{ y: -2 }}
+            <button
+              type="button"
               disabled={creandoSala}
               onClick={handleCrearSala}
-              className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 hover:from-amber-400 text-slate-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 hover:from-amber-400 active:scale-95 text-slate-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
             >
               {creandoSala ? (
                 <>
@@ -264,7 +263,7 @@ export default function ModosEnLinea() {
                   <span>Crear y Abrir Sala</span>
                 </>
               )}
-            </motion.button>
+            </button>
           </div>
 
           {/* ── TARJETA 2: UNIRSE A SALA EXISTENTE ── */}
@@ -308,12 +307,11 @@ export default function ModosEnLinea() {
               </div>
             </div>
 
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              whileHover={{ y: -2 }}
+            <button
+              type="button"
               disabled={uniendose || !codigoIngresado.trim()}
               onClick={handleUnirseSala}
-              className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 text-white font-black text-sm tracking-wide shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-40"
+              className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 active:scale-95 text-white font-black text-sm tracking-wide shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-40"
             >
               {uniendose ? (
                 <>
@@ -326,7 +324,7 @@ export default function ModosEnLinea() {
                   <span>Unirme a la Batalla</span>
                 </>
               )}
-            </motion.button>
+            </button>
           </div>
 
           {/* ── SECCIÓN 3: SALAS ACTIVAS EN ESPERA DE RIVAL ── */}

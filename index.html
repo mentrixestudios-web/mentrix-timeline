@@ -12,10 +12,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Línea de Tiempo" />
     <meta name="description" content="Mentrix: Línea de Tiempo — El juego interactivo de orden cronológico e historia de Mentrix Studios." />
-    <!-- Google Fonts Plus Jakarta Sans -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts Plus Jakarta Sans (No bloqueante en redes móviles lentas) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
   </head>
   <body class="bg-[#0a0e1a] text-white antialiased font-sans overflow-x-hidden">
     <div id="root"></div>
@@ -23,7 +28,12 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/sw.js?v=2.7.5").catch(() => {});
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((reg) => {
+              reg.update().catch(() => {});
+            })
+            .catch(() => {});
         });
       }
     </script>

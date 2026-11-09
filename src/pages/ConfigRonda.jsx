@@ -1,20 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, 
-  Sparkles, 
-  Play, 
-  Hourglass,
-  Swords,
-  Timer,
-  Skull,
-  Check,
-  Zap,
-  Flame,
-  Layers,
-  ShieldAlert
-} from "lucide-react";
+import { ArrowLeft, Play, Check } from "lucide-react";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import { CATEGORIES } from "@/data/categories";
 import { getEventsByCategory } from "@/data/eventsData";
@@ -136,10 +122,6 @@ const DECK_CONFIG = {
     iconoBg: "bg-emerald-500/30 text-emerald-200 border-emerald-400/50",
     resumen: "Juegos Olímpicos, copas mundiales, campeonatos históricos y atletas legendarios.",
   },
-
-
-
-
 };
 
 export default function ConfigRonda() {
@@ -149,10 +131,10 @@ export default function ConfigRonda() {
   const modo = searchParams.get("modo") || "clasico";
   const modoData = MODOS_INFO[modo] || MODOS_INFO.clasico;
 
-  // Mazo seleccionado por defecto: "caos"
-  const [selectedCat, setSelectedCat] = useState("caos");
+  const initialCat = searchParams.get("categoria");
+  const validInitialCat = CATEGORIES.some((c) => c.id === initialCat) ? initialCat : "caos";
 
-  // Dificultad: "facil" (5 cartas), "medio" (10 cartas), "dificil" (15 cartas)
+  const [selectedCat, setSelectedCat] = useState(validInitialCat);
   const [dificultad, setDificultad] = useState("medio");
 
   const activeCategory = CATEGORIES.find((c) => c.id === selectedCat) || CATEGORIES[0];
@@ -167,27 +149,26 @@ export default function ConfigRonda() {
   };
 
   const handleStartGame = () => {
-    playSfx("victory");
+    playSfx("tap");
     const target = getTargetCartas();
     navigate(`/juego?modo=${modo}&cat=${selectedCat}&cartas=${target}&dif=${dificultad}`);
   };
 
   return (
     <div className="space-y-4 select-none pb-32 relative">
-      
       {/* ── HEADER SUPERIOR ── */}
       <div className="flex items-center justify-between">
-        <motion.button
-          whileTap={{ scale: 0.9 }}
+        <button
+          type="button"
           onClick={() => {
             playSfx("tap");
             navigate(-1);
           }}
-          className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center gap-1.5 text-xs font-black tracking-wide border border-white/10 cursor-pointer shadow-sm"
+          className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 transition-transform text-white flex items-center gap-1.5 text-xs font-black tracking-wide border border-white/10 cursor-pointer shadow-sm"
         >
           <ArrowLeft className="w-4 h-4 text-amber-400" />
           <span>Volver al Menú</span>
-        </motion.button>
+        </button>
 
         <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${modoData.colorBadge}`}>
           {modoData.badge}
@@ -202,11 +183,8 @@ export default function ConfigRonda() {
         />
       </div>
 
-      {/* ── SHOWCASE DEL MAZO ACTIVO (VITRINA 3D) ── */}
-      <motion.div
-        key={selectedCat}
-        initial={{ opacity: 0, scale: 0.97 }}
-        animate={{ opacity: 1, scale: 1 }}
+      {/* ── SHOWCASE DEL MAZO ACTIVO ── */}
+      <div
         className={`relative overflow-hidden rounded-3xl p-4 border bg-gradient-to-br ${activeDeckStyle.temaColor} shadow-xl`}
       >
         <div className="flex items-center justify-between gap-3 relative z-10">
@@ -236,9 +214,9 @@ export default function ConfigRonda() {
         <p className="text-[11px] text-white/80 mt-2.5 pt-2 border-t border-white/20 font-medium leading-relaxed">
           {activeDeckStyle.resumen}
         </p>
-      </motion.div>
+      </div>
 
-      {/* ── PASO 1: VITRINA DE MAZOS DE CARTAS (CUADRÍCULA 2x3 TIPO BARAJA COLECCIONABLE) ── */}
+      {/* ── PASO 1: VITRINA DE MAZOS DE CARTAS ── */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
@@ -259,14 +237,14 @@ export default function ConfigRonda() {
             const count = getEventsByCategory(cat.id).length;
 
             return (
-              <motion.div
+              <button
                 key={cat.id}
-                whileTap={{ scale: 0.95 }}
+                type="button"
                 onClick={() => {
                   playSfx("tap");
                   setSelectedCat(cat.id);
                 }}
-                className={`cursor-pointer rounded-2xl p-3 border transition-all duration-200 relative flex flex-col justify-between text-center overflow-hidden shadow-lg ${
+                className={`cursor-pointer rounded-2xl p-3 border transition-transform duration-150 active:scale-95 relative flex flex-col justify-between text-center overflow-hidden shadow-lg ${
                   isSelected
                     ? `${deckStyle.bordeActivo} bg-[#111c38]`
                     : "bg-[#0b1328]/95 border-white/10 hover:border-amber-400/40"
@@ -274,7 +252,7 @@ export default function ConfigRonda() {
               >
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${cat.color}`} />
 
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between w-full mb-2">
                   <span className="text-[9px] font-black text-white/70 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-md">
                     {count} 🃏
                   </span>
@@ -290,7 +268,7 @@ export default function ConfigRonda() {
                   )}
                 </div>
 
-                <div className="my-1">
+                <div className="my-1 w-full">
                   <div className={`w-12 h-12 mx-auto rounded-2xl ${deckStyle.iconoBg} border flex items-center justify-center text-2xl shadow-md transition-transform ${isSelected ? "scale-110" : ""}`}>
                     {deckStyle.iconoEmoji}
                   </div>
@@ -302,12 +280,12 @@ export default function ConfigRonda() {
                   </p>
                 </div>
 
-                <div className="mt-2 pt-1.5 border-t border-white/10">
+                <div className="mt-2 pt-1.5 border-t border-white/10 w-full">
                   <span className={`text-[10px] font-black uppercase tracking-wider block ${isSelected ? "text-amber-400" : "text-white/40"}`}>
                     {isSelected ? "★ SELECCIONADO" : "Tocar para Cambiar"}
                   </span>
                 </div>
-              </motion.div>
+              </button>
             );
           })}
         </div>
@@ -343,7 +321,7 @@ export default function ConfigRonda() {
                     playSfx("tap");
                     setDificultad(d.id);
                   }}
-                  className={`py-2.5 px-1.5 rounded-2xl border text-center transition-all cursor-pointer ${
+                  className={`py-2.5 px-1.5 rounded-2xl border text-center transition-all active:scale-95 cursor-pointer ${
                     active
                       ? "bg-gradient-to-b from-amber-500/25 to-yellow-500/10 border-amber-400 text-white shadow-md shadow-amber-500/20 ring-2 ring-amber-400"
                       : "bg-[#0b1328]/90 border-white/10 text-white/60 hover:text-white"
@@ -362,17 +340,15 @@ export default function ConfigRonda() {
 
       {/* ── BOTÓN ÚNICO PARA INICIAR PARTIDA ── */}
       <div className="pt-2 pb-6">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.96 }}
+        <button
+          type="button"
           onClick={handleStartGame}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-base uppercase tracking-wider shadow-2xl shadow-amber-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-all active:scale-95"
+          className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black text-base uppercase tracking-wider shadow-2xl shadow-amber-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-transform active:scale-95"
         >
           <Play className="w-5 h-5 fill-slate-950" />
           <span>¡Jugar con {activeCategory.name}!</span>
-        </motion.button>
+        </button>
       </div>
-
     </div>
   );
 }

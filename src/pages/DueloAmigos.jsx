@@ -530,14 +530,14 @@ export default function DueloAmigos() {
                 const count = getEventsByCategory(cat.id).length;
 
                 return (
-                  <motion.div
+                  <button
                     key={cat.id}
-                    whileTap={{ scale: 0.95 }}
+                    type="button"
                     onClick={() => {
                       playSfx("tap");
                       setCatSeleccionada(cat.id);
                     }}
-                    className={`cursor-pointer rounded-2xl p-3 border transition-all duration-200 relative flex flex-col justify-between text-center overflow-hidden shadow-lg ${
+                    className={`cursor-pointer rounded-2xl p-3 border transition-transform duration-150 active:scale-95 relative flex flex-col justify-between text-center overflow-hidden shadow-lg ${
                       isSelected
                         ? `${deckStyle.bordeActivo} bg-[#111c38]`
                         : "bg-[#0b1328]/95 border-white/10 hover:border-amber-400/40"
@@ -545,7 +545,7 @@ export default function DueloAmigos() {
                   >
                     <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${cat.color}`} />
 
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between w-full mb-2">
                       <span className="text-[9px] font-black text-white/70 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded-md">
                         {count} 🃏
                       </span>
@@ -561,7 +561,7 @@ export default function DueloAmigos() {
                       )}
                     </div>
 
-                    <div className="my-1">
+                    <div className="my-1 w-full">
                       <div className={`w-12 h-12 mx-auto rounded-2xl ${deckStyle.iconoBg} border flex items-center justify-center text-2xl shadow-md transition-transform ${isSelected ? "scale-110" : ""}`}>
                         {deckStyle.iconoEmoji}
                       </div>
@@ -573,12 +573,12 @@ export default function DueloAmigos() {
                       </p>
                     </div>
 
-                    <div className="mt-2 pt-1.5 border-t border-white/10">
+                    <div className="mt-2 pt-1.5 border-t border-white/10 w-full">
                       <span className={`text-[10px] font-black uppercase tracking-wider block ${isSelected ? "text-amber-400" : "text-white/40"}`}>
                         {isSelected ? "★ SELECCIONADO" : "Elegir Mazo"}
                       </span>
                     </div>
-                  </motion.div>
+                  </button>
                 );
               })}
             </div>
@@ -586,15 +586,14 @@ export default function DueloAmigos() {
 
           {/* BOTÓN ÚNICO EN PANTALLA PARA INICIAR PARTIDA */}
           <div className="pt-2 pb-6">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.96 }}
+            <button
+              type="button"
               onClick={iniciarPartida}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 hover:from-blue-400 hover:to-amber-400 text-white font-black text-base uppercase tracking-wider shadow-2xl shadow-blue-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-all active:scale-95"
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 hover:from-blue-400 hover:to-amber-400 text-white font-black text-base uppercase tracking-wider shadow-2xl shadow-blue-500/40 flex items-center justify-center gap-2.5 cursor-pointer transition-transform active:scale-95"
             >
               <Swords className="w-5 h-5" />
               <span>¡Iniciar Duelo ({cantJugadores} Jugadores)!</span>
-            </motion.button>
+            </button>
           </div>
         </motion.div>
       )}

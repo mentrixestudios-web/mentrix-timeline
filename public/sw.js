@@ -1,4 +1,4 @@
-const CACHE_NAME = "mentrix-timeline-v2.7.6";
+const CACHE_NAME = "mentrix-timeline-v2.7.7";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -36,17 +36,35 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+function fetchWithTimeout(request, timeoutMs = 3500) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("Network timeout"));
+    }, timeoutMs);
+
+    fetch(request)
+      .then((response) => {
+        clearTimeout(timer);
+        resolve(response);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+}
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
   if (request.headers.has("range")) return;
 
   const url = new URL(request.url);
+  if (url.pathname.endsWith(".mp3")) return;
 
-  // Cache-first for assets, images, icons (exclude large .mp3 streams so browser streams via HTTP Range)
+  // Cache-first for hashed assets, images, icons
   const isStaticAsset =
     url.origin === self.location.origin &&
-    !url.pathname.endsWith(".mp3") &&
     (url.pathname.includes("/assets/") ||
       url.pathname.includes("/icons/") ||
       url.pathname.endsWith(".webp") ||
@@ -71,10 +89,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Network-first for SPA navigation with index.html fallback
+  // Network-first with fast 3.5s timeout for SPA navigation, falling back to cached index.html
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
+      fetchWithTimeout(request, 3500)
         .then((response) => {
           if (response && response.status === 200) {
             const copy = response.clone();

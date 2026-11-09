@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Hourglass, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Hourglass } from "lucide-react";
 
 const TIMELINE_MESSAGES = {
   idle: [
@@ -43,12 +42,8 @@ export default function MentrixMascot({
   const pool = TIMELINE_MESSAGES[status] || TIMELINE_MESSAGES.idle;
 
   useEffect(() => {
-    if (customMessage) return;
-    const interval = setInterval(() => {
-      setMsgIndex((prev) => (prev + 1) % pool.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [pool.length, customMessage]);
+    setMsgIndex(0);
+  }, [status]);
 
   const currentMessage = customMessage || pool[msgIndex % pool.length];
 
@@ -62,7 +57,7 @@ export default function MentrixMascot({
             width="40"
             height="40"
             decoding="async"
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain pointer-events-none"
           />
         </div>
         <div className="flex-1 text-left min-w-0">
@@ -78,22 +73,18 @@ export default function MentrixMascot({
     );
   }
 
-  // Layout default / hero: ESTÁNDAR FLOTANTE DE MENTRIX ESTUDIO BÍBLICO (Sin contenedor cuadrado)
   const isSm = size === "sm";
   return (
     <div className="w-full flex flex-col items-center gap-2 max-w-md mx-auto relative select-none py-1">
-      {/* Núcleo Flotante con Resplandor Áureo (Acelerado por Hardware GPU) */}
       <div className="relative flex items-center justify-center">
-        {/* Anillo astrolabio giratorio tenue en CSS puro */}
         <div
-          className={`absolute ${isSm ? "w-24 h-24" : "w-28 h-28 sm:w-32 sm:h-32"} rounded-full border border-dashed border-amber-400/25 pointer-events-none animate-spin-slow`}
+          className={`absolute ${isSm ? "w-24 h-24" : "w-28 h-28 sm:w-32 sm:h-32"} rounded-full border border-dashed border-amber-400/30 pointer-events-none`}
         />
-        {/* Resplandor áureo y cósmico */}
         <div className={`absolute ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} bg-amber-500/15 rounded-full pointer-events-none`} />
 
-        {/* Mascota Menti Flotando Libre con CSS puro GPU */}
         <div
-          className={`relative z-10 ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} flex items-center justify-center cursor-pointer animate-float-slow`}
+          onClick={() => setMsgIndex((prev) => (prev + 1) % pool.length)}
+          className={`relative z-10 ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} flex items-center justify-center cursor-pointer active:scale-95 transition-transform`}
         >
           <img
             src="/mentrix-mascot.webp"
@@ -101,20 +92,18 @@ export default function MentrixMascot({
             width="112"
             height="112"
             decoding="async"
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain pointer-events-none"
           />
         </div>
       </div>
 
-      {/* Badge Menti Viajero del Tiempo */}
       <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border border-amber-400/35 text-amber-300 text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-sm">
-        <Hourglass className="w-3 h-3 text-amber-400 animate-spin-slow" />
+        <Hourglass className="w-3 h-3 text-amber-400" />
         <span>Menti · Viajero del Tiempo</span>
       </div>
 
-      {/* Cápsula de Diálogo estilo Estudio Bíblico */}
       <div className="relative bg-[#0c1630]/95 border border-amber-400/35 rounded-full px-5 py-2 shadow-lg shadow-blue-950/40 max-w-sm text-center">
-        <p className="text-white/95 text-xs sm:text-sm font-medium leading-relaxed">
+        <p className="text-white/95 text-xs sm:text-sm font-medium leading-relaxed m-0">
           "{currentMessage}"
         </p>
       </div>

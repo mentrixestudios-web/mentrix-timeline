@@ -205,19 +205,19 @@ export function getLevelInfo() {
 
 export function addXp(amount) {
   const currentXp = getXp();
-  const nextXp = currentXp + amount;
+  const nextXp = Math.max(0, currentXp + (Number(amount) || 0));
   localStorage.setItem(KEYS.XP, String(nextXp));
 
-  let nivel = getLevel();
-  let xpReq = nivel * 100;
-  let subioNivel = false;
+  const prevNivel = getLevel();
+  let nivel = prevNivel;
+  let safety = 0;
 
-  while (nextXp >= nivel * xpReq) {
+  while (nextXp >= nivel * nivel * 100 && safety < 500) {
     nivel += 1;
-    subioNivel = true;
-    xpReq = nivel * 100;
+    safety += 1;
   }
 
+  const subioNivel = nivel > prevNivel;
   localStorage.setItem(KEYS.LEVEL, String(nivel));
   emitStorageUpdate();
 
@@ -317,7 +317,7 @@ export function getStats() {
   };
 }
 
-export function recordGameResult({ won, cardsPlaced, category }) {
+export function recordGameResult({ won, cardsPlaced, category, mode = "clasico" } = {}) {
   const current = getStats();
   const next = {
     partidasJugadas: current.partidasJugadas + 1,

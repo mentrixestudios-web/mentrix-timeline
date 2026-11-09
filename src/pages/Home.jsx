@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ChevronRight, Lock, Download } from "lucide-react";
 import { usePwaInstall, PwaInstallModal } from "@/components/pwa/InstallPwaBanner";
-import { playBgm } from "@/utils/soundSystem";
+import { playBgm, playSfx } from "@/utils/soundSystem";
 import EfemerideModal from "@/components/home/EfemerideModal";
 import { getStreakInfo, getLevelInfo, getUnlockedCardIds } from "@/utils/gameStorage";
 import {
@@ -12,10 +11,7 @@ import {
   isDailyEphemerisReadToday,
 } from "@/utils/dailyEphemeris";
 import { LEARNING_CARDS } from "@/data/learningCards";
-import { playSfx } from "@/utils/soundSystem";
 
-// Modos de juego: misma forma que Estudio Bíblico (icono + título centrados, esquinas redondeadas),
-// cada juego conserva su propia paleta de color.
 const GAME_MODES = [
   {
     to: "/config-ronda?modo=clasico",
@@ -71,12 +67,12 @@ export default function Home() {
   useEffect(() => {
     playBgm("home");
   }, []);
-  const navigate = useNavigate();
-  const [streakData, setStreakData] = useState(getStreakInfo());
-  const [levelData, setLevelData] = useState(getLevelInfo());
-  const [unlockedIds, setUnlockedIds] = useState(getUnlockedCardIds());
 
-  // Estado de la efeméride diaria
+  const navigate = useNavigate();
+  const [streakData, setStreakData] = useState(getStreakInfo);
+  const [levelData, setLevelData] = useState(getLevelInfo);
+  const [unlockedIds, setUnlockedIds] = useState(getUnlockedCardIds);
+
   const [efemeride, setEfemeride] = useState(() => getEphemerisForDate());
   const [showEfemerideModal, setShowEfemerideModal] = useState(false);
 
@@ -113,7 +109,6 @@ export default function Home() {
     navigate(`/config-ronda?categoria=${categoria || "todas"}`);
   };
 
-  // Vista previa de la galería: primero las desbloqueadas, luego siluetas bloqueadas
   const totalCards = LEARNING_CARDS.length;
   const unlockedCount = unlockedIds.length;
   const museumPct = totalCards ? Math.min((unlockedCount / totalCards) * 100, 100) : 0;
@@ -134,12 +129,7 @@ export default function Home() {
       <div className="w-full flex flex-col gap-3 lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
         {/* ══════════════ COLUMNA IZQUIERDA: Menti + Efeméride ══════════════ */}
         <div className="w-full flex flex-col items-center gap-3 lg:col-span-5 lg:bg-slate-900/40 lg:border lg:border-white/10 lg:rounded-3xl lg:p-6">
-          {/* BRANDING: título, Menti flotando libre (sin caja) y cápsula de diálogo */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full flex flex-col items-center gap-1 mb-1 px-1 text-center"
-          >
+          <div className="w-full flex flex-col items-center gap-1 mb-1 px-1 text-center">
             <span className="text-base font-extrabold tracking-wide flex items-center gap-1.5">
               <span className="text-amber-400 text-sm">✦</span>
               <span className="bg-gradient-to-b from-amber-100 via-amber-300 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,158,11,0.25)]">
@@ -151,16 +141,12 @@ export default function Home() {
               Viaja por la historia · Ordena los siglos · Conquista el tiempo
             </p>
 
-            {/* Menti flotando dentro de un anillo de reloj/astrolabio dorado (100% Acelerado por GPU) */}
+            {/* Menti dentro de anillo de reloj/astrolabio dorado (estático y fluido) */}
             <div className="relative w-44 h-44 sm:w-48 sm:h-48 mt-1 flex items-center justify-center">
               <div className="absolute inset-0 bg-blue-600/10 rounded-full pointer-events-none" />
               <div className="absolute inset-4 bg-amber-400/10 rounded-full pointer-events-none" />
 
-              {/* Anillo exterior punteado girando lento en CSS puro */}
-              <div
-                className="absolute inset-0 rounded-full border border-dashed border-amber-400/45 pointer-events-none animate-spin-slow"
-              />
-              {/* Anillo interior sólido con marcas de hora */}
+              <div className="absolute inset-0 rounded-full border border-dashed border-amber-400/45 pointer-events-none" />
               <div className="absolute inset-3 rounded-full border border-amber-300/25 pointer-events-none" />
               {[0, 90, 180, 270].map((deg) => (
                 <span
@@ -170,17 +156,11 @@ export default function Home() {
                 />
               ))}
 
-              <span className="absolute -left-2 top-6 text-xl pointer-events-none animate-float-slow">
-                📜
-              </span>
-              <span className="absolute -right-2 top-10 text-xl pointer-events-none animate-float-slow" style={{ animationDelay: "1s" }}>
-                ⏳
-              </span>
-              <span className="absolute right-4 bottom-3 text-base pointer-events-none animate-pulse-glow">
-                ✨
-              </span>
+              <span className="absolute -left-2 top-6 text-xl pointer-events-none">📜</span>
+              <span className="absolute -right-2 top-10 text-xl pointer-events-none">⏳</span>
+              <span className="absolute right-4 bottom-3 text-base pointer-events-none">✨</span>
 
-              <picture className="relative z-10 w-[82%] h-[82%] animate-float-slow">
+              <picture className="relative z-10 w-[82%] h-[82%] pointer-events-none">
                 <source srcSet="/mentrix-mascot.webp" type="image/webp" />
                 <img
                   src="/mentrix-mascot.webp"
@@ -188,34 +168,25 @@ export default function Home() {
                   width="160"
                   height="160"
                   decoding="async"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain pointer-events-none"
                 />
               </picture>
             </div>
 
-            {/* Insignia dorada + cápsula de diálogo */}
             <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-amber-500/45 px-3 py-0.5 rounded-full text-[10px] font-black text-amber-300 tracking-wider uppercase">
               <span>⌛</span>
               <span>Menti · Viajero del Tiempo</span>
             </div>
-            <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mt-0.5 bg-[#0e1c38]/95 rounded-full px-6 py-2.5 shadow-lg shadow-blue-900/30 border border-amber-400/25 max-w-sm"
-            >
+            <div className="mt-0.5 bg-[#0e1c38]/95 rounded-full px-6 py-2.5 shadow-lg shadow-blue-900/30 border border-amber-400/25 max-w-sm">
               <p className="text-white/95 text-xs sm:text-sm text-center font-medium m-0">
                 {getMentiMessage(nivel, racha)}
               </p>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          {/* ── EFEMÉRIDE DEL DÍA (equivalente al Versículo del Día) ── */}
+          {/* ── EFEMÉRIDE DEL DÍA ── */}
           {efemeride && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
+            <div
               className="w-full rounded-2xl overflow-hidden relative shadow-lg"
               style={{
                 background: "linear-gradient(135deg, #2a1d08 0%, #12183a 55%, #0f1a35 100%)",
@@ -250,14 +221,14 @@ export default function Home() {
                         playSfx("tap");
                         setShowEfemerideModal(true);
                       }}
-                      className="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-400/35 text-amber-200 hover:bg-amber-500/20 text-[9px] font-semibold cursor-pointer"
+                      className="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-400/35 text-amber-200 hover:bg-amber-500/20 active:scale-95 transition-transform text-[9px] font-semibold cursor-pointer"
                     >
                       📖 Leer efeméride →
                     </button>
                     <button
                       type="button"
                       onClick={handleShuffleEfemeride}
-                      className="px-1.5 py-1 rounded-md bg-white/5 border border-white/10 hover:bg-white/15 text-[11px] cursor-pointer"
+                      className="px-1.5 py-1 rounded-md bg-white/5 border border-white/10 hover:bg-white/15 active:scale-95 transition-transform text-[11px] cursor-pointer"
                       title="Otra efeméride"
                       aria-label="Otra efeméride"
                     >
@@ -266,18 +237,12 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
 
         {/* ══════════════ COLUMNA DERECHA: Modos de juego + Galería ══════════════ */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.4 }}
-          className="w-full flex flex-col gap-3 lg:col-span-7 lg:gap-4"
-        >
-          {/* Divisor ornamental: modos de juego */}
+        <div className="w-full flex flex-col gap-3 lg:col-span-7 lg:gap-4">
           <div className="hidden lg:flex items-center gap-2 px-1">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-400/40" />
             <span className="text-amber-400/70 text-[8px]">◆</span>
@@ -286,13 +251,15 @@ export default function Home() {
             <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-400/40" />
           </div>
 
-          {/* Modos de juego */}
           {GAME_MODES.map((m) => (
-            <Link key={m.to} to={m.to} onClick={() => playSfx("tap")}>
-              <motion.div
-                whileTap={{ scale: 0.99, y: 1 }}
-                whileHover={{ y: -2 }}
-                className={`w-full bg-gradient-to-br ${m.className} border hover:shadow-2xl active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden ring-1 ring-inset ring-amber-200/10`}
+            <Link
+              key={m.to}
+              to={m.to}
+              onClick={() => playSfx("tap")}
+              className="block w-full active:scale-[0.98] transition-transform duration-150"
+            >
+              <div
+                className={`w-full bg-gradient-to-br ${m.className} border hover:shadow-2xl rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-colors duration-200 relative overflow-hidden ring-1 ring-inset ring-amber-200/10`}
               >
                 <div className={`absolute -right-6 -top-8 w-24 h-24 rounded-full opacity-40 pointer-events-none ${m.glow}`} />
 
@@ -320,11 +287,11 @@ export default function Home() {
                     <div className={`hidden lg:block text-xs font-normal ${m.descClass}`}>{m.desc}</div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </Link>
           ))}
 
-          {/* ── GALERÍA DEL MUSEO: colección, no es un modo de juego ── */}
+          {/* ── GALERÍA DEL MUSEO ── */}
           <div className="mt-2 flex items-center gap-2 px-1">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-400/40" />
             <span className="text-amber-400/70 text-[8px]">◆</span>
@@ -370,7 +337,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Tira de vistas previas */}
             <div
               className="mt-3 flex gap-2 overflow-x-auto pb-1 relative z-10"
               style={{ scrollbarWidth: "none" }}
@@ -406,27 +372,26 @@ export default function Home() {
             <Link
               to="/estadisticas?tab=galeria"
               onClick={() => playSfx("tap")}
-              className="mt-2 relative z-10 flex items-center justify-center gap-1 py-2 rounded-xl bg-amber-500/10 border border-amber-400/30 hover:bg-amber-500/20 text-amber-200 text-xs font-bold transition-all"
+              className="mt-2 relative z-10 flex items-center justify-center gap-1 py-2 rounded-xl bg-amber-500/10 border border-amber-400/30 hover:bg-amber-500/20 active:scale-95 text-amber-200 text-xs font-bold transition-all"
             >
               Ver galería completa
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Botón Instalar en móvil si no está instalada */}
-            {!isStandalone && (
-              <button
-                onClick={triggerInstall}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-400/30 text-purple-200 font-semibold text-xs transition-all cursor-pointer mt-3"
-              >
-                <Download className="w-4 h-4 text-purple-400" />
-                <span>Instalar Línea de Tiempo como App</span>
-              </button>
-            )}
+      {!isStandalone && (
+        <button
+          type="button"
+          onClick={triggerInstall}
+          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 active:scale-98 border border-purple-400/30 text-purple-200 font-semibold text-xs transition-all cursor-pointer mt-3"
+        >
+          <Download className="w-4 h-4 text-purple-400" />
+          <span>Instalar Línea de Tiempo como App</span>
+        </button>
+      )}
 
-      {/* ── PIE DE PÁGINA MOTIVACIONAL ── */}
       <div className="w-full text-center mt-4 py-2">
         <p className="text-[11px] sm:text-xs text-slate-400/50 font-medium flex items-center justify-center gap-2 m-0">
           <span className="text-amber-400/70">⏳</span>
@@ -435,7 +400,6 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Modal detallado de la Efeméride Histórica */}
       <EfemerideModal
         open={showEfemerideModal}
         onClose={() => setShowEfemerideModal(false)}
