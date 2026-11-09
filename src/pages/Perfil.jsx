@@ -1,4 +1,5 @@
 import MentrixAccountBanner from "@/components/auth/MentrixAccountBanner";
+import { PwaPermanentInstallCard } from "@/components/pwa/InstallPwaBanner";
 import TermsAndConditionsModal from "@/components/settings/TermsAndConditionsModal";
 import PrivacyPolicyModal from "@/components/settings/PrivacyPolicyModal";
 import TutorialModal from "@/components/tutorial/TutorialModal";
@@ -267,6 +268,9 @@ export default function Perfil() {
           <p className="text-base font-black text-emerald-300">{claimedAch.length} <span className="text-[10px] text-white/60">/ {ACHIEVEMENTS.length}</span></p>
         </div>
       </div>
+
+      {/* Instalación fija de la PWA (Permanente si se cerró el banner flotante) */}
+      <PwaPermanentInstallCard source="perfil" />
 
       {/* ── SECCIÓN DE CONFIGURACIÓN & SISTEMA (2 COLUMNAS EN DESKTOP) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

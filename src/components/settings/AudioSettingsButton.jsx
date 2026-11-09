@@ -34,6 +34,7 @@ import {
   isNotificationsEnabled 
 } from "@/utils/notificationSystem";
 import { compareVersionStrings, fetchLatestAppInfo, getInstalledAppInfo } from "@/lib/appVersion";
+import { PwaPermanentInstallCard } from "@/components/pwa/InstallPwaBanner";
 import { toast } from "sonner";
 
 export default function AudioSettingsButton({
@@ -316,6 +317,9 @@ export default function AudioSettingsButton({
                       Forzar recarga / Refrescar caché
                     </button>
                   </div>
+
+                  {/* Tarjeta permanente de Instalación PWA */}
+                  <PwaPermanentInstallCard source="settings" onInstalled={() => setOpen(false)} />
 
                   {/* Efectos de sonido */}
                   <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10">

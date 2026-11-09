@@ -191,3 +191,73 @@ export function PwaInstallModal({ open, onClose, isIos }) {
     </div>
   );
 }
+
+/**
+ * Tarjeta fija permanente para instalar la PWA (para el menú de ajustes o el perfil)
+ */
+export function PwaPermanentInstallCard({ source = "perfil", onInstalled }) {
+  const { isStandalone, triggerInstall, showInstructionsModal, setShowInstructionsModal, isIos } = usePwaInstall();
+
+  if (isStandalone) {
+    return (
+      <div className="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-3 flex items-center justify-between gap-3 shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-emerald-200">App Instalada en tu Dispositivo</div>
+            <div className="text-[10px] text-white/50">Disfrutas de pantalla completa y juego offline</div>
+          </div>
+        </div>
+        <span className="text-[10px] text-emerald-300 font-mono font-bold bg-emerald-500/20 border border-emerald-400/30 px-2 py-0.5 rounded-full shrink-0">
+          PWA Activa ✓
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="rounded-2xl border border-emerald-400/35 bg-gradient-to-br from-emerald-950/50 via-teal-950/40 to-slate-900/70 p-3.5 shadow-lg relative overflow-hidden group">
+        <div className="flex items-start gap-3 mb-2.5">
+          <div className="relative w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center shrink-0 shadow-inner">
+            <Download className="w-5 h-5 text-emerald-300 group-hover:scale-110 transition-transform" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <h4 className="text-xs sm:text-sm font-extrabold text-white tracking-tight m-0">
+                Instalar Aplicación (PWA)
+              </h4>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                Fijo
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-300/85 leading-snug mt-1 mb-0">
+              Instala Mentrix Cronos en tu pantalla de inicio para jugar a pantalla completa, más rápido y sin conexión.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            playSfx("tap");
+            triggerInstall();
+            if (onInstalled) onInstalled();
+          }}
+          className="w-full flex items-center justify-center gap-2 py-2 px-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-md shadow-emerald-950/60 transition-all hover:scale-[1.01] active:scale-98 cursor-pointer"
+        >
+          <Download className="w-3.5 h-3.5" />
+          <span>Instalar en este Dispositivo</span>
+        </button>
+      </div>
+
+      <PwaInstallModal
+        open={showInstructionsModal}
+        onClose={() => setShowInstructionsModal(false)}
+        isIos={isIos}
+      />
+    </>
+  );
+}
