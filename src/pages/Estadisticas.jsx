@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
@@ -164,12 +164,26 @@ const CATEGORIAS_CONFIG = [
 
 ];
 
-export default function Estadisticas() {
+export default function Estadisticas({ section = null }) {
+  const location = useLocation();
   const [searchParams] = useSearchParams();
-  const initialTab = searchParams.get("tab") || "galeria";
+  const tabParam = searchParams.get("tab");
+
+  const isLogrosMode =
+    section === "logros" ||
+    location.pathname.toLowerCase() === "/logros" ||
+    tabParam === "logros" ||
+    tabParam === "records";
+
+  const getDefaultTab = () => {
+    if (tabParam && ["galeria", "codice", "reliquias", "logros", "records"].includes(tabParam)) {
+      return tabParam;
+    }
+    return isLogrosMode ? "logros" : "galeria";
+  };
 
   // Tabs: 'galeria' | 'codice' | 'reliquias' | 'logros' | 'records'
-  const [tabActiva, setTabActiva] = useState(initialTab);
+  const [tabActiva, setTabActiva] = useState(getDefaultTab);
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
   const [busquedaTexto, setBusquedaTexto] = useState("");
   const [visibleCount, setVisibleCount] = useState(24);
@@ -177,6 +191,10 @@ export default function Estadisticas() {
   // Modales de detalle
   const [cartaSeleccionada, setCartaSeleccionada] = useState(null);
   const [hitoSeleccionado, setHitoSeleccionado] = useState(null);
+
+  useEffect(() => {
+    setTabActiva(getDefaultTab());
+  }, [section, location.pathname, tabParam]);
 
   useEffect(() => {
     setVisibleCount(24);
@@ -324,6 +342,10 @@ export default function Estadisticas() {
     },
   ];
 
+  const SALAS_VISIBLES = isLogrosMode
+    ? SALAS_MUSEO.filter((s) => s.id === "logros" || s.id === "records")
+    : SALAS_MUSEO.filter((s) => s.id === "galeria" || s.id === "codice" || s.id === "reliquias");
+
   const statCards = [
     {
       title: "Mayor Línea",
@@ -377,8 +399,14 @@ export default function Estadisticas() {
             <span>{coins}</span>
           </div>
 
-          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border bg-purple-500/20 text-purple-300 border-purple-400/40 shadow-sm">
-            MUSEO & APRENDIZAJE 🏛️
+          <span
+            className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border shadow-sm ${
+              isLogrosMode
+                ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/40"
+                : "bg-purple-500/20 text-purple-300 border-purple-400/40"
+            }`}
+          >
+            {isLogrosMode ? "LOGROS & RÉCORDS 🏆" : "MUSEO & COLECCIÓN 🏛️"}
           </span>
         </div>
       </div>
@@ -401,9 +429,13 @@ export default function Estadisticas() {
         />
       </div>
 
-      {/* ── SELECTOR PREMIUM DE SALAS DEL MUSEO (5 MÓDULOS ARCADE) ── */}
-      <div className="grid grid-cols-5 gap-1.5 sm:gap-2 p-1.5 rounded-2xl bg-[#070c1a]/90 border border-amber-500/20 shadow-xl">
-        {SALAS_MUSEO.map((sala) => {
+      {/* ── SELECTOR PREMIUM DE SECCIÓN (2 PESTAÑAS EN LOGROS / 3 SALAS EN MUSEO) ── */}
+      <div
+        className={`grid ${
+          isLogrosMode ? "grid-cols-2" : "grid-cols-3"
+        } gap-2 sm:gap-2.5 p-1.5 rounded-2xl bg-[#070c1a]/95 border border-amber-500/25 shadow-xl`}
+      >
+        {SALAS_VISIBLES.map((sala) => {
           const isActive = tabActiva === sala.id;
           return (
             <button
@@ -413,10 +445,10 @@ export default function Estadisticas() {
                 setTabActiva(sala.id);
                 playSfx("tap");
               }}
-              className={`relative overflow-hidden flex flex-col items-center justify-between py-2 px-1 rounded-xl border active:scale-95 transition-transform cursor-pointer ${
+              className={`relative overflow-hidden flex items-center justify-center gap-2.5 py-2.5 px-2.5 rounded-xl border active:scale-95 transition-transform cursor-pointer ${
                 isActive
-                  ? `bg-gradient-to-b ${sala.activeBg} ${sala.activeBorder} shadow-lg scale-[1.02]`
-                  : "bg-[#0d162e]/80 border-white/10 text-white/60 hover:text-white hover:border-white/25 hover:bg-[#132042]"
+                  ? `bg-gradient-to-b ${sala.activeBg} ${sala.activeBorder} shadow-lg scale-[1.01]`
+                  : "bg-[#0d162e]/85 border-white/10 text-white/70 hover:text-white hover:border-white/25 hover:bg-[#132042]"
               }`}
             >
               {/* Barra luminosa superior */}
@@ -426,7 +458,7 @@ export default function Estadisticas() {
 
               {/* Icono 3D en medallón */}
               <div
-                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-sm sm:text-base shadow-inner mb-1 transition-transform ${
+                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-base sm:text-lg shadow-inner shrink-0 transition-transform ${
                   isActive
                     ? "bg-black/30 border border-white/30 scale-105"
                     : "bg-white/5 border border-white/10"
@@ -435,31 +467,33 @@ export default function Estadisticas() {
                 <span>{sala.emoji}</span>
               </div>
 
-              {/* Nombre de Sala */}
-              <span
-                className={`text-[10px] sm:text-[11px] font-black leading-tight tracking-tight ${
-                  isActive
-                    ? sala.darkText
-                      ? "text-slate-950"
-                      : "text-white"
-                    : "text-white/75"
-                }`}
-              >
-                {sala.label}
-              </span>
+              <div className="flex flex-col items-start min-w-0">
+                {/* Nombre de Sala */}
+                <span
+                  className={`text-xs sm:text-sm font-black leading-tight tracking-tight truncate ${
+                    isActive
+                      ? sala.darkText
+                        ? "text-slate-950"
+                        : "text-white"
+                      : "text-white/85"
+                  }`}
+                >
+                  {sala.label}
+                </span>
 
-              {/* Contador / Badge inferior */}
-              <span
-                className={`mt-1 text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded-full border ${
-                  isActive
-                    ? sala.darkText
-                      ? "bg-slate-950/80 text-amber-300 border-slate-950"
-                      : "bg-black/40 text-amber-300 border-white/20"
-                    : "bg-black/30 text-white/45 border-white/5"
-                }`}
-              >
-                {sala.badge}
-              </span>
+                {/* Contador / Badge inferior */}
+                <span
+                  className={`mt-0.5 text-[9px] sm:text-[10px] font-black px-1.5 py-0.2 rounded-full border ${
+                    isActive
+                      ? sala.darkText
+                        ? "bg-slate-950/80 text-amber-300 border-slate-950"
+                        : "bg-black/40 text-amber-300 border-white/20"
+                      : "bg-black/30 text-white/50 border-white/10"
+                  }`}
+                >
+                  {sala.badge}
+                </span>
+              </div>
             </button>
           );
         })}

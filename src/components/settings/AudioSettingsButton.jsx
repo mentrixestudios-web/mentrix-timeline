@@ -53,8 +53,8 @@ export default function AudioSettingsButton({
   );
 
   const [appInfo, setAppInfo] = useState({
-    version: "2.7.2",
-    build: "32",
+    version: "2.7.3",
+    build: "33",
     appName: "Mentrix Línea de Tiempo",
   });
 

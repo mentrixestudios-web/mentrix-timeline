@@ -1,6 +1,6 @@
 {
-  "version": "2.7.2",
-  "build": "32",
+  "version": "2.7.3",
+  "build": "33",
   "publishedAt": "2026-11-09",
-  "notes": "Solución definitiva anti-freeze móvil: corrección de crash en DueloAmigos, paginación progresiva en Museo (8x más rápido), compresión de mascota 320px y streaming ligero de audio."
+  "notes": "Rediseño de la barra inferior móvil con alto contraste y margen ergonómico para los 3 botones de Android, más separación de vistas dedicadas para Logros y Museo."
 }

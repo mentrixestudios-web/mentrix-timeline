@@ -211,7 +211,7 @@ export default function Perfil() {
         <div
           onClick={() => {
             playSfx("tap");
-            navigate("/estadisticas?tab=records");
+            navigate("/logros?tab=records");
           }}
           className="cursor-pointer relative overflow-hidden rounded-2xl p-3 bg-[#0b1328]/90 border border-amber-500/30 hover:border-amber-400 transition-all shadow-md"
         >
@@ -256,7 +256,7 @@ export default function Perfil() {
         <div
           onClick={() => {
             playSfx("tap");
-            navigate("/estadisticas?tab=logros");
+            navigate("/logros?tab=logros");
           }}
           className="cursor-pointer relative overflow-hidden rounded-2xl p-3 bg-[#0b1328]/90 border border-emerald-500/30 hover:border-emerald-400 transition-all shadow-md"
         >
@@ -413,7 +413,7 @@ export default function Perfil() {
             ⏳
           </div>
           <div>
-            <p className="font-black text-white text-xs">Mentrix: Línea de Tiempo v1.0</p>
+            <p className="font-black text-white text-xs">Mentrix: Línea de Tiempo v2.7.3</p>
             <p className="text-[10px] text-white/45">Ecosistema Educativo Mentrix Studios © 2026</p>
           </div>
         </div>

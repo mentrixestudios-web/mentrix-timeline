@@ -40,6 +40,8 @@ export default function App() {
             <Route path="/modos-individuales" element={<ModosIndividuales />} />
             <Route path="/modos-online" element={<ModosEnLinea />} />
             <Route path="/desafio" element={<DesafioDiario />} />
+            <Route path="/logros" element={<Estadisticas section="logros" />} />
+            <Route path="/museo" element={<Estadisticas section="museo" />} />
             <Route path="/estadisticas" element={<Estadisticas />} />
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/tienda" element={<TiendaMonedas />} />

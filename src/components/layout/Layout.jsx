@@ -47,13 +47,33 @@ export default function Layout({ children }) {
   const isGamePage = pathname === "/juego" || pathname === "/juego-online";
   const showNav = !isGamePage;
 
-  // Navegación principal (idéntica a Estudio Bíblico)
+  // Navegación principal (idéntica a Estudio Bíblico, con vistas separadas para Logros y Museo)
   const mainNavItems = [
     { path: "/", label: "Inicio / Jugar", mobileLabel: "Jugar", icon: Home },
-    { path: "/estadisticas", label: "Logros y Récords", mobileLabel: "Logros", icon: Trophy },
-    { path: "/estadisticas", label: "Galería y Cartas", mobileLabel: "Museo", icon: Shield },
+    { path: "/logros", label: "Logros y Récords", mobileLabel: "Logros", icon: Trophy },
+    { path: "/estadisticas", label: "Museo y Cartas", mobileLabel: "Museo", icon: Shield },
     { path: "/perfil", label: "Mi Perfil", mobileLabel: "Perfil", icon: User },
   ];
+
+  const isNavItemActive = (item) => {
+    const search = location.search.toLowerCase();
+    if (item.path === "/") {
+      return pathname === "/" || pathname === "";
+    }
+    if (item.path === "/logros") {
+      return (
+        pathname === "/logros" ||
+        (pathname === "/estadisticas" && (search.includes("tab=logros") || search.includes("tab=records")))
+      );
+    }
+    if (item.path === "/estadisticas") {
+      return (
+        pathname === "/museo" ||
+        (pathname === "/estadisticas" && !search.includes("tab=logros") && !search.includes("tab=records"))
+      );
+    }
+    return pathname === item.path.toLowerCase();
+  };
 
   // Módulos de juego (accesos directos en barra lateral de escritorio)
   const quickModules = [
@@ -97,7 +117,7 @@ export default function Layout({ children }) {
             <nav className="space-y-1.5">
               {mainNavItems.map((item, idx) => {
                 const Icon = item.icon;
-                const active = location.pathname === item.path && (idx === 0 ? location.pathname === "/" : true);
+                const active = isNavItemActive(item);
                 return (
                   <Link
                     key={item.label + idx}
@@ -164,7 +184,7 @@ export default function Layout({ children }) {
       {/* =======================================================
           ÁREA PRINCIPAL DE CONTENIDO
          ======================================================= */}
-      <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-24 lg:pb-8 lg:pl-72" : "pb-4"} overflow-x-hidden relative bg-gradient-to-br from-[#070b16] via-[#091124] to-[#050812]`}>
+      <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-28 lg:pb-8 lg:pl-72" : "pb-4"} overflow-x-hidden relative bg-gradient-to-br from-[#070b16] via-[#091124] to-[#050812]`}>
         <div className="flex-1 w-full max-w-md lg:!max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 relative z-10">
           {showNav && <TopBar />}
           <AppErrorBoundary resetKey={location.pathname + location.search}>
@@ -175,24 +195,32 @@ export default function Layout({ children }) {
 
       {/* =======================================================
           BARRA INFERIOR MÓVIL (Visible en celulares < 1024px)
+          Superficie sólida de alto contraste y margen ergonómico
+          para barra de 3 botones de Android y navegación por gestos
          ======================================================= */}
       {showNav && (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070c18]/98 border-t border-white/10 px-2 py-1.5 flex items-center justify-around shadow-2xl">
+        <nav
+          className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-[#0b1328] via-[#101c3a] to-[#16264c] border-t-2 border-amber-400/50 px-2.5 pt-2 flex items-center justify-around gap-1.5 shadow-[0_-10px_30px_rgba(0,0,0,0.92)] select-none"
+          style={{ paddingBottom: "max(0.6rem, env(safe-area-inset-bottom))" }}
+        >
           {mainNavItems.map((item, idx) => {
             const Icon = item.icon;
-            const active = location.pathname === item.path && (idx === 0 ? location.pathname === "/" : true);
+            const active = isNavItemActive(item);
             return (
               <Link
                 key={item.mobileLabel + idx}
                 to={item.path}
-                className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl transition-all ${
+                className={`relative flex-1 flex flex-col items-center justify-center gap-1 min-h-[50px] py-1.5 px-2 rounded-2xl transition-all active:scale-95 ${
                   active
-                    ? "text-amber-400 font-extrabold scale-105"
-                    : "text-white/40 hover:text-white"
+                    ? "bg-gradient-to-b from-amber-500/25 to-amber-600/15 border border-amber-400/65 text-amber-300 font-extrabold shadow-md shadow-amber-950/50"
+                    : "bg-white/[0.04] border border-white/10 text-slate-200/80 hover:text-white hover:bg-white/10 font-semibold"
                 }`}
               >
-                <Icon className={`w-5 h-5 ${active ? "text-amber-400 fill-amber-400/20" : "text-white/40"}`} />
-                <span className="text-[10px]">{item.mobileLabel}</span>
+                {active && (
+                  <span className="absolute top-0 left-4 right-4 h-0.5 rounded-full bg-amber-300" />
+                )}
+                <Icon className={`w-5 h-5 ${active ? "text-amber-300 fill-amber-400/25" : "text-slate-300/85"}`} />
+                <span className="text-[11px] leading-none tracking-tight">{item.mobileLabel}</span>
               </Link>
             );
           })}
