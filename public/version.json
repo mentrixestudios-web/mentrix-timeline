@@ -1,6 +1,6 @@
 {
-  "version": "2.7.0",
-  "build": "30",
-  "publishedAt": "2026-11-08",
-  "notes": "Optimización masiva para pantallas OLED 120Hz/144Hz: aceleración por hardware GPU puro, eliminación de render loops y navegación instantánea."
+  "version": "2.7.1",
+  "build": "31",
+  "publishedAt": "2026-11-09",
+  "notes": "Optimización de rendimiento táctil y fluidez total en pantallas móviles de alta tasa de refresco (120Hz/144Hz)."
 }

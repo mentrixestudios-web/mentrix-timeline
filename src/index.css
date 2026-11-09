@@ -8,12 +8,14 @@
     --foreground: 210 40% 98%;
   }
 
-  body {
+  html, body {
     background-color: #020617;
     color: #f8fafc;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-y;
   }
 }
 
