@@ -1,4 +1,4 @@
-const CACHE_NAME = "mentrix-timeline-v2.7.1";
+const CACHE_NAME = "mentrix-timeline-v2.7.2";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -7,6 +7,7 @@ const CORE_ASSETS = [
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png",
   "./icons/badge-monochrome.png",
+  "./icons/badge-hourglass.png",
   "./icons/menti-192.png"
 ];
 
@@ -119,7 +120,7 @@ self.addEventListener("push", (event) => {
     self.registration.showNotification(data.title || "Mentrix Línea de Tiempo", {
       body: data.body,
       icon: "/icons/menti-192.png",
-      badge: "/icons/badge-monochrome.png",
+      badge: "/icons/badge-hourglass.png",
       data: data.data || { target: "./" },
     })
   );

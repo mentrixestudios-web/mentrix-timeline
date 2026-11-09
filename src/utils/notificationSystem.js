@@ -36,7 +36,7 @@ export async function showTimelineNotification(title, options = {}) {
 
   const payload = {
     icon: "/icons/menti-192.png",
-    badge: "/icons/badge-monochrome.png",
+    badge: "/icons/badge-hourglass.png",
     vibrate: [200, 100, 200],
     tag: options.tag || "timeline-notif",
     renotify: true,

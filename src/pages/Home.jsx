@@ -199,7 +199,7 @@ export default function Home() {
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mt-0.5 bg-blue-600/20 backdrop-blur-md rounded-full px-6 py-2.5 shadow-lg shadow-blue-900/20 border border-amber-400/25 max-w-sm"
+              className="mt-0.5 bg-[#0e1c38]/95 rounded-full px-6 py-2.5 shadow-lg shadow-blue-900/30 border border-amber-400/25 max-w-sm"
             >
               <p className="text-white/95 text-xs sm:text-sm text-center font-medium m-0">
                 {getMentiMessage(nivel, racha)}
@@ -291,7 +291,7 @@ export default function Home() {
                 whileHover={{ y: -2 }}
                 className={`w-full bg-gradient-to-br ${m.className} border hover:shadow-2xl active:shadow-lg rounded-2xl py-3 lg:py-4 px-6 text-white font-semibold text-base lg:text-lg transition-all duration-200 relative overflow-hidden ring-1 ring-inset ring-amber-200/10`}
               >
-                <div className={`absolute -right-6 -top-8 w-24 h-24 rounded-full blur-2xl pointer-events-none ${m.glow}`} />
+                <div className={`absolute -right-6 -top-8 w-24 h-24 rounded-full opacity-40 pointer-events-none ${m.glow}`} />
 
                 {m.badge === "live" && (
                   <span className="absolute top-2 right-3 z-10 flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-400/15 border border-cyan-300/40 text-[8px] font-black tracking-wider text-cyan-200">

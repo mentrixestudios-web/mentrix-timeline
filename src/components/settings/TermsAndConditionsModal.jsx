@@ -1,7 +1,8 @@
 import React from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { FileText, X, Sparkles, ShieldCheck, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { FileText, X, Sparkles, Home } from "lucide-react";
+import { playSfx } from "@/utils/soundSystem";
 
 const sections = [
   {
@@ -44,98 +45,104 @@ const sections = [
 export default function TermsAndConditionsModal({ open, onClose }) {
   if (!open || typeof document === "undefined") return null;
 
-  const handleGoHome = () => {
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    playSfx("tap");
     onClose();
-    if (typeof window !== "undefined") {
-      window.location.href = "/";
-    }
+  };
+
+  const handleGoHome = () => {
+    playSfx("tap");
+    onClose();
+    navigate("/");
   };
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-[10030] flex items-center justify-center p-3 sm:p-4 bg-slate-950/90 cursor-pointer"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 15 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        transition={{ duration: 0.2 }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative z-10 flex h-[86vh] max-h-[740px] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border-2 border-amber-400/40 bg-gradient-to-b from-[#0e172e] via-[#091124] to-[#060a16] shadow-[0_20px_70px_rgba(0,0,0,0.9)] text-white cursor-default"
-      >
-        {/* Resplandor decorativo optimizado */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-600/10 rounded-full pointer-events-none" />
+    <div className="fixed inset-0 z-[10030]">
+      {/* Backdrop oscuro independiente - captura toques fuera del modal */}
+      <div 
+        className="fixed inset-0 bg-black/85 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-150"
+        onClick={handleClose}
+      />
 
-        {/* Encabezado */}
-        <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-white/[0.03] px-5 py-4 relative z-10">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0 shadow-inner">
-              <FileText className="w-5 h-5" />
+      {/* Contenedor centrado aislado de eventos de arrastre */}
+      <div className="fixed inset-0 z-[10031] flex items-center justify-center p-3 sm:p-4 pointer-events-none">
+        <div 
+          className="pointer-events-auto relative flex h-[86vh] max-h-[740px] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border-2 border-amber-400/50 bg-[#0a1122] shadow-[0_20px_70px_rgba(0,0,0,0.9)] text-white select-none animate-in fade-in zoom-in-95 duration-150"
+        >
+          {/* Encabezado */}
+          <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-white/[0.03] px-5 py-4 shrink-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0 shadow-inner">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-white text-base sm:text-lg font-black truncate m-0">Términos y Condiciones</h2>
+                <p className="text-[11px] text-amber-200/70 truncate m-0">
+                  Condiciones de uso y marco de juego · Mentrix Línea de Tiempo
+                </p>
+              </div>
             </div>
-            <div className="min-w-0">
-              <h2 className="text-white text-base sm:text-lg font-black truncate">Términos y Condiciones</h2>
-              <p className="text-[11px] text-amber-200/70 truncate">
-                Condiciones de uso y marco de juego · Mentrix Línea de Tiempo
+            <button
+              type="button"
+              onClick={handleClose}
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white/80 hover:text-white transition-all cursor-pointer shrink-0"
+              aria-label="Cerrar términos"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Tarjeta resumen rápida */}
+          <div className="px-5 pt-3 shrink-0">
+            <div className="rounded-2xl border border-amber-400/25 bg-amber-500/10 p-3 flex items-start gap-2.5">
+              <Sparkles className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-100/90 leading-relaxed m-0">
+                Juego educativo orientado al aprendizaje histórico universal. Monedas virtuales unificadas para el ecosistema Mentrix, compras seguras por Mercado Pago y protección del usuario.
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white/80 hover:text-white transition-all cursor-pointer shrink-0"
-            aria-label="Cerrar términos"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
 
-        {/* Tarjeta resumen rápida */}
-        <div className="px-5 pt-4">
-          <div className="rounded-2xl border border-amber-400/25 bg-amber-500/10 p-3 flex items-start gap-2.5">
-            <Sparkles className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-100/90 leading-relaxed">
-              Juego educativo orientado al aprendizaje histórico universal. Monedas virtuales unificadas para el ecosistema Mentrix, compras seguras por Mercado Pago y protección del usuario.
-            </p>
+          {/* Contenido scrolleable táctil nativo sin interferencias */}
+          <div 
+            className="flex-1 overflow-y-auto px-5 py-3 space-y-3 text-xs text-slate-200"
+            style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
+          >
+            {sections.map((sec, idx) => (
+              <div key={idx} className="rounded-2xl border border-white/10 bg-white/[0.02] p-3.5">
+                <h3 className="font-bold text-amber-300 text-sm mb-1.5 flex items-center gap-2 m-0">
+                  <span className="w-5 h-5 rounded-lg bg-amber-500/20 text-amber-300 text-[10px] flex items-center justify-center font-black shrink-0">
+                    {idx + 1}
+                  </span>
+                  <span>{sec.title}</span>
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed pl-7 m-0">{sec.body}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Pie de modal con botón a Inicio y Entendido */}
+          <div className="border-t border-white/10 bg-white/[0.02] px-5 py-3 flex items-center justify-between gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handleGoHome}
+              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Home className="w-3.5 h-3.5 text-amber-400" />
+              <span>Pantalla Principal</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleClose}
+              className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs transition-transform active:scale-95 shadow-md shadow-amber-500/20 cursor-pointer"
+            >
+              Entendido
+            </button>
           </div>
         </div>
-
-        {/* Contenido scrolleable con soporte táctil optimizado */}
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 space-y-3 text-xs text-slate-200 touch-pan-y">
-          {sections.map((sec, idx) => (
-            <div key={idx} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-colors hover:bg-white/[0.04]">
-              <h3 className="font-bold text-amber-300 text-sm mb-1.5 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-lg bg-amber-500/20 text-amber-300 text-[10px] flex items-center justify-center font-black">
-                  {idx + 1}
-                </span>
-                <span>{sec.title}</span>
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed pl-7">{sec.body}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Pie de modal con botón a Inicio y Entendido */}
-        <div className="border-t border-white/10 bg-white/[0.02] px-5 py-3.5 flex items-center justify-between gap-2 relative z-10">
-          <button
-            type="button"
-            onClick={handleGoHome}
-            className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer"
-          >
-            <Home className="w-3.5 h-3.5 text-amber-400" />
-            <span>Pantalla Principal</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs transition-transform active:scale-95 shadow-md shadow-amber-500/20 cursor-pointer"
-          >
-            Entendido
-          </button>
-        </div>
-      </motion.div>
+      </div>
     </div>,
     document.body
   );
