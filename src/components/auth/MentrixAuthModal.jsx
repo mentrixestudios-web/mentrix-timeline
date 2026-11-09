@@ -67,7 +67,7 @@ export default function MentrixAuthModal({ open, onClose }) {
 
   const modalContent = (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/85 p-4 animate-in fade-in duration-200">
         <div
           className="absolute inset-0 bg-transparent"
           onClick={onClose}

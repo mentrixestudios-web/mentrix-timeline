@@ -93,7 +93,7 @@ export default function DesafioDiario() {
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#301910] via-[#171430] to-[#0a1024] border-2 border-amber-400/70 p-5 sm:p-6 shadow-[0_12px_35px_rgba(245,158,11,0.2)] space-y-5"
       >
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400" />
-        <div className="absolute -top-12 -right-12 w-48 h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-amber-500/15 rounded-full pointer-events-none" />
 
         {/* Cabecera */}
         <div className="flex items-center justify-between gap-2 flex-wrap relative z-10">

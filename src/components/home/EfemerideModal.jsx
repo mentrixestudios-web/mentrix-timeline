@@ -56,7 +56,7 @@ export default function EfemerideModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-4 animate-in fade-in duration-200 select-none">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-3 sm:p-4 animate-in fade-in duration-200 select-none">
       <div className="w-full max-w-lg rounded-3xl bg-gradient-to-b from-[#131d3b] via-[#0b1328] to-[#070d1e] border border-amber-400/40 p-5 sm:p-6 text-white shadow-2xl relative max-h-[92vh] flex flex-col overflow-hidden">
         
         {/* Botón Cerrar */}

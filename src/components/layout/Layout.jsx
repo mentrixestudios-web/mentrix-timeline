@@ -8,6 +8,7 @@ import {
   Download
 } from "lucide-react";
 import TopBar from "@/components/common/TopBar";
+import AppErrorBoundary from "@/components/common/AppErrorBoundary";
 import { getCoins, getStreak } from "@/utils/gameStorage";
 import { 
   usePwaInstall, 
@@ -70,7 +71,7 @@ export default function Layout({ children }) {
           Exacto mismo fondo slate-950/95 y bordes de Estudio Bíblico
          ======================================================= */}
       {showNav && (
-        <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 lg:left-0 bg-slate-950/95 backdrop-blur-xl border-r border-white/10 z-50 px-4 py-6 select-none shadow-2xl">
+        <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 lg:left-0 bg-slate-950/95 border-r border-white/10 z-50 px-4 py-6 select-none shadow-2xl">
           
           {/* Logo y Encabezado */}
           <Link
@@ -166,7 +167,9 @@ export default function Layout({ children }) {
       <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-24 lg:pb-8 lg:pl-72" : "pb-4"} overflow-x-hidden relative bg-gradient-to-br from-[#070b16] via-[#091124] to-[#050812]`}>
         <div className="flex-1 w-full max-w-md lg:!max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 relative z-10">
           {showNav && <TopBar />}
-          {children}
+          <AppErrorBoundary resetKey={location.pathname + location.search}>
+            {children}
+          </AppErrorBoundary>
         </div>
       </main>
 

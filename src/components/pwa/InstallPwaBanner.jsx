@@ -47,12 +47,12 @@ export function PwaFloatingBanner() {
     <div className="fixed bottom-20 lg:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:max-w-md z-50 animate-in fade-in slide-in-from-bottom-5 duration-300 select-none">
       <div 
         onClick={triggerInstall}
-        className="w-full bg-[#08151f]/95 hover:bg-[#0c1e2d]/95 border border-emerald-500/40 hover:border-emerald-400 shadow-[0_12px_36px_rgba(0,0,0,0.7)] backdrop-blur-xl rounded-2xl sm:rounded-full px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-3 cursor-pointer transition-all group"
+        className="w-full bg-[#08151f]/95 hover:bg-[#0c1e2d]/95 border border-emerald-500/40 hover:border-emerald-400 shadow-[0_12px_36px_rgba(0,0,0,0.7)] rounded-2xl sm:rounded-full px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-3 cursor-pointer transition-all group"
       >
         {/* Isotipo Menti en círculo */}
         <div className="relative w-10 h-10 shrink-0 rounded-full bg-slate-950 border border-emerald-500/40 p-1 flex items-center justify-center shadow-md shadow-emerald-950/60">
           <img 
-            src="./mentrix-mascot-transparent.png" 
+            src="./mentrix-mascot.webp" 
             alt="Menti" 
             className="w-full h-full object-contain filter drop-shadow group-hover:scale-110 transition-transform" 
           />
@@ -110,7 +110,7 @@ export function PwaInstallModal({ open, onClose, isIos }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 animate-in fade-in duration-200">
       <div className="w-full max-w-md rounded-3xl bg-slate-900 border border-blue-400/30 p-5 sm:p-6 text-white shadow-2xl relative select-none">
         <button
           onClick={onClose}

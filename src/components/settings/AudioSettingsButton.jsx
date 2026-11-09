@@ -53,8 +53,8 @@ export default function AudioSettingsButton({
   );
 
   const [appInfo, setAppInfo] = useState({
-    version: "2.7.1",
-    build: "31",
+    version: "2.7.2",
+    build: "32",
     appName: "Mentrix Línea de Tiempo",
   });
 
@@ -192,38 +192,27 @@ export default function AudioSettingsButton({
 
   return (
     <>
-      <motion.button
-        whileTap={{ scale: 0.9 }}
+      <button
         onClick={() => {
           playSfx("click");
           setOpen(true);
         }}
         aria-label="Configuración de audio y juego"
-        className={buttonClassName}
+        className={`${buttonClassName} active:scale-90 transition-transform`}
         type="button"
       >
         <Settings className={`${iconClassName} ${sound || music ? "text-cyan-300" : "text-white/60"}`} />
-      </motion.button>
+      </button>
 
-      {typeof document !== "undefined" && createPortal(
-        <AnimatePresence>
-          {open && (
-            <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-black/85"
-                onClick={() => setOpen(false)}
-              />
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 15 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 15 }}
-                transition={{ duration: 0.2 }}
-                className="relative z-10 w-full max-w-sm max-h-[90vh] overflow-y-auto bg-gradient-to-b from-[#0c162e] via-[#091124] to-[#070b18] border-2 border-amber-400/50 rounded-3xl p-5 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-white select-none"
-              >
+      {open && typeof document !== "undefined" && createPortal(
+        <div
+          className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/85 cursor-pointer"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative z-10 w-full max-w-sm max-h-[90vh] overflow-y-auto overscroll-contain touch-pan-y bg-gradient-to-b from-[#0c162e] via-[#091124] to-[#070b18] border-2 border-amber-400/50 rounded-3xl p-5 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-white cursor-default"
+          >
                 <div className="absolute top-0 right-0 w-28 h-28 bg-amber-500/10 rounded-full pointer-events-none" />
 
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-amber-500/20">
@@ -462,15 +451,13 @@ export default function AudioSettingsButton({
                   </span>
                   <span className="font-mono">v{appInfo.version}</span>
                 </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>,
+              </div>
+            </div>,
         document.body
       )}
 
-      <TermsAndConditionsModal open={showTerms} onClose={() => setShowTerms(false)} />
-      <PrivacyPolicyModal open={showPrivacy} onClose={() => setShowPrivacy(false)} />
+      {showTerms && <TermsAndConditionsModal open={showTerms} onClose={() => setShowTerms(false)} />}
+      {showPrivacy && <PrivacyPolicyModal open={showPrivacy} onClose={() => setShowPrivacy(false)} />}
     </>
   );
 }

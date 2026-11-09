@@ -1,6 +1,6 @@
 {
-  "version": "2.7.1",
-  "build": "31",
+  "version": "2.7.2",
+  "build": "32",
   "publishedAt": "2026-11-09",
-  "notes": "Optimización de rendimiento táctil y fluidez total en pantallas móviles de alta tasa de refresco (120Hz/144Hz)."
+  "notes": "Solución definitiva anti-freeze móvil: corrección de crash en DueloAmigos, paginación progresiva en Museo (8x más rápido), compresión de mascota 320px y streaming ligero de audio."
 }

@@ -54,12 +54,15 @@ export default function MentrixMascot({
 
   if (layout === "compact") {
     return (
-      <div className="flex items-center gap-2.5 bg-blue-600/15 border border-amber-400/30 rounded-2xl p-2.5 max-w-md w-full shadow-md backdrop-blur-md">
+      <div className="flex items-center gap-2.5 bg-blue-600/15 border border-amber-400/30 rounded-2xl p-2.5 max-w-md w-full shadow-md">
         <div className="w-10 h-10 shrink-0 relative flex items-center justify-center">
           <img
-            src="/mentrix-mascot.png"
+            src="/mentrix-mascot.webp"
             alt="Menti"
-            className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
+            width="40"
+            height="40"
+            decoding="async"
+            className="w-full h-full object-contain"
           />
         </div>
         <div className="flex-1 text-left min-w-0">
@@ -93,9 +96,12 @@ export default function MentrixMascot({
           className={`relative z-10 ${isSm ? "w-20 h-20" : "w-24 h-24 sm:w-28 sm:h-28"} flex items-center justify-center cursor-pointer animate-float-slow`}
         >
           <img
-            src="/mentrix-mascot.png"
+            src="/mentrix-mascot.webp"
             alt="Menti Viajero del Tiempo"
-            className="w-full h-full object-contain filter drop-shadow-[0_8px_20px_rgba(245,158,11,0.3)]"
+            width="112"
+            height="112"
+            decoding="async"
+            className="w-full h-full object-contain"
           />
         </div>
       </div>
@@ -107,20 +113,11 @@ export default function MentrixMascot({
       </div>
 
       {/* Cápsula de Diálogo estilo Estudio Bíblico */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentMessage}
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 4 }}
-          transition={{ duration: 0.2 }}
-          className="relative bg-[#0c1630]/95 border border-amber-400/35 rounded-full px-5 py-2 shadow-lg shadow-blue-950/40 max-w-sm text-center"
-        >
-          <p className="text-white/95 text-xs sm:text-sm font-medium leading-relaxed">
-            "{currentMessage}"
-          </p>
-        </motion.div>
-      </AnimatePresence>
+      <div className="relative bg-[#0c1630]/95 border border-amber-400/35 rounded-full px-5 py-2 shadow-lg shadow-blue-950/40 max-w-sm text-center">
+        <p className="text-white/95 text-xs sm:text-sm font-medium leading-relaxed">
+          "{currentMessage}"
+        </p>
+      </div>
     </div>
   );
 }

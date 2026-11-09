@@ -26,10 +26,10 @@ export default function CurrentCardHand({
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="relative w-full max-w-md mx-auto bg-gradient-to-br from-[#14264f] via-[#0c152e] to-[#1a2d59] border-2 border-amber-400/80 rounded-3xl p-3.5 sm:p-4 shadow-[0_0_35px_rgba(245,158,11,0.28)] backdrop-blur-xl select-none"
+      className="relative w-full max-w-md mx-auto bg-gradient-to-br from-[#14264f] via-[#0c152e] to-[#1a2d59] border-2 border-amber-400/80 rounded-3xl p-3.5 sm:p-4 shadow-[0_0_35px_rgba(245,158,11,0.28)] select-none"
     >
       {/* Resplandor cósmico superior */}
-      <div className="absolute top-0 right-1/4 w-32 h-16 bg-amber-400/15 rounded-full blur-xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-32 h-16 bg-amber-400/15 rounded-full pointer-events-none" />
 
       {/* CABECERA: ETIQUETA DE CARTA EN MANO Y PLACA DE AÑO OCULTO */}
       <div className="flex items-center justify-between gap-2 mb-2 relative z-10">

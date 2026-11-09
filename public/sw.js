@@ -1,4 +1,4 @@
-const CACHE_NAME = "mentrix-timeline-v2.7.3";
+const CACHE_NAME = "mentrix-timeline-v2.7.5";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -8,7 +8,8 @@ const CORE_ASSETS = [
   "./icons/apple-touch-icon.png",
   "./icons/badge-monochrome.png",
   "./icons/badge-hourglass.png",
-  "./icons/menti-192.png"
+  "./icons/menti-192.png",
+  "./mentrix-mascot.webp"
 ];
 
 self.addEventListener("install", (event) => {
@@ -38,17 +39,18 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
+  if (request.headers.has("range")) return;
 
   const url = new URL(request.url);
 
-  // Cache-first for assets, images, icons
+  // Cache-first for assets, images, icons (exclude large .mp3 streams so browser streams via HTTP Range)
   const isStaticAsset =
     url.origin === self.location.origin &&
+    !url.pathname.endsWith(".mp3") &&
     (url.pathname.includes("/assets/") ||
       url.pathname.includes("/icons/") ||
       url.pathname.endsWith(".webp") ||
       url.pathname.endsWith(".png") ||
-      url.pathname.endsWith(".mp3") ||
       url.pathname.endsWith(".woff2"));
 
   if (isStaticAsset) {

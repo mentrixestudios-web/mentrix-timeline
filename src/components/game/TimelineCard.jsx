@@ -34,10 +34,10 @@ export default function TimelineCard({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className={`relative w-full max-w-md mx-auto rounded-3xl border-2 p-4 transition-all duration-300 backdrop-blur-xl ${statusStyles[status] || statusStyles.default}`}
+      className={`relative w-full max-w-md mx-auto rounded-3xl border-2 p-4 transition-all duration-300 ${statusStyles[status] || statusStyles.default}`}
     >
       {/* Resplandor decorativo de esquina */}
-      <div className="absolute top-0 right-0 w-28 h-28 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-28 h-28 bg-amber-500/10 rounded-full pointer-events-none" />
 
       {/* CABECERA DE LA CARTA: AÑO HISTÓRICO Y NÓDULO DE ORDEN */}
       <div className="flex items-center justify-between gap-2 relative z-10">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
@@ -686,7 +686,7 @@ export default function DueloAmigos() {
 
           {/* Carta en Mano Activa */}
           {currentCard && (
-            <div className="sticky top-2 z-20 py-1 bg-[#0a0e1a]/95 backdrop-blur-md">
+            <div className="sticky top-2 z-20 py-1 bg-[#0a0e1a]/95">
               <CurrentCardHand
                 event={currentCard}
                 cardsPlaced={timeline.length - 1}

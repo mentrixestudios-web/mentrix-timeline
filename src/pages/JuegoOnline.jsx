@@ -264,7 +264,7 @@ export default function JuegoOnline() {
       {/* ── CABECERA FIJA: sala, rival y turno ── */}
       <div className="sticky top-0 z-30 -mx-1 px-1 pt-1 pb-3 bg-gradient-to-b from-slate-950 via-slate-950/95 to-transparent flex flex-col gap-2">
         <div
-          className="w-full flex items-center justify-between gap-2 rounded-2xl px-3 py-2 backdrop-blur-md"
+          className="w-full flex items-center justify-between gap-2 rounded-2xl px-3 py-2"
           style={{
             background: "rgba(30,45,77,0.7)",
             border: "1px solid rgba(245,158,11,0.25)",
@@ -485,7 +485,7 @@ export default function JuegoOnline() {
         <div className="max-w-2xl mx-auto px-2">
           <div
             ref={trayRef}
-            className="pointer-events-auto rounded-t-3xl p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md"
+            className="pointer-events-auto rounded-t-3xl p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
             style={{
               background: "rgba(8,13,28,0.97)",
               border: "1px solid rgba(245,158,11,0.3)",
@@ -607,7 +607,7 @@ export default function JuegoOnline() {
 
       {/* ── MODAL DE FIN DE PARTIDA ── */}
       {partidaFinalizada && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 p-4">
           <div className="w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#131d3b] to-[#070d1e] border-2 border-amber-400/50 p-6 text-center text-white shadow-2xl space-y-4">
             <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-3xl mx-auto shadow-lg shadow-amber-500/20">
               {soyGanador ? "👑" : "💀"}

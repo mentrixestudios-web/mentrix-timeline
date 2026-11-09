@@ -149,29 +149,61 @@ export function playSfx(type = "click") {
 }
 
 let bgmAudio = null;
+let userHasInteracted = false;
+let autoPausedByVisibility = false;
 const BGM_TRACKS = {
   home: "/audio/bgm/timeline_era_v1.mp3",
   game: "/audio/bgm/timeline_crusade_v1.mp3",
 };
-let currentBgmTrack = BGM_TRACKS.home;
+let currentBgmTrack = "home";
 
-export function playBgm(track = "home") {
-  const resolved = BGM_TRACKS[track] || track;
-  currentBgmTrack = resolved;
-  currentBgmTrack = track;
-  if (!musicEnabled) return;
+function startBgmPlayback() {
+  if (!musicEnabled || !userHasInteracted) return;
   if (typeof window === "undefined") return;
+  const resolved = BGM_TRACKS[currentBgmTrack] || currentBgmTrack;
   try {
     if (!bgmAudio) {
-      bgmAudio = new Audio(resolved);
+      bgmAudio = new Audio();
+      bgmAudio.preload = "none";
       bgmAudio.loop = true;
-      bgmAudio.volume = masterVolume * 0.35;
-    } else if (bgmAudio.src !== new URL(resolved, window.location.href).href) {
+    }
+    const targetHref = new URL(resolved, window.location.href).href;
+    if (bgmAudio.src !== targetHref) {
       bgmAudio.src = resolved;
     }
     bgmAudio.volume = masterVolume * 0.35;
-    bgmAudio.play().catch(() => {});
+    if (bgmAudio.paused) {
+      bgmAudio.play().catch(() => {});
+    }
   } catch {}
+}
+
+if (typeof window !== "undefined") {
+  const unlockBgm = () => {
+    if (userHasInteracted) return;
+    userHasInteracted = true;
+    startBgmPlayback();
+  };
+  window.addEventListener("pointerdown", unlockBgm, { once: true, passive: true });
+  window.addEventListener("keydown", unlockBgm, { once: true, passive: true });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (bgmAudio && !bgmAudio.paused) {
+        autoPausedByVisibility = true;
+        try { bgmAudio.pause(); } catch {}
+      }
+    } else if (autoPausedByVisibility) {
+      autoPausedByVisibility = false;
+      startBgmPlayback();
+    }
+  });
+}
+
+export function playBgm(track = "home") {
+  currentBgmTrack = track;
+  if (!musicEnabled || !userHasInteracted) return;
+  startBgmPlayback();
 }
 
 export function pauseBgm() {

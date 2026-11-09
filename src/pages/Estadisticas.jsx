@@ -172,10 +172,15 @@ export default function Estadisticas() {
   const [tabActiva, setTabActiva] = useState(initialTab);
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
   const [busquedaTexto, setBusquedaTexto] = useState("");
+  const [visibleCount, setVisibleCount] = useState(24);
   
   // Modales de detalle
   const [cartaSeleccionada, setCartaSeleccionada] = useState(null);
   const [hitoSeleccionado, setHitoSeleccionado] = useState(null);
+
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [filtroCategoria, busquedaTexto, tabActiva]);
 
   const [stats, setStats] = useState(getStats());
   const [highScore, setHighScore] = useState(getHighScore());
@@ -397,19 +402,18 @@ export default function Estadisticas() {
       </div>
 
       {/* ── SELECTOR PREMIUM DE SALAS DEL MUSEO (5 MÓDULOS ARCADE) ── */}
-      <div className="grid grid-cols-5 gap-1.5 sm:gap-2 p-1.5 rounded-2xl bg-[#070c1a]/90 border border-amber-500/20 shadow-xl backdrop-blur-md">
+      <div className="grid grid-cols-5 gap-1.5 sm:gap-2 p-1.5 rounded-2xl bg-[#070c1a]/90 border border-amber-500/20 shadow-xl">
         {SALAS_MUSEO.map((sala) => {
           const isActive = tabActiva === sala.id;
           return (
-            <motion.button
+            <button
               key={sala.id}
               type="button"
-              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 setTabActiva(sala.id);
                 playSfx("tap");
               }}
-              className={`relative overflow-hidden flex flex-col items-center justify-between py-2 px-1 rounded-xl border transition-all cursor-pointer ${
+              className={`relative overflow-hidden flex flex-col items-center justify-between py-2 px-1 rounded-xl border active:scale-95 transition-transform cursor-pointer ${
                 isActive
                   ? `bg-gradient-to-b ${sala.activeBg} ${sala.activeBorder} shadow-lg scale-[1.02]`
                   : "bg-[#0d162e]/80 border-white/10 text-white/60 hover:text-white hover:border-white/25 hover:bg-[#132042]"
@@ -456,7 +460,7 @@ export default function Estadisticas() {
               >
                 {sala.badge}
               </span>
-            </motion.button>
+            </button>
           );
         })}
       </div>
@@ -482,16 +486,14 @@ export default function Estadisticas() {
               const count = getCategoryCount(cat.id);
 
               return (
-                <motion.button
+                <button
                   key={cat.id}
                   type="button"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     setFiltroCategoria(cat.id);
                     playSfx("tap");
                   }}
-                  className={`relative overflow-hidden rounded-2xl p-2 sm:p-2.5 border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  className={`relative overflow-hidden rounded-2xl p-2 sm:p-2.5 border text-left active:scale-95 transition-transform cursor-pointer flex flex-col justify-between ${
                     isSelected
                       ? `bg-gradient-to-br ${cat.activeBg} ${cat.activeBorder}`
                       : "bg-[#0b1328]/90 border-white/10 hover:border-amber-400/40 hover:bg-[#101c38]"
@@ -503,7 +505,7 @@ export default function Estadisticas() {
                   {/* Fila superior: Icono 3D + Contador de cartas */}
                   <div className="flex items-center justify-between gap-1 w-full mt-0.5">
                     <div
-                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl border flex items-center justify-center text-sm sm:text-base shadow-md transition-transform ${
+                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl border flex items-center justify-center text-sm sm:text-base shadow-md ${
                         cat.iconBox
                       } ${isSelected ? "scale-110" : "opacity-85"}`}
                     >
@@ -542,7 +544,7 @@ export default function Estadisticas() {
                       </div>
                     )}
                   </div>
-                </motion.button>
+                </button>
               );
             })}
           </div>
@@ -591,27 +593,33 @@ export default function Estadisticas() {
           </div>
 
           {/* Listado / Grid de Hitos de la Enciclopedia con estética de Cartas Premium */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[58vh] overflow-y-auto pr-1">
-            {hitosFiltrados.map((hito) => {
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[58vh] overflow-y-auto pr-1 touch-pan-y"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              if (el.scrollTop + el.clientHeight >= el.scrollHeight - 180) {
+                setVisibleCount((prev) => Math.min(prev + 30, hitosFiltrados.length));
+              }
+            }}
+          >
+            {hitosFiltrados.slice(0, visibleCount).map((hito) => {
               const catConfig = CATEGORIAS_CONFIG.find((c) => c.id === hito.category) || CATEGORIAS_CONFIG[0];
 
               return (
-                <motion.div
+                <div
                   key={hito.id}
-                  whileHover={{ y: -2, scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     setHitoSeleccionado(hito);
                     playSfx("tap");
                   }}
-                  className="relative overflow-hidden p-3 rounded-2xl bg-gradient-to-br from-[#0e1834] via-[#0b1328] to-[#080d1d] hover:from-[#132247] hover:to-[#0c152e] border border-white/10 hover:border-amber-400/50 transition-all cursor-pointer flex items-center justify-between gap-3 group shadow-lg"
+                  className="relative overflow-hidden p-3 rounded-2xl bg-gradient-to-br from-[#0e1834] via-[#0b1328] to-[#080d1d] hover:from-[#132247] hover:to-[#0c152e] border border-white/10 hover:border-amber-400/50 active:scale-[0.98] transition-transform cursor-pointer flex items-center justify-between gap-3 group shadow-lg"
                 >
                   {/* Cinta superior con el color de su categoría */}
                   <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${catConfig.topBar}`} />
 
                   {/* Medallón izquierdo 3D de Categoría */}
                   <div
-                    className={`w-11 h-11 rounded-2xl border flex items-center justify-center text-xl shrink-0 shadow-md group-hover:scale-110 transition-transform ${catConfig.iconBox}`}
+                    className={`w-11 h-11 rounded-2xl border flex items-center justify-center text-xl shrink-0 shadow-md ${catConfig.iconBox}`}
                   >
                     <span>{catConfig.emoji}</span>
                   </div>
@@ -644,12 +652,21 @@ export default function Estadisticas() {
                   </div>
 
                   {/* Botón derecho de Inspección */}
-                  <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-400/30 flex items-center justify-center shrink-0 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 group-hover:border-amber-300 transition-all shadow-sm">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-400/30 flex items-center justify-center shrink-0 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 group-hover:border-amber-300 transition-colors shadow-sm">
                     <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                   </div>
-                </motion.div>
+                </div>
               );
             })}
+            {visibleCount < hitosFiltrados.length && (
+              <button
+                type="button"
+                onClick={() => setVisibleCount((prev) => Math.min(prev + 40, hitosFiltrados.length))}
+                className="col-span-full py-2.5 rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-300 font-black text-xs hover:bg-amber-500/25 active:scale-95 transition-all cursor-pointer"
+              >
+                Mostrar más acontecimientos ({hitosFiltrados.length - visibleCount} restantes)
+              </button>
+            )}
           </div>
         </motion.div>
       )}
@@ -691,10 +708,8 @@ export default function Estadisticas() {
               const unlocked = unlockedCardIds.includes(card.id);
 
               return (
-                <motion.div
+                <div
                   key={card.id}
-                  whileHover={{ scale: unlocked ? 1.02 : 1 }}
-                  whileTap={{ scale: unlocked ? 0.98 : 1 }}
                   onClick={() => {
                     if (unlocked) {
                       setCartaSeleccionada(card);
@@ -703,7 +718,7 @@ export default function Estadisticas() {
                       toast.info(`🔒 Requisito: ${card.desbloqueoRequisito}`);
                     }
                   }}
-                  className={`p-3 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[150px] ${
+                  className={`p-3 rounded-2xl border active:scale-95 transition-transform cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[150px] ${
                     unlocked
                       ? `bg-gradient-to-br ${card.color} ${card.borde} ${card.glow} shadow-lg`
                       : "bg-[#0b1328]/80 border-white/10 opacity-75 hover:border-amber-400/30"
@@ -744,7 +759,7 @@ export default function Estadisticas() {
                       <span className="text-amber-300 font-black">Ver →</span>
                     )}
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -788,10 +803,8 @@ export default function Estadisticas() {
               const unlocked = unlockedCardIds.includes(relic.id);
 
               return (
-                <motion.div
+                <div
                   key={relic.id}
-                  whileHover={{ scale: unlocked ? 1.02 : 1 }}
-                  whileTap={{ scale: unlocked ? 0.98 : 1 }}
                   onClick={() => {
                     if (unlocked) {
                       setCartaSeleccionada(relic);
@@ -800,7 +813,7 @@ export default function Estadisticas() {
                       toast.info(`👑 Requisito Mítico: ${relic.desbloqueoRequisito}`);
                     }
                   }}
-                  className={`p-4 rounded-3xl border-2 transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[165px] ${
+                  className={`p-4 rounded-3xl border-2 active:scale-[0.98] transition-transform cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[165px] ${
                     unlocked
                       ? `bg-gradient-to-br ${relic.color} ${relic.borde} ${relic.glow} shadow-xl`
                       : "bg-[#0b1328]/85 border-amber-400/20 opacity-80 hover:border-amber-400/40"
@@ -845,7 +858,7 @@ export default function Estadisticas() {
                       +{relic.recompensaMonedas} 🪙
                     </span>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -997,7 +1010,7 @@ export default function Estadisticas() {
       ══════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {hitoSeleccionado && (
-          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1083,7 +1096,7 @@ export default function Estadisticas() {
       ══════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {cartaSeleccionada && (
-          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

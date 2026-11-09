@@ -503,7 +503,7 @@ export default function Juego() {
 
       {/* Carta en mano activa */}
       {gameState === "playing" && currentCard && (
-        <div className="sticky top-2 z-20 py-1 space-y-2 bg-[#0a0e1a]/95 backdrop-blur-md">
+        <div className="sticky top-2 z-20 py-1 space-y-2 bg-[#0a0e1a]/95">
           {turnoDuelo === "menti" ? (
             <div className="p-4 rounded-3xl bg-purple-950/60 border border-purple-400/40 text-center text-xs font-black text-purple-200 animate-pulse">
               🤖 Esperando la jugada de Menti...
@@ -589,7 +589,7 @@ export default function Juego() {
           MODALES DE FIN DE PARTIDA (Victoria / Derrota)
          ======================================================== */}
       {(gameState === "victory" || gameState === "gameover") && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
           <div className="bg-gradient-to-b from-[#0c1630] to-[#090d1c] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4 shadow-2xl shadow-amber-500/20">
             <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-lg bg-amber-500/20 border border-amber-500/40">
               {gameState === "victory" ? "🏆" : "💀"}

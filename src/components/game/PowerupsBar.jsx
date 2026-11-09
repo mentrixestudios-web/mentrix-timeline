@@ -99,7 +99,7 @@ export default function PowerupsBar({
   };
 
   return (
-    <div className="w-full flex items-center justify-around bg-gradient-to-r from-[#0b1328]/90 via-[#0e172e] to-[#0b1328]/90 border border-amber-500/25 rounded-2xl p-2 shadow-md backdrop-blur-md">
+    <div className="w-full flex items-center justify-around bg-gradient-to-r from-[#0b1328]/90 via-[#0e172e] to-[#0b1328]/90 border border-amber-500/25 rounded-2xl p-2 shadow-md">
       {/* 1. Lupa */}
       <motion.button
         whileTap={{ scale: 0.95 }}

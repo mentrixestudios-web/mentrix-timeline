@@ -242,8 +242,8 @@ export default function TiendaMonedas() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-[#0a1228] to-slate-900 px-3 sm:px-6 pt-3 pb-20 relative select-none">
       {/* Resplandor de fondo */}
-      <div className="absolute top-10 right-10 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-20 left-10 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-10 right-10 w-48 h-48 bg-amber-500/10 rounded-full pointer-events-none" />
+      <div className="absolute bottom-20 left-10 w-64 h-64 bg-blue-600/10 rounded-full pointer-events-none" />
 
       <div className="relative z-10 max-w-lg mx-auto space-y-3.5">
         
@@ -599,7 +599,7 @@ export default function TiendaMonedas() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
             >
               <div className="bg-gradient-to-b from-[#0c1836] to-[#080d1c] border-2 border-amber-400 rounded-3xl p-6 text-center max-w-xs w-full space-y-4 shadow-2xl shadow-amber-500/40">
                 <div className="w-16 h-16 rounded-2xl bg-amber-500/20 mx-auto flex items-center justify-center text-3xl border border-amber-400">
@@ -628,7 +628,7 @@ export default function TiendaMonedas() {
         {/* Modal de Configuración Mercado Pago */}
         <AnimatePresence>
           {showConfigModal && (
-            <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}

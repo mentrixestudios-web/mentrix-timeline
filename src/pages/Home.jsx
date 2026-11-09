@@ -183,9 +183,12 @@ export default function Home() {
               <picture className="relative z-10 w-[82%] h-[82%] animate-float-slow">
                 <source srcSet="/mentrix-mascot.webp" type="image/webp" />
                 <img
-                  src="/mentrix-mascot.png"
+                  src="/mentrix-mascot.webp"
                   alt="Menti, viajero del tiempo"
-                  className="w-full h-full object-contain drop-shadow-[0_8px_20px_rgba(245,158,11,0.3)]"
+                  width="160"
+                  height="160"
+                  decoding="async"
+                  className="w-full h-full object-contain"
                 />
               </picture>
             </div>
@@ -337,7 +340,7 @@ export default function Home() {
               border: "1px solid rgba(245,158,11,0.35)",
             }}
           >
-            <div className="absolute -left-8 -bottom-10 w-28 h-28 rounded-full bg-amber-400/10 blur-2xl pointer-events-none" />
+            <div className="absolute -left-8 -bottom-10 w-28 h-28 rounded-full bg-amber-400/10 pointer-events-none" />
 
             <div className="flex items-center justify-between gap-3 relative z-10">
               <div className="flex items-center gap-2.5 min-w-0">
