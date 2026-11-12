@@ -152,6 +152,7 @@ export default function DueloAmigos() {
   const [puntos, setPuntos] = useState([0, 0, 0, 0]);
   const [vidas, setVidas] = useState([3, 3, 3, 3]);
   const [feedback, setFeedback] = useState(null);
+  const [justPlacedId, setJustPlacedId] = useState(null);
   const [ganadorIdx, setGanadorIdx] = useState(null);
   const [unlockedPrizeCard, setUnlockedPrizeCard] = useState(null);
 
@@ -223,6 +224,8 @@ export default function DueloAmigos() {
       const newTimeline = [...timeline];
       newTimeline.splice(slotIndex, 0, currentCard);
       setTimeline(newTimeline);
+      setJustPlacedId(currentCard.id);
+      setTimeout(() => setJustPlacedId(null), 2000);
 
       setFeedback({
         type: "correct",
@@ -708,7 +711,11 @@ export default function DueloAmigos() {
               </div>
             </div>
 
-            <div className="space-y-2 relative">
+            {/* Tablero con Eje Cronológico Luminoso Continuo */}
+            <div className="space-y-1 relative">
+              {/* EJE CENTRAL DE ENERGÍA TEMPORAL (Línea vertical continua dorada) */}
+              <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-amber-500/20 via-amber-400/50 to-blue-500/30 pointer-events-none shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
+
               <TimelineSlot
                 onSelect={() => handlePlaceCard(0)}
                 disabled={Boolean(feedback)}
@@ -717,7 +724,11 @@ export default function DueloAmigos() {
 
               {timeline.map((event, idx) => (
                 <React.Fragment key={event.id}>
-                  <TimelineCard event={event} index={idx} />
+                  <TimelineCard 
+                    event={event} 
+                    index={idx} 
+                    status={justPlacedId === event.id ? "justPlaced" : "default"}
+                  />
 
                   <TimelineSlot
                     onSelect={() => handlePlaceCard(idx + 1)}
