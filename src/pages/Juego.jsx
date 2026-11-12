@@ -407,7 +407,7 @@ export default function Juego() {
   };
 
   return (
-    <div className="space-y-3.5 max-w-xl mx-auto select-none pb-12">
+    <div className="space-y-3.5 max-w-xl mx-auto select-none pb-48">
       {/* Barra superior de control */}
       <div className="flex items-center justify-between gap-3">
         <Link
