@@ -474,14 +474,25 @@ export default function Juego() {
         </div>
       )}
 
-      {/* Menti Mascot reactivo y activo */}
+      {/* Menti Mascot reactivo: modo compacto en cabecera + flotante interactivo */}
       <div className="w-full flex justify-center">
         <MentrixMascot
           status={mascotStatus}
-          layout="default"
+          layout="compact"
           customMessage={mentiCustomMsg}
+          modo={modo}
+          streak={score}
         />
       </div>
+
+      {/* Menti Mascot Flotante Permanente (estilo Estudio Bíblico) */}
+      <MentrixMascot
+        status={mascotStatus}
+        layout="floating"
+        customMessage={mentiCustomMsg}
+        modo={modo}
+        streak={score}
+      />
 
       {/* Feedback de última acción */}
       {lastFeedback && (
