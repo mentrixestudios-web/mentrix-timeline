@@ -535,7 +535,7 @@ export default function Juego() {
       {/* ========================================================
           TABLERO CRONOLÓGICO: EL CONDUCTO TEMPORAL INTERACTIVO
          ======================================================== */}
-      <div className="relative py-3">
+      <div className="relative py-2">
         {/* Marcador Cósmico de Antigüedad */}
         <div className="flex items-center justify-center mb-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.2)]">
@@ -545,7 +545,11 @@ export default function Juego() {
           </div>
         </div>
 
-        <div className="space-y-2 relative">
+        {/* Tablero con Eje Cronológico Luminoso Continuo */}
+        <div className="space-y-1 relative">
+          {/* EJE CENTRAL DE ENERGÍA TEMPORAL (Línea vertical continua dorada) */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-amber-500/20 via-amber-400/50 to-blue-500/30 pointer-events-none shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
+
           {/* Ranura 0 (Antes del primer evento) */}
           <TimelineSlot
             onSelect={() => handleInsert(0)}
@@ -576,7 +580,7 @@ export default function Juego() {
         </div>
 
         {/* Marcador Cósmico del Futuro / Presente */}
-        <div className="flex items-center justify-center mt-4">
+        <div className="flex items-center justify-center mt-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(59,130,246,0.2)]">
             <Sparkles className="w-3.5 h-3.5 text-blue-400" />
             <span>ÉPOCA ACTUAL · PRESENTE HISTÓRICO</span>
