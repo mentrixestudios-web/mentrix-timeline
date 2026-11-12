@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Hourglass, ChevronDown, ChevronUp, User, Lightbulb, Info } from "lucide-react";
+import { Hourglass, ChevronDown, ChevronUp, User, Lightbulb, Sparkles } from "lucide-react";
 import { getEraByYear, getCenturyLabel, CATEGORY_ICONS } from "@/data/erasConfig";
 
 /**
- * TimelineCard: Chip Cronológico Compacto e Inteligente
- * - En reposo: Es un chip esbelto, elegante y limpio que muestra el año y el título del acontecimiento.
- *   Permite ver muchos hitos en la pantalla del celular sin saturar ni hacer scroll infinito.
- * - Al tocar: Se expande suavemente revelando toda la información (descripción, dato curioso, figura histórica).
+ * TimelineCard: Chip Cronológico con Revelación Épica al Acertar
+ * - Al acertar (status === 'justPlaced'): Se despliega por 1.5s en verde esmeralda resplandeciente,
+ *   con el año en grande y confeti dorado, antes de colapsar suavemente a chip compacto.
+ * - En reposo: Chip esbelto, limpio y expandible bajo demanda con un toque.
  */
 export default function TimelineCard({
   event,
@@ -16,40 +16,67 @@ export default function TimelineCard({
 }) {
   const [expanded, setExpanded] = useState(false);
 
+  // Efecto de Revelación Épica: si acaba de ser colocada, se muestra expandida temporalmente
+  const isJustPlaced = status === "justPlaced";
+  const isError = status === "error";
+
+  useEffect(() => {
+    if (isJustPlaced) {
+      setExpanded(true);
+      const timer = setTimeout(() => {
+        setExpanded(false);
+      }, 1600); // 1.6s de celebración y luego se contrae suavemente
+      return () => clearTimeout(timer);
+    }
+  }, [isJustPlaced]);
+
   if (!event) return null;
 
   const era = getEraByYear(event.year);
   const centuryText = getCenturyLabel(event.year);
   const categoryIcon = CATEGORY_ICONS[event.category] || "📜";
 
-  const isJustPlaced = status === "justPlaced";
-  const isError = status === "error";
-
   let borderClasses = era.borderDefault;
   let ringClasses = "";
+  let glowHeader = era.headerBg;
+
   if (isJustPlaced) {
-    borderClasses = "border-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)]";
-    ringClasses = "ring-2 ring-emerald-400/60";
+    borderClasses = "border-emerald-400 shadow-[0_0_35px_rgba(16,185,129,0.5)]";
+    ringClasses = "ring-2 ring-emerald-400/80";
+    glowHeader = "from-emerald-400 via-teal-400 to-green-500 text-slate-950";
   } else if (isError) {
     borderClasses = "border-rose-500 shadow-[0_0_25px_rgba(244,63,94,0.35)]";
     ringClasses = "ring-2 ring-rose-500/60";
   }
 
   return (
-    <div
+    <motion.div
+      layout
+      initial={isJustPlaced ? { scale: 0.9, opacity: 0, y: -10 } : false}
+      animate={{ scale: 1, opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
       onClick={() => setExpanded((prev) => !prev)}
-      className={`relative w-full max-w-md mx-auto rounded-2xl sm:rounded-3xl border-2 transition-all duration-200 bg-gradient-to-br ${era.cardBg} ${borderClasses} ${ringClasses} select-none overflow-hidden cursor-pointer active:scale-[0.99] shadow-md`}
+      className={`relative w-full max-w-md mx-auto rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 bg-gradient-to-br ${era.cardBg} ${borderClasses} ${ringClasses} select-none overflow-hidden cursor-pointer active:scale-[0.99] shadow-md`}
     >
       {/* Resplandor sutil de fondo según era */}
       <div className={`absolute top-0 right-0 w-28 h-28 ${era.accentGlow} rounded-full blur-xl pointer-events-none`} />
+
+      {/* Banner de Acierto Temporal durante la Revelación */}
+      {isJustPlaced && (
+        <div className="bg-emerald-500/25 border-b border-emerald-400/40 px-3 py-1 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-300 animate-pulse">
+          <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+          <span>¡COORDINADA TEMPORAL EXACTA!</span>
+          <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+        </div>
+      )}
 
       {/* ========================================================
           VISTA CHIP COMPACTA (SIEMPRE VISIBLE)
           Año destacado en medallón + Icono + Título + Flecha indicadora
          ======================================================== */}
-      <div className="p-3 sm:p-3.5 flex items-center justify-between gap-2.5 relative z-10">
+      <div className="p-2.5 sm:p-3 flex items-center justify-between gap-2.5 relative z-10">
         {/* Medallón de Año en Relieve */}
-        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm tracking-wide shadow-md shrink-0 bg-gradient-to-r ${era.headerBg}`}>
+        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm tracking-wide shadow-md shrink-0 bg-gradient-to-r ${glowHeader} ${isJustPlaced ? "scale-105 transition-transform" : ""}`}>
           <Hourglass className="w-3.5 h-3.5 shrink-0" />
           <span>{event.yearFormatted}</span>
         </div>
@@ -89,11 +116,11 @@ export default function TimelineCard({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22, ease: "easeInOut" }}
-            className="px-3.5 pb-3.5 pt-1 border-t border-white/10 space-y-2.5 relative z-10 text-left"
+            className="px-3 pb-3 pt-1 border-t border-white/10 space-y-2 relative z-10 text-left"
           >
             {/* Descripción Completa */}
             {event.description && (
-              <p className="text-xs text-slate-200/95 leading-relaxed font-normal bg-black/35 p-3 rounded-2xl border border-white/10">
+              <p className="text-xs text-slate-200/95 leading-relaxed font-normal bg-black/35 p-2.5 rounded-2xl border border-white/10">
                 {event.description}
               </p>
             )}
@@ -127,6 +154,6 @@ export default function TimelineCard({
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
