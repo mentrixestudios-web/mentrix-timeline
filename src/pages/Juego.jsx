@@ -17,7 +17,8 @@ import {
   Timer,
   Swords,
   Skull,
-  Share2
+  Share2,
+  SlidersHorizontal
 } from "lucide-react";
 import HistoryShareModal from "@/components/share/HistoryShareModal";
 import { getEventsByCategory } from "@/data/eventsData";
@@ -25,6 +26,7 @@ import { CATEGORIES } from "@/data/categories";
 import TimelineCard from "@/components/game/TimelineCard";
 import TimelineSlot from "@/components/game/TimelineSlot";
 import CurrentCardHand from "@/components/game/CurrentCardHand";
+import HorizontalTimelineSlider from "@/components/game/HorizontalTimelineSlider";
 import LivesDisplay from "@/components/game/LivesDisplay";
 import MentrixMascot from "@/components/game/MentrixMascot";
 import PowerupsBar from "@/components/game/PowerupsBar";
@@ -80,6 +82,20 @@ export default function Juego() {
   // Estados de poderes activos en la carta actual
   const [lupaActive, setLupaActive] = useState(false);
   const [frozenSlots, setFrozenSlots] = useState([]);
+
+  // Modo de vista: 'carousel' (Deslizador horizontal como en la imagen) o 'slots' (Ranuras clásicas verticales)
+  const [viewMode, setViewMode] = useState(() => {
+    return localStorage.getItem("timeline_view_mode") || "carousel";
+  });
+
+  const handleToggleViewMode = () => {
+    setViewMode((prev) => {
+      const next = prev === "carousel" ? "slots" : "carousel";
+      localStorage.setItem("timeline_view_mode", next);
+      toast.info(next === "carousel" ? "Vista Deslizador horizontal activada" : "Vista Clásica con ranuras activada");
+      return next;
+    });
+  };
 
   // Estado de Contrarreloj (segundos restantes)
   const [timeLeft, setTimeLeft] = useState(60);
@@ -523,15 +539,37 @@ export default function Juego() {
   };
 
   return (
-    <div className="space-y-3.5 max-w-xl mx-auto select-none pb-48">
+    <div className={`space-y-3.5 mx-auto select-none pb-48 ${viewMode === "carousel" ? "max-w-3xl" : "max-w-xl"}`}>
       {/* Barra superior de control */}
-      <div className="flex items-center justify-between gap-3">
-        <Link
-          to="/"
-          className="p-2 rounded-xl bg-[#0b1328] hover:bg-[#121c3b] border border-amber-500/30 text-amber-300 hover:text-white transition-all shadow-sm"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
+      <div className="flex items-center justify-between gap-2.5">
+        <div className="flex items-center gap-1.5">
+          <Link
+            to="/"
+            className="p-2 rounded-xl bg-[#0b1328] hover:bg-[#121c3b] border border-amber-500/30 text-amber-300 hover:text-white transition-all shadow-sm"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+
+          {/* Interruptor de Vista: Deslizador Horizontal vs Ranuras Clásicas */}
+          <button
+            type="button"
+            onClick={handleToggleViewMode}
+            title={viewMode === "carousel" ? "Cambiar a vista con ranuras" : "Cambiar a vista deslizador horizontal"}
+            className="px-2.5 py-2 rounded-xl bg-[#0b1328] hover:bg-[#121c3b] border border-amber-500/30 text-amber-300 hover:text-white transition-all shadow-sm flex items-center gap-1.5 text-xs font-black cursor-pointer active:scale-95"
+          >
+            {viewMode === "carousel" ? (
+              <>
+                <SlidersHorizontal className="w-4 h-4 text-orange-400" />
+                <span className="hidden sm:inline text-[11px]">Deslizador</span>
+              </>
+            ) : (
+              <>
+                <Layers className="w-4 h-4 text-cyan-400" />
+                <span className="hidden sm:inline text-[11px]">Ranuras</span>
+              </>
+            )}
+          </button>
+        </div>
 
         {/* Modo de juego y progreso */}
         <div className="text-center">
@@ -654,23 +692,17 @@ export default function Juego() {
         </div>
       )}
 
-      {/* Carta en mano activa */}
-      {gameState === "playing" && currentCard && (
-        <div className="sticky top-2 z-20 py-1 space-y-2 bg-[#0a0e1a]/95">
+      {/* ========================================================
+          RENDERIZADO DUAL: DESLIZADOR HORIZONTAL vs RANURAS CLÁSICAS
+         ======================================================== */}
+      {viewMode === "carousel" ? (
+        <div className="space-y-2">
           {turnoDuelo === "menti" ? (
             <div className="p-4 rounded-3xl bg-purple-950/60 border border-purple-400/40 text-center text-xs font-black text-purple-200 animate-pulse">
               🤖 Esperando la jugada de Menti...
             </div>
           ) : (
             <>
-              <CurrentCardHand
-                event={currentCard}
-                cardsPlaced={score}
-                targetGoal={targetGoal}
-                lupaActive={lupaActive}
-                anclaActive={anclaActive}
-              />
-
               {/* Barra de Poderes y Facultades */}
               <PowerupsBar
                 onUseLupa={handleUseLupa}
@@ -685,68 +717,125 @@ export default function Juego() {
                 lives={lives}
                 maxLives={maxLives}
               />
+
+              {/* Vista Deslizador / Carrusel Horizontal */}
+              <HorizontalTimelineSlider
+                timeline={timeline}
+                currentCard={currentCard}
+                targetGoal={targetGoal}
+                score={score}
+                lives={lives}
+                maxLives={maxLives}
+                categoryInfo={categoryInfo}
+                onInsert={handleInsert}
+                disabled={gameState !== "playing" || turnoDuelo === "menti"}
+                frozenSlots={frozenSlots}
+                lupaActive={lupaActive}
+                anclaActive={anclaActive}
+                hardcoreMode={hardcoreMode}
+                justPlacedId={justPlacedId}
+              />
             </>
           )}
         </div>
-      )}
+      ) : (
+        /* Vista Clásica con Ranuras Verticales */
+        <>
+          {/* Carta en mano activa */}
+          {gameState === "playing" && currentCard && (
+            <div className="sticky top-2 z-20 py-1 space-y-2 bg-[#0a0e1a]/95">
+              {turnoDuelo === "menti" ? (
+                <div className="p-4 rounded-3xl bg-purple-950/60 border border-purple-400/40 text-center text-xs font-black text-purple-200 animate-pulse">
+                  🤖 Esperando la jugada de Menti...
+                </div>
+              ) : (
+                <>
+                  <CurrentCardHand
+                    event={currentCard}
+                    cardsPlaced={score}
+                    targetGoal={targetGoal}
+                    lupaActive={lupaActive}
+                    anclaActive={anclaActive}
+                  />
 
-      {/* ========================================================
-          TABLERO CRONOLÓGICO: EL CONDUCTO TEMPORAL INTERACTIVO
-         ======================================================== */}
-      <div className="relative py-2">
-        {/* Marcador Cósmico de Antigüedad */}
-        <div className="flex items-center justify-center mb-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.2)]">
-            <span>🏛️</span>
-            <span>COMIENZO DE LA HISTORIA · PASADO REMOTO</span>
-            <Hourglass className="w-3.5 h-3.5 text-amber-400" />
-          </div>
-        </div>
+                  {/* Barra de Poderes y Facultades */}
+                  <PowerupsBar
+                    onUseLupa={handleUseLupa}
+                    onUseCongelador={handleUseCongelador}
+                    onUseCorazon={handleUseCorazon}
+                    onUseSalto={handleUseSalto}
+                    onUseAncla={handleUseAncla}
+                    lupaActive={lupaActive}
+                    congeladorActive={frozenSlots.length > 0}
+                    anclaActive={anclaActive}
+                    saltoUsed={saltoUsed}
+                    lives={lives}
+                    maxLives={maxLives}
+                  />
+                </>
+              )}
+            </div>
+          )}
 
-        {/* Tablero con Eje Cronológico Luminoso Continuo */}
-        <div className="space-y-1 relative">
-          {/* EJE CENTRAL DE ENERGÍA TEMPORAL (Línea vertical continua dorada) */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-amber-500/20 via-amber-400/50 to-blue-500/30 pointer-events-none shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
+          {/* ========================================================
+              TABLERO CRONOLÓGICO: EL CONDUCTO TEMPORAL INTERACTIVO
+             ======================================================== */}
+          <div className="relative py-2">
+            {/* Marcador Cósmico de Antigüedad */}
+            <div className="flex items-center justify-center mb-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                <span>🏛️</span>
+                <span>COMIENZO DE LA HISTORIA · PASADO REMOTO</span>
+                <Hourglass className="w-3.5 h-3.5 text-amber-400" />
+              </div>
+            </div>
 
-          {/* Ranura 0 (Antes del primer evento) */}
-          <TimelineSlot
-            onSelect={() => handleInsert(0)}
-            disabled={gameState !== "playing" || turnoDuelo === "menti"}
-            isFrozen={frozenSlots.includes(0)}
-            nextYear={timeline[0]?.yearFormatted}
-          />
+            {/* Tablero con Eje Cronológico Luminoso Continuo */}
+            <div className="space-y-1 relative">
+              {/* EJE CENTRAL DE ENERGÍA TEMPORAL (Línea vertical continua dorada) */}
+              <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-amber-500/20 via-amber-400/50 to-blue-500/30 pointer-events-none shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
 
-          {/* Renderizado de eventos en orden */}
-          {timeline.map((event, idx) => (
-            <React.Fragment key={event.id}>
-              <TimelineCard 
-                event={event} 
-                index={idx} 
-                status={justPlacedId === event.id ? "justPlaced" : "default"}
-                hardcoreMode={hardcoreMode}
-              />
-
-              {/* Ranura entre eventos o al final */}
+              {/* Ranura 0 (Antes del primer evento) */}
               <TimelineSlot
-                onSelect={() => handleInsert(idx + 1)}
+                onSelect={() => handleInsert(0)}
                 disabled={gameState !== "playing" || turnoDuelo === "menti"}
-                isFrozen={frozenSlots.includes(idx + 1)}
-                prevYear={event.yearFormatted}
-                nextYear={timeline[idx + 1]?.yearFormatted}
+                isFrozen={frozenSlots.includes(0)}
+                nextYear={timeline[0]?.yearFormatted}
               />
-            </React.Fragment>
-          ))}
-        </div>
 
-        {/* Marcador Cósmico del Futuro / Presente */}
-        <div className="flex items-center justify-center mt-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(59,130,246,0.2)]">
-            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-            <span>ÉPOCA ACTUAL · PRESENTE HISTÓRICO</span>
-            <span>⚡</span>
+              {/* Renderizado de eventos en orden */}
+              {timeline.map((event, idx) => (
+                <React.Fragment key={event.id}>
+                  <TimelineCard 
+                    event={event} 
+                    index={idx} 
+                    status={justPlacedId === event.id ? "justPlaced" : "default"}
+                    hardcoreMode={hardcoreMode}
+                  />
+
+                  {/* Ranura entre eventos o al final */}
+                  <TimelineSlot
+                    onSelect={() => handleInsert(idx + 1)}
+                    disabled={gameState !== "playing" || turnoDuelo === "menti"}
+                    isFrozen={frozenSlots.includes(idx + 1)}
+                    prevYear={event.yearFormatted}
+                    nextYear={timeline[idx + 1]?.yearFormatted}
+                  />
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* Marcador Cósmico del Futuro / Presente */}
+            <div className="flex items-center justify-center mt-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                <span>ÉPOCA ACTUAL · PRESENTE HISTÓRICO</span>
+                <span>⚡</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
       {/* ========================================================
           MODALES DE FIN DE PARTIDA (Victoria / Derrota)
