@@ -57,6 +57,18 @@ export default function Juego() {
   const [mentiThinking, setMentiThinking] = useState(false);
   const [mentiCustomMsg, setMentiCustomMsg] = useState(null);
 
+  // ═════════════════════════════════════════════════════════════
+  // NUEVAS MECÁNICAS DE JUGABILIDAD MENTRIX 2.0
+  // 1. Combo Racha Multiplicador (x1, x2, x3)
+  // 2. Margen de Gracia / Paradoja Leve (error por <= 10 años)
+  // 3. Poderes Tácticos: Salto Temporal (descarte) y Ancla Temporal
+  // 4. Modo Desafío Ciego / Hardcore (apuesta de monedas)
+  // ═════════════════════════════════════════════════════════════
+  const [comboStreak, setComboStreak] = useState(0);
+  const [saltoUsed, setSaltoUsed] = useState(false);
+  const [anclaActive, setAnclaActive] = useState(false);
+  const [hardcoreMode, setHardcoreMode] = useState(false);
+
   const cartasParam = parseInt(searchParams.get("cartas"));
   const [targetGoal] = useState(!isNaN(cartasParam) && cartasParam > 0 ? cartasParam : (modo === "supervivencia" ? 25 : 10));
   const [gameState, setGameState] = useState("playing"); // 'playing' | 'revealing' | 'victory' | 'gameover'
@@ -205,6 +217,9 @@ export default function Juego() {
     setPool(remainingPool);
     setLives(maxLives);
     setScore(0);
+    setComboStreak(0);
+    setSaltoUsed(false);
+    setAnclaActive(false);
     setMentiScore(0);
     setTurnoDuelo("jugador");
     setMentiThinking(false);
@@ -252,6 +267,45 @@ export default function Juego() {
     playSfx("victory");
   };
 
+  // Poder Táctico 1: Salto Temporal (descarta la carta actual al fondo del mazo)
+  const handleUseSalto = () => {
+    if (saltoUsed || !currentCard || pool.length === 0) return;
+    setSaltoUsed(true);
+    const newPool = [...pool.slice(1), currentCard];
+    const newCurrent = pool[0];
+    setCurrentCard(newCurrent);
+    setPool(newPool);
+    setLupaActive(false);
+    setAnclaActive(false);
+    setFrozenSlots([]);
+    playSfx("tap");
+    toast.success("🌀 ¡Salto Temporal activado! Carta devuelta al continuo.");
+  };
+
+  // Poder Táctico 2: Ancla Temporal (indica en qué tercio del tablero se ubica la carta)
+  const handleUseAncla = () => {
+    setAnclaActive(true);
+    playSfx("tap");
+    toast.success("⚓ ¡Ancla Temporal activada! Coordenada por tercio revelada.");
+  };
+
+  const handleToggleHardcore = () => {
+    if (gameState !== "playing" || score > 0) return;
+    if (!hardcoreMode) {
+      if (spendCoins(50)) {
+        setHardcoreMode(true);
+        playSfx("coin");
+        toast.success("💀 ¡Modo Ciego activado! (Apuesta 50 🪙 · Premio 300 🪙)");
+      } else {
+        toast.error("Necesitas 50 monedas para activar la apuesta de Modo Ciego");
+      }
+    } else {
+      setHardcoreMode(false);
+      addCoins(50);
+      toast.info("Modo Ciego desactivado (50 monedas devueltas)");
+    }
+  };
+
   const handleInsert = (slotIndex) => {
     if (gameState !== "playing" || !currentCard || turnoDuelo === "menti") return;
     if (frozenSlots.includes(slotIndex)) {
@@ -271,11 +325,19 @@ export default function Juego() {
 
     if (isCorrect) {
       playSfx("correct");
+
+      // Multiplicador de Combo Cronológico (1-2: x1 | 3-5: x2 | 6+: x3)
+      const nextStreak = comboStreak + 1;
+      setComboStreak(nextStreak);
+      const multiplier = nextStreak >= 6 ? 3 : nextStreak >= 3 ? 2 : 1;
+      const coinReward = 10 * multiplier;
+      addCoins(coinReward);
+
       confetti({
-        particleCount: 50,
-        spread: 70,
+        particleCount: multiplier * 35,
+        spread: 60 + multiplier * 15,
         origin: { y: 0.65 },
-        colors: ["#f59e0b", "#eab308", "#3b82f6", "#10b981"],
+        colors: ["#f59e0b", "#eab308", "#3b82f6", "#10b981", "#8b5cf6"],
       });
 
       const nextTimeline = [...timeline];
@@ -286,7 +348,6 @@ export default function Juego() {
 
       const nextScore = score + 1;
       setScore(nextScore);
-      addCoins(10);
       setMascotStatus("correct");
 
       // Si es contrarreloj, regala +4 segundos de bonificación
@@ -295,11 +356,13 @@ export default function Juego() {
       }
 
       setLupaActive(false);
+      setAnclaActive(false);
       setFrozenSlots([]);
 
+      const comboText = multiplier > 1 ? ` 🔥 ¡Combo x${multiplier}! (+${coinReward}🪙)` : "";
       setLastFeedback({
         type: "correct",
-        message: `¡Correcto! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}.`,
+        message: `¡Correcto! ${currentCard.title} ocurrió en ${currentCard.yearFormatted}.${comboText}`,
       });
 
       if (nextScore >= targetGoal) {
@@ -314,8 +377,10 @@ export default function Juego() {
         if (res?.newlyUnlockedCard) {
           setUnlockedPrizeCard(res.newlyUnlockedCard);
         }
-        addCoins(modo === "desafio" ? 100 : 50);
-        confetti({ particleCount: 130, spread: 100, origin: { y: 0.5 } });
+        // Premio extra en Modo Ciego Hardcore (300 monedas)
+        const victoryCoins = hardcoreMode ? 300 : (modo === "desafio" ? 100 : 50);
+        addCoins(victoryCoins);
+        confetti({ particleCount: 150, spread: 110, origin: { y: 0.5 } });
         return;
       }
 
@@ -341,14 +406,65 @@ export default function Juego() {
         }
       }
     } else {
+      // ═══════════════════════════════════════════════════════════
+      // MECÁNICA 1: MARGEN DE GRACIA / PARADOJA LEVE
+      // Si el año fallado estuvo a <= 10 años de distancia de alguno de los límites de la ranura,
+      // se considera "Paradoja Leve": ¡No pierde vida! Solo se resetea la racha y se reubica.
+      // ═══════════════════════════════════════════════════════════
+      let minDiff = Infinity;
+      if (slotIndex > 0) {
+        minDiff = Math.min(minDiff, Math.abs(currentCard.year - timeline[slotIndex - 1].year));
+      }
+      if (slotIndex < timeline.length) {
+        minDiff = Math.min(minDiff, Math.abs(currentCard.year - timeline[slotIndex].year));
+      }
+
+      const esParadojaLeve = minDiff <= 10 && modo !== "supervivencia" && modo !== "duelo";
+
+      if (esParadojaLeve) {
+        playSfx("tap");
+        setComboStreak(0);
+        setLupaActive(false);
+        setAnclaActive(false);
+        setFrozenSlots([]);
+
+        // Encuentra la posición exacta correcta e inserta la carta sin perder vida
+        const correctIndex = timeline.findIndex((c) => c.year > currentCard.year);
+        const targetIndex = correctIndex === -1 ? timeline.length : correctIndex;
+        const nextTimeline = [...timeline];
+        nextTimeline.splice(targetIndex, 0, currentCard);
+        setTimeline(nextTimeline);
+        setJustPlacedId(currentCard.id);
+        setTimeout(() => setJustPlacedId(null), 2500);
+
+        setScore((prev) => prev + 1);
+        setLastFeedback({
+          type: "warning",
+          message: `⚠️ ¡Paradoja Leve! Estuviste a solo ${minDiff} años (${currentCard.yearFormatted}). ¡Salvado por el continuo temporal!`,
+        });
+        toast.warning(`⚠️ ¡Casi aciertas! A solo ${minDiff} años. ¡No pierdes vida!`);
+
+        if (pool.length > 0) {
+          setCurrentCard(pool[0]);
+          setPool(pool.slice(1));
+        } else {
+          setGameState("victory");
+        }
+        return;
+      }
+
       playSfx("wrong");
       if (navigator?.vibrate) navigator.vibrate([100, 50, 100]);
+
+      // Reiniciar multiplicador de combo
+      setComboStreak(0);
 
       const nextLives = lives - 1;
       setLives(nextLives);
       setMascotStatus("wrong");
 
       setLupaActive(false);
+      setAnclaActive(false);
       setFrozenSlots([]);
 
       setLastFeedback({
@@ -443,15 +559,52 @@ export default function Juego() {
         </div>
 
         {/* Contador de tiempo o vidas */}
-        {modo === "contrarreloj" ? (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-300 font-black text-sm">
-            <Timer className="w-4 h-4 animate-pulse" />
-            <span>{timeLeft}s</span>
-          </div>
-        ) : (
-          <LivesDisplay lives={lives} maxLives={maxLives} />
-        )}
+        <div className="flex items-center gap-2">
+          {/* Indicador de Combo de Racha */}
+          {comboStreak >= 2 && (
+            <div className={`flex items-center gap-1 px-2.5 py-1 rounded-xl font-black text-xs border shadow-sm animate-pulse ${
+              comboStreak >= 6 
+                ? "bg-purple-600/30 border-purple-400 text-purple-300 shadow-purple-500/30"
+                : "bg-amber-500/25 border-amber-400 text-amber-300 shadow-amber-500/25"
+            }`}>
+              <span>🔥</span>
+              <span>x{comboStreak >= 6 ? 3 : 2}</span>
+            </div>
+          )}
+
+          {modo === "contrarreloj" ? (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-300 font-black text-sm">
+              <Timer className="w-4 h-4 animate-pulse" />
+              <span>{timeLeft}s</span>
+            </div>
+          ) : (
+            <LivesDisplay lives={lives} maxLives={maxLives} />
+          )}
+        </div>
       </div>
+
+      {/* Selector Opcional de Modo Ciego (Apuesta Hardcore al iniciar) */}
+      {score === 0 && modo === "clasico" && (
+        <div className="flex items-center justify-between p-2.5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-amber-950/30 to-purple-950/40 border border-amber-500/30 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-base">💀</span>
+            <div>
+              <p className="font-extrabold text-amber-100">Modo Ciego Hardcore</p>
+              <p className="text-[10px] text-amber-300/70">Oculta años del tablero · Apuesta 50 🪙 ➔ Gana 300 🪙</p>
+            </div>
+          </div>
+          <button
+            onClick={handleToggleHardcore}
+            className={`px-3 py-1.5 rounded-xl font-black text-[11px] uppercase tracking-wider transition-all border ${
+              hardcoreMode
+                ? "bg-amber-400 text-slate-950 border-amber-300 shadow-lg shadow-amber-400/30"
+                : "bg-white/10 hover:bg-white/15 text-white/80 border-white/20"
+            }`}
+          >
+            {hardcoreMode ? "✓ Activado" : "Apostar"}
+          </button>
+        </div>
+      )}
 
       {/* Indicador de turno en Duelo contra Menti */}
       {modo === "duelo" && gameState === "playing" && (
@@ -515,6 +668,7 @@ export default function Juego() {
                 cardsPlaced={score}
                 targetGoal={targetGoal}
                 lupaActive={lupaActive}
+                anclaActive={anclaActive}
               />
 
               {/* Barra de Poderes y Facultades */}
@@ -522,8 +676,12 @@ export default function Juego() {
                 onUseLupa={handleUseLupa}
                 onUseCongelador={handleUseCongelador}
                 onUseCorazon={handleUseCorazon}
+                onUseSalto={handleUseSalto}
+                onUseAncla={handleUseAncla}
                 lupaActive={lupaActive}
                 congeladorActive={frozenSlots.length > 0}
+                anclaActive={anclaActive}
+                saltoUsed={saltoUsed}
                 lives={lives}
                 maxLives={maxLives}
               />
@@ -565,6 +723,7 @@ export default function Juego() {
                 event={event} 
                 index={idx} 
                 status={justPlacedId === event.id ? "justPlaced" : "default"}
+                hardcoreMode={hardcoreMode}
               />
 
               {/* Ranura entre eventos o al final */}

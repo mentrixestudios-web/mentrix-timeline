@@ -13,6 +13,7 @@ export default function TimelineCard({
   event,
   status = "default", // 'default' | 'justPlaced' | 'error'
   index = 0,
+  hardcoreMode = false,
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -49,6 +50,9 @@ export default function TimelineCard({
     ringClasses = "ring-2 ring-rose-500/60";
   }
 
+  // En modo hardcore, los años del tablero quedan ocultos como desafío ciego (salvo que acabe de colocarse)
+  const showYear = !hardcoreMode || isJustPlaced;
+
   return (
     <motion.div
       layout
@@ -78,7 +82,7 @@ export default function TimelineCard({
         {/* Medallón de Año en Relieve */}
         <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs sm:text-sm tracking-wide shadow-md shrink-0 bg-gradient-to-r ${glowHeader} ${isJustPlaced ? "scale-105 transition-transform" : ""}`}>
           <Hourglass className="w-3.5 h-3.5 shrink-0" />
-          <span>{event.yearFormatted}</span>
+          <span>{showYear ? event.yearFormatted : "??? d.C."}</span>
         </div>
 
         {/* Título y Categoría */}

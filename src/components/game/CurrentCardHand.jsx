@@ -7,12 +7,20 @@ export default function CurrentCardHand({
   cardsPlaced = 0,
   targetGoal = 10,
   lupaActive = false,
+  anclaActive = false,
 }) {
   if (!event) return null;
 
   const era = getEraByYear(event.year);
   const centuryText = getCenturyLabel(event.year);
   const categoryIcon = CATEGORY_ICONS[event.category] || "📜";
+
+  // Determinar tercio temporal para el Ancla Temporal
+  const getAnclaHint = (year) => {
+    if (year < 500) return "🏛️ Pasado Remoto y Era Clásica (Primer tercio)";
+    if (year <= 1800) return "⚔️ Época Medieval y Renacimiento (Segundo tercio)";
+    return "🚀 Era Industrial y Contemporánea (Tercer tercio)";
+  };
 
   return (
     <div className="relative w-full max-w-md mx-auto rounded-3xl p-4 bg-gradient-to-br from-[#12102e] via-[#0d1633] to-[#1a1236] border-2 border-amber-400 shadow-[0_0_35px_rgba(245,158,11,0.28)] ring-1 ring-amber-400/40 select-none overflow-hidden">
@@ -53,6 +61,16 @@ export default function CurrentCardHand({
           <Search className="w-4 h-4 text-amber-300 shrink-0" />
           <span>
             🔍 Pista Revelada: <strong className="text-amber-200">{centuryText} ({era.nombre})</strong>
+          </span>
+        </div>
+      )}
+
+      {/* Pista revelada con Ancla Temporal */}
+      {anclaActive && (
+        <div className="mt-2 p-2.5 rounded-2xl bg-teal-500/25 border-2 border-teal-400/80 flex items-center gap-2.5 text-xs text-teal-100 font-extrabold shadow-md relative z-10">
+          <span className="text-base shrink-0">⚓</span>
+          <span>
+            Ancla Fijada: <strong className="text-teal-200">{getAnclaHint(event.year)}</strong>
           </span>
         </div>
       )}
