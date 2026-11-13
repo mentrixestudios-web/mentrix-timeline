@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
@@ -11,61 +11,31 @@ import {
   ChevronDown,
   ChevronUp,
   X,
+  Crown,
+  Trophy,
+  Swords,
+  Timer,
+  CheckCircle2,
+  AlertCircle,
+  HelpCircle,
+  Users
 } from "lucide-react";
 import { toast } from "sonner";
 import {
   obtenerEstadoSala,
   suscribirASala,
   colocarCartaEnLinea,
+  forzarPasoTurnoOnline,
   getOnlinePlayerProfile,
+  AVATARES_MESA
 } from "@/services/onlineMatchService";
 import { addCoins, addXp } from "@/utils/gameStorage";
 import { playSfx, playBgm } from "@/utils/soundSystem";
-
-// ─────────────────────────────────────────────────────────────
-// Utilidades de presentación (todo el texto se muestra completo)
-// ─────────────────────────────────────────────────────────────
-const CAT_LABEL = {
-  historia: "Historia",
-  biblia: "Biblia",
-  ciencia: "Ciencia",
-  musica: "Música",
-  cine: "Cine",
-  conflictos: "Conflictos",
-  exploraciones: "Exploraciones",
-  arte: "Arte y Literatura",
-  deportes: "Deportes",
-};
-const CAT_EMOJI = {
-  historia: "🏛️",
-  biblia: "📜",
-  ciencia: "🔬",
-  musica: "🎵",
-  cine: "🎬",
-  conflictos: "⚔️",
-  exploraciones: "🧭",
-  arte: "🎨",
-  deportes: "🏆",
-};
-
-const catLabel = (c) =>
-  CAT_LABEL[c] || (c ? c.charAt(0).toUpperCase() + c.slice(1).replace(/_/g, " ") : "Historia");
-const catEmoji = (c) => CAT_EMOJI[c] || "⏳";
-
-const yearLabel = (c) =>
-  c?.yearFormatted || (c?.year >= 0 ? `${c.year} d.C.` : `${Math.abs(c?.year ?? 0)} a.C.`);
-
-// "1872 d.C." -> ["1872", "d.C."]
-const splitYear = (c) => {
-  const label = yearLabel(c);
-  const idx = label.lastIndexOf(" ");
-  return idx > 0 ? [label.slice(0, idx), label.slice(idx + 1)] : [label, ""];
-};
+import TimelineCard from "@/components/game/TimelineCard";
+import TimelineSlot from "@/components/game/TimelineSlot";
+import MentrixMascot from "@/components/game/MentrixMascot";
 
 export default function JuegoOnline() {
-  useEffect(() => {
-    playBgm("game");
-  }, []);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const codigoSala = (searchParams.get("sala") || "").toUpperCase();
@@ -75,17 +45,20 @@ export default function JuegoOnline() {
   const [cargando, setCargando] = useState(true);
   const [cartaSeleccionada, setCartaSeleccionada] = useState(null);
   const [procesandoTurno, setProcesandoTurno] = useState(false);
-  const [ultimaJugada, setUltimaJugada] = useState(null);
+  const [justPlacedId, setJustPlacedId] = useState(null);
   const [manoAbierta, setManoAbierta] = useState(true);
-  const [trayH, setTrayH] = useState(260);
 
+  // Temporizador de turno (20 segundos)
+  const [segundosRestantes, setSegundosRestantes] = useState(20);
+  const timerRef = useRef(null);
   const lastMoveRef = useRef(null);
   const rewardedRef = useRef(false);
-  const trayRef = useRef(null);
-  const mesaTopRef = useRef(null);
-  const mesaBottomRef = useRef(null);
 
-  // Procesa cualquier estado nuevo de la sala (Realtime, canal local o resultado propio)
+  useEffect(() => {
+    playBgm("game");
+  }, []);
+
+  // Procesa cualquier actualización de sala en tiempo real
   const procesarSala = useCallback(
     (nueva, { silencioso = false } = {}) => {
       if (!nueva) return;
@@ -97,35 +70,46 @@ export default function JuegoOnline() {
         if (!silencioso) {
           if (ult.tipo === "acierto" || ult.tipo === "victoria") {
             playSfx("correct");
-          } else if (ult.tipo === "error" || ult.tipo === "derrota_vidas") {
+            if (ult.carta?.id) {
+              setJustPlacedId(ult.carta.id);
+              setTimeout(() => setJustPlacedId(null), 2000);
+            }
+          } else if (ult.tipo === "error" || ult.tipo === "eliminacion" || ult.tipo === "tiempo_agotado") {
             playSfx("wrong");
-          }
-          if (ult.carta) {
-            setUltimaJugada({ ...ult, porMi: undefined });
           }
         }
       }
 
+      // Reiniciar temporizador al cambiar el turno
+      setSegundosRestantes(20);
+
+      // Si la partida terminó y el usuario gana el Pozo
       if (nueva.estado === "finalizado" && !rewardedRef.current) {
         rewardedRef.current = true;
         if (!silencioso) playSfx("victory");
+
+        const pozo = nueva.pozo_total || (nueva.apuesta || 50) * (nueva.jugadores?.length || 2);
+
         if (nueva.ganador_id === player.id) {
-          if (!silencioso) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-          addCoins(50);
-          addXp(40);
+          if (!silencioso) {
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 } });
+          }
+          addCoins(pozo);
+          addXp(60);
+          toast.success(`👑 ¡FELICITACIONES! Te has llevado el Pozo de ${pozo.toLocaleString()} 🪙`);
         } else {
+          // Recompensa de consolación por participar
           addCoins(15);
-          addXp(15);
+          addXp(20);
         }
       }
 
-      // Realtime puede omitir columnas grandes sin cambios (TOAST): fusionamos con el estado previo
-      setSala((prev) => (prev ? { ...prev, ...nueva } : nueva));
+      setSala(nueva);
     },
     [player.id]
   );
 
-  // 1. Cargar estado inicial y suscribir a eventos Realtime
+  // 1. Cargar estado inicial y suscribir
   useEffect(() => {
     if (!codigoSala) {
       toast.error("Código de sala no proporcionado.");
@@ -142,16 +126,15 @@ export default function JuegoOnline() {
         navigate("/modos-online");
         return;
       }
-      // Estado inicial: no repetir sonidos/premios de jugadas anteriores
       lastMoveRef.current = data.ultimo_movimiento?.timestamp || null;
       if (data.estado === "finalizado") rewardedRef.current = true;
       setSala(data);
       setCargando(false);
     });
 
-    const desuscribir = suscribirASala(codigoSala, (salaActualizada) => {
+    const desuscribir = suscribirASala(codigoSala, (actualizada) => {
       if (!isMounted) return;
-      procesarSala(salaActualizada);
+      procesarSala(actualizada);
     });
 
     return () => {
@@ -160,496 +143,460 @@ export default function JuegoOnline() {
     };
   }, [codigoSala, navigate, procesarSala]);
 
-  // El panel de "última jugada" se cierra solo
+  // 2. Temporizador regresivo de 20 segundos para el turno activo
   useEffect(() => {
-    if (!ultimaJugada) return;
-    const timer = setTimeout(() => setUltimaJugada(null), 9000);
-    return () => clearTimeout(timer);
-  }, [ultimaJugada]);
+    if (!sala || sala.estado !== "jugando") return;
 
-  // Medir la bandeja inferior para que nunca tape la línea de tiempo
-  useLayoutEffect(() => {
-    const el = trayRef.current;
-    if (!el || typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(() => setTrayH(el.offsetHeight));
-    ro.observe(el);
-    setTrayH(el.offsetHeight);
-    return () => ro.disconnect();
-  }, [cargando, sala?.estado]);
+    if (timerRef.current) clearInterval(timerRef.current);
 
-  useEffect(() => {
-    if (!cartaSeleccionada || !sala) return;
-    const mano = (sala.host_id === player.id ? sala.mano_host : sala.mano_guest) || [];
-    if (!mano.some((c) => c.id === cartaSeleccionada.id)) setCartaSeleccionada(null);
-  }, [sala, cartaSeleccionada, player.id]);
+    timerRef.current = setInterval(() => {
+      setSegundosRestantes((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          // Si el jugador local es el que tiene el turno activo y se le acabó el tiempo
+          if (sala.turno_jugador_id === player.id && !procesandoTurno) {
+            playSfx("wrong");
+            toast.error("⏰ ¡Se agotó tu tiempo de turno!");
+            forzarPasoTurnoOnline({ codigoSala, jugadorId: player.id });
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-  if (cargando || !sala) {
-    return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 text-center select-none">
-        <Hourglass className="w-10 h-10 text-amber-400 animate-spin" />
-        <h2 className="text-base font-bold text-white">Sincronizando portal temporal...</h2>
-        <p className="text-xs text-slate-400">Conectando a sala {codigoSala}</p>
-      </div>
-    );
-  }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [sala?.turno_jugador_id, sala?.estado, player.id, codigoSala, procesandoTurno]);
 
-  const esHost = sala.host_id === player.id;
-  const esMiTurno = sala.turno_jugador_id === player.id && sala.estado === "jugando";
-
-  const rivalNombre = esHost ? sala.guest_nombre || "Rival" : sala.host_nombre;
-  const misVidas = esHost ? sala.vidas_host : sala.vidas_guest;
-  const vidasRival = esHost ? sala.vidas_guest : sala.vidas_host;
-  const miMano = esHost ? sala.mano_host || [] : sala.mano_guest || [];
-  const manoRival = esHost ? sala.mano_guest || [] : sala.mano_host || [];
-
-  const mesa = sala.linea_tiempo_mesa || [];
-  const partidaFinalizada = sala.estado === "finalizado";
-  const soyGanador = sala.ganador_id === player.id;
-  const mostrarSlots = esMiTurno && !!cartaSeleccionada && !procesandoTurno;
-
-  const idCartaReciente = sala.ultimo_movimiento?.carta?.id;
-
-  const handleColocarCarta = async (posicion) => {
-    if (!esMiTurno || !cartaSeleccionada || procesandoTurno) return;
+  // Manejar colocación de carta en un slot
+  const handleColocarCarta = async (posicionInsertada) => {
+    if (!cartaSeleccionada || procesandoTurno) return;
+    if (sala.turno_jugador_id !== player.id) {
+      toast.error("No es tu turno.");
+      return;
+    }
 
     setProcesandoTurno(true);
     playSfx("tap");
 
     try {
-      const resultado = await colocarCartaEnLinea({
+      const nuevaSala = await colocarCartaEnLinea({
         codigoSala,
         jugadorId: player.id,
         carta: cartaSeleccionada,
-        posicionInsertada: posicion,
+        posicionInsertada,
       });
+
       setCartaSeleccionada(null);
-      // En modo local el emisor no recibe su propio mensaje: aplicamos el resultado directamente
-      if (resultado) procesarSala(resultado);
+      if (nuevaSala) {
+        procesarSala(nuevaSala);
+      }
     } catch (err) {
-      toast.error(err.message || "Error al realizar la jugada");
+      toast.error(err.message || "Error al colocar la carta");
     } finally {
       setProcesandoTurno(false);
     }
   };
 
-  // Texto de contexto para cada hueco: "Entre 1872 d.C. y 1876 d.C."
-  const textoHueco = (pos) => {
-    const antes = mesa[pos - 1];
-    const despues = mesa[pos];
-    if (!antes && despues) return `Antes de ${yearLabel(despues)}`;
-    if (antes && !despues) return `Después de ${yearLabel(antes)}`;
-    if (antes && despues) return `Entre ${yearLabel(antes)} y ${yearLabel(despues)}`;
-    return "Colocar aquí";
+  if (cargando) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
+        <div className="w-12 h-12 rounded-full border-4 border-amber-400 border-t-transparent animate-spin" />
+        <p className="text-xs font-black text-amber-300">Conectando a la mesa temporal...</p>
+      </div>
+    );
+  }
+
+  if (!sala) return null;
+
+  const jugadores = sala.jugadores || [];
+  const jugadorLocal = jugadores.find((j) => j.id === player.id) || {
+    id: player.id,
+    nombre: player.name,
+    avatar: "👑",
+    vidas: 3,
+    cartasEnMano: [],
   };
 
-  const renderHueco = (pos) => (
-    <div className="grid grid-cols-[52px_1fr] gap-2.5 items-center">
-      <div className="flex justify-center">
-        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 ring-4 ring-emerald-400/20 animate-pulse" />
-      </div>
-      <motion.button
-        type="button"
-        whileTap={{ scale: 0.98 }}
-        onClick={() => handleColocarCarta(pos)}
-        className="w-full min-h-[44px] rounded-xl border-2 border-dashed border-emerald-400/70 bg-emerald-500/10 hover:bg-emerald-500/25 active:bg-emerald-500/30 flex items-center justify-center gap-2 px-3 py-2 text-emerald-200 cursor-pointer transition-colors"
-      >
-        <span className="text-lg font-black leading-none">＋</span>
-        <span className="text-xs font-bold leading-tight text-center">{textoHueco(pos)}</span>
-      </motion.button>
-    </div>
-  );
+  const esMiTurno = sala.estado === "jugando" && sala.turno_jugador_id === player.id;
+  const jugadorEnTurno = jugadores.find((j) => j.id === sala.turno_jugador_id) || jugadores[0];
+  const mesa = sala.linea_tiempo_mesa || [];
+  const pozoTotal = sala.pozo_total || (sala.apuesta || 50) * jugadores.length;
+  const ganador = jugadores.find((j) => j.id === sala.ganador_id);
+  const soyGanador = sala.ganador_id === player.id;
+
+  // Frase dinámica de Menti Crononauta
+  const fraseMenti = () => {
+    if (sala.estado === "finalizado") {
+      return soyGanador
+        ? `¡Enhorabuena, Crononauta Supremo! Has dominado la historia y te llevas el Pozo de ${pozoTotal.toLocaleString()} monedas.`
+        : `¡Partida finalizada! ${ganador?.nombre || "El rival"} se coronó Campeón de la Mesa. ¡Sigue entrenando tu cronología!`;
+    }
+    if (esMiTurno) {
+      return cartaSeleccionada
+        ? `Has elegido "${cartaSeleccionada.title}". Ahora toca una de las ranuras doradas [+] del tablero para insertarla en su época exacta.`
+        : "¡Es tu turno de viajar en el tiempo! Toca una de tus cartas en la bandeja inferior para prepararla.";
+    }
+    return `Observando el tablero... Es el turno de ${jugadorEnTurno?.nombre}. ¡Fíjate bien en qué año coloca su evento!`;
+  };
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col gap-2.5 select-none relative">
-      {/* ── CABECERA FIJA: sala, rival y turno ── */}
-      <div className="sticky top-0 z-30 -mx-1 px-1 pt-1 pb-3 bg-gradient-to-b from-slate-950 via-slate-950/95 to-transparent flex flex-col gap-2">
-        <div
-          className="w-full flex items-center justify-between gap-2 rounded-2xl px-3 py-2"
-          style={{
-            background: "rgba(30,45,77,0.7)",
-            border: "1px solid rgba(245,158,11,0.25)",
+    <div className="space-y-3 select-none pb-48 relative min-h-screen">
+      {/* ── HEADER SUPERIOR: SALIR, CÓDIGO Y POZO ACUMULADO ── */}
+      <div className="flex items-center justify-between gap-2 bg-slate-900/80 p-2.5 rounded-2xl border border-white/10 backdrop-blur-md sticky top-1 z-30 shadow-lg">
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={() => {
+            playSfx("tap");
+            if (confirm("¿Seguro que deseas salir de la partida en curso?")) {
+              navigate("/modos-online");
+            }
           }}
+          className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center gap-1.5 text-xs font-black tracking-wide cursor-pointer"
         >
-          <button
-            onClick={() => {
-              playSfx("tap");
-              if (window.confirm("¿Seguro que deseas salir de la partida en línea?")) {
-                navigate("/modos-online");
-              }
-            }}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-slate-200 cursor-pointer shrink-0"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 text-amber-400" />
-            <span>Salir</span>
-          </button>
+          <ArrowLeft className="w-3.5 h-3.5 text-amber-400" />
+          <span>Rendirse</span>
+        </motion.button>
 
-          <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-400/40 shrink-0">
-            Sala {codigoSala}
+        {/* POZO DE LA MESA */}
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-500/25 border border-amber-400/50 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
+          <Trophy className="w-4 h-4 text-amber-400 animate-bounce" />
+          <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
+            POZO:
           </span>
-
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="min-w-0 text-right">
-              <div className="text-xs font-bold text-slate-200 truncate max-w-[92px]">{rivalNombre}</div>
-              <div className="text-[9px] text-slate-400 leading-none">{manoRival.length} cartas</div>
-            </div>
-            <div className="flex gap-0.5 shrink-0">
-              {[1, 2, 3].map((v) => (
-                <Heart
-                  key={v}
-                  className={`w-3.5 h-3.5 ${
-                    v <= vidasRival ? "text-red-500 fill-red-500" : "text-slate-600 fill-transparent"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
+          <span className="text-xs sm:text-sm font-black text-amber-300 font-mono">
+            {pozoTotal.toLocaleString()} 🪙
+          </span>
         </div>
 
-        {/* Banner de turno */}
-        {partidaFinalizada ? (
-          <div
-            className={`w-full py-2 px-4 rounded-2xl text-center font-black text-sm border ${
-              soyGanador
-                ? "bg-amber-500/20 border-amber-400 text-amber-200"
-                : "bg-red-500/20 border-red-400 text-red-200"
-            }`}
-          >
-            {soyGanador ? "👑 ¡VICTORIA! Eres el Amo del Tiempo ⏳" : "💀 DERROTA: El rival dominó la línea temporal"}
-          </div>
-        ) : esMiTurno ? (
-          <div className="w-full py-2 px-4 rounded-2xl text-center font-extrabold text-xs sm:text-sm bg-gradient-to-r from-emerald-600/30 via-teal-600/40 to-emerald-600/30 border border-emerald-400/50 text-emerald-200 flex items-center justify-center gap-2">
-            <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse shrink-0" />
-            <span>
-              {cartaSeleccionada
-                ? "Toca “＋” en la línea de tiempo donde encaja esta carta"
-                : "⚡ TU TURNO: elige una carta de tu mano"}
-            </span>
-          </div>
-        ) : (
-          <div className="w-full py-2 px-4 rounded-2xl text-center font-semibold text-xs text-slate-300 bg-slate-900/60 border border-white/10 flex items-center justify-center gap-2">
-            <Hourglass className="w-3.5 h-3.5 text-amber-400 animate-spin shrink-0" />
-            <span>Turno de {rivalNombre}… esperando su jugada</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-black px-2 py-1 rounded-xl bg-cyan-950/70 border border-cyan-400/30 text-cyan-300 font-mono">
+            {codigoSala}
+          </span>
+        </div>
       </div>
 
-      {/* ── ÚLTIMA JUGADA: la carta completa, legible para ambos jugadores ── */}
-      <AnimatePresence>
-        {ultimaJugada?.carta && (
+      {/* ── BARRA SUPERIOR DE LOS 2 A 6 JUGADORES (ESTILO LUDO CLUB) ── */}
+      <div className="p-2 sm:p-2.5 rounded-2xl bg-gradient-to-r from-[#0a1224] via-[#09152b] to-[#0a1224] border border-white/10 shadow-md">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+          {jugadores.map((j, idx) => {
+            const isTurno = sala.turno_jugador_id === j.id && sala.estado === "jugando";
+            const isMe = j.id === player.id;
+            const isEliminado = j.eliminado || j.vidas <= 0;
+
+            return (
+              <div
+                key={j.id}
+                className={`p-2 rounded-xl border transition-all text-center relative ${
+                  isTurno
+                    ? "bg-gradient-to-b from-amber-500/30 via-yellow-500/20 to-amber-950/40 border-amber-400 ring-2 ring-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.4)] scale-[1.03]"
+                    : isEliminado
+                    ? "bg-rose-950/30 border-rose-500/30 opacity-40"
+                    : isMe
+                    ? "bg-blue-950/40 border-cyan-400/40"
+                    : "bg-white/5 border-white/10 opacity-80"
+                }`}
+              >
+                {/* Badge Turno Activo */}
+                {isTurno && (
+                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[8px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950 shadow-sm animate-pulse">
+                    TURNO ({segundosRestantes}s)
+                  </span>
+                )}
+
+                <div className="flex items-center justify-center gap-1 mt-0.5">
+                  <span className="text-base">{j.avatar || AVATARES_MESA[idx % AVATARES_MESA.length]}</span>
+                  <p className="text-[11px] font-black text-white truncate max-w-[80px]">
+                    {j.nombre}
+                  </p>
+                  {isMe && <span className="text-[9px] text-cyan-300 font-bold">(Tú)</span>}
+                </div>
+
+                {/* Vidas restantes */}
+                <div className="flex items-center justify-center gap-0.5 my-1">
+                  {isEliminado ? (
+                    <span className="text-[9px] font-black text-rose-400">💀 ELIMINADO</span>
+                  ) : (
+                    [1, 2, 3].map((v) => (
+                      <Heart
+                        key={v}
+                        className={`w-3 h-3 ${
+                          v <= (j.vidas ?? 3)
+                            ? "fill-rose-500 text-rose-500"
+                            : "text-white/20"
+                        }`}
+                      />
+                    ))
+                  )}
+                </div>
+
+                {/* Cartas restantes en mano */}
+                <span className="text-[10px] font-extrabold text-amber-200/90 bg-black/40 px-2 py-0.5 rounded-full inline-block">
+                  🎴 {j.cartasEnMano?.length ?? 0} cartas
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── BANNER DE ESTADO / RETROALIMENTACIÓN DE ÚLTIMA JUGADA ── */}
+      <AnimatePresence mode="wait">
+        {sala.ultimo_movimiento?.mensaje && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
+            key={sala.ultimo_movimiento.timestamp}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className={`w-full rounded-2xl p-3 border relative ${
-              ultimaJugada.esCorrecto
-                ? "bg-emerald-950/80 border-emerald-500/60"
-                : "bg-red-950/80 border-red-500/60"
+            exit={{ opacity: 0 }}
+            className={`py-2 px-3 rounded-2xl text-xs font-black flex items-center justify-center gap-2 border shadow-md text-center ${
+              sala.ultimo_movimiento.tipo === "acierto" || sala.ultimo_movimiento.tipo === "victoria"
+                ? "bg-emerald-950/80 border-emerald-500 text-emerald-200 shadow-emerald-500/20"
+                : sala.ultimo_movimiento.tipo === "error" || sala.ultimo_movimiento.tipo === "eliminacion" || sala.ultimo_movimiento.tipo === "tiempo_agotado"
+                ? "bg-rose-950/80 border-rose-500 text-rose-200 shadow-rose-500/20"
+                : "bg-blue-950/80 border-cyan-500 text-cyan-200 shadow-cyan-500/20"
             }`}
           >
-            <button
-              type="button"
-              aria-label="Cerrar"
-              onClick={() => setUltimaJugada(null)}
-              className="absolute top-2 right-2 p-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 cursor-pointer"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-            <p
-              className={`text-xs font-black mb-1.5 pr-7 ${
-                ultimaJugada.esCorrecto ? "text-emerald-200" : "text-red-200"
-              }`}
-            >
-              {ultimaJugada.mensaje}
-            </p>
-            <div className="flex items-start gap-3">
-              <div className="shrink-0 text-center rounded-lg bg-black/30 border border-amber-400/30 px-2 py-1 min-w-[56px]">
-                <div className="text-sm font-black text-amber-300 leading-tight">{splitYear(ultimaJugada.carta)[0]}</div>
-                <div className="text-[9px] font-bold text-amber-200/70">{splitYear(ultimaJugada.carta)[1]}</div>
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm font-extrabold text-white leading-snug">{ultimaJugada.carta.title}</div>
-                {ultimaJugada.carta.description && (
-                  <p className="text-[11px] text-slate-300 leading-relaxed mt-1 mb-0">
-                    {ultimaJugada.carta.description}
-                  </p>
-                )}
-              </div>
-            </div>
+            {sala.ultimo_movimiento.tipo === "acierto" || sala.ultimo_movimiento.tipo === "victoria" ? (
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            ) : sala.ultimo_movimiento.tipo === "error" || sala.ultimo_movimiento.tipo === "tiempo_agotado" ? (
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            ) : (
+              <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+            )}
+            <span>{sala.ultimo_movimiento.mensaje}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ── LÍNEA DE TIEMPO VERTICAL (cada carta se lee completa) ── */}
-      <div
-        className="w-full rounded-3xl p-3 relative"
-        style={{
-          background: "rgba(13,22,41,0.9)",
-          border: "1px solid rgba(245,158,11,0.2)",
-          marginBottom: trayH + 16,
-        }}
-      >
-        <div className="flex items-center justify-between mb-2 px-1">
-          <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">
-            ⏳ Línea de tiempo
-          </span>
-          <span className="text-[10px] text-slate-400 font-bold">
-            {mesa.length} evento{mesa.length === 1 ? "" : "s"} colocado{mesa.length === 1 ? "" : "s"}
-          </span>
-        </div>
-
-        <div className="relative flex flex-col gap-2.5">
-          {/* Eje vertical del tiempo */}
-          <div className="absolute left-[26px] top-3 bottom-3 w-px bg-gradient-to-b from-amber-400/70 via-amber-400/25 to-amber-400/70 pointer-events-none" />
-
-          <div ref={mesaTopRef} className="grid grid-cols-[52px_1fr] gap-2.5 items-center">
-            <div className="text-center text-[9px] font-black text-amber-300/70 leading-tight relative z-10 bg-[#0d1629] py-0.5">
-              ▲
-            </div>
-            <div className="text-[9px] font-black tracking-widest text-amber-300/60 uppercase">
-              Más antiguo
+      {/* ── CARTA ACTIVA PREPARADA PARA INSERTAR ── */}
+      {cartaSeleccionada && esMiTurno && (
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="sticky top-14 z-20 p-3 rounded-2xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-500/25 border-2 border-amber-400 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-2xl">⏳</span>
+            <div className="min-w-0">
+              <span className="text-[9px] font-black uppercase tracking-wider text-amber-300 block">
+                CARTA LISTA PARA COLOCAR · TOCA UNA RANURA [+] EN EL TABLERO
+              </span>
+              <h4 className="text-xs sm:text-sm font-black text-white truncate">
+                {cartaSeleccionada.title}
+              </h4>
             </div>
           </div>
 
-          {mostrarSlots && renderHueco(0)}
+          <button
+            type="button"
+            onClick={() => setCartaSeleccionada(null)}
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white cursor-pointer shrink-0"
+            title="Deseleccionar"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </motion.div>
+      )}
 
-          {mesa.map((c, idx) => {
-            const [num, era] = splitYear(c);
-            const esReciente = idCartaReciente && idCartaReciente === c.id;
-            return (
-              <React.Fragment key={`${c.id}-${idx}`}>
-                <motion.div
-                  initial={esReciente ? { opacity: 0, scale: 0.96 } : false}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="grid grid-cols-[52px_1fr] gap-2.5 items-start"
-                >
-                  {/* Sello del año sobre el eje */}
-                  <div className="relative z-10 flex justify-center">
-                    <div className="w-[52px] rounded-lg bg-[#1a1405] border border-amber-400/50 text-center py-1 shadow-[0_0_10px_rgba(245,158,11,0.15)]">
-                      <div className="text-[13px] font-black text-amber-300 leading-tight">{num}</div>
-                      <div className="text-[9px] font-bold text-amber-200/70 leading-none">{era}</div>
-                    </div>
-                  </div>
+      {/* ══════════════════════════════════════════════════════════
+          LÍNEA DE TIEMPO INTERACTIVA COMPARTIDA
+      ══════════════════════════════════════════════════════════ */}
+      <div className="relative py-2">
+        {/* Marcador Cósmico del Pasado Remoto */}
+        <div className="flex items-center justify-center mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+            <span>🏛️</span>
+            <span>COMIENZO DE LA HISTORIA · PASADO REMOTO</span>
+            <Hourglass className="w-3.5 h-3.5 text-amber-400" />
+          </div>
+        </div>
 
-                  {/* Carta completa */}
-                  <div
-                    className={`rounded-2xl p-3 bg-gradient-to-b from-[#182343] to-[#0f172a] border ${
-                      esReciente
-                        ? "border-amber-300 shadow-[0_0_18px_rgba(245,158,11,0.3)]"
-                        : "border-amber-400/25"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 flex items-center gap-1">
-                        <span>{catEmoji(c.category)}</span>
-                        <span>{catLabel(c.category)}</span>
-                      </span>
-                      {esReciente ? (
-                        <span className="text-[9px] font-black text-amber-200 uppercase">Recién colocada</span>
-                      ) : (
-                        c.siglo && <span className="text-[9px] text-slate-400 font-semibold">{c.siglo}</span>
-                      )}
-                    </div>
-                    <h4 className="text-[15px] font-extrabold text-white leading-snug m-0">{c.title}</h4>
-                    {c.description && (
-                      <p className="text-xs text-slate-300 leading-relaxed mt-1.5 mb-0">{c.description}</p>
-                    )}
-                    {c.datoCurioso && (
-                      <div className="mt-2 rounded-lg bg-amber-500/10 border border-amber-400/20 px-2.5 py-1.5">
-                        <p className="text-[11px] text-amber-100/90 leading-relaxed italic m-0">
-                          <span className="not-italic font-black text-amber-300">💡 Dato curioso · </span>
-                          {c.datoCurioso}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
+        {/* Tablero con Eje Cronológico Continuo */}
+        <div className="space-y-1 relative">
+          {/* EJE CENTRAL DE ENERGÍA TEMPORAL */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-amber-500/20 via-amber-400/50 to-blue-500/30 pointer-events-none shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
 
-                {mostrarSlots && renderHueco(idx + 1)}
-              </React.Fragment>
-            );
-          })}
+          {/* Ranura Inicial (Antes del primer evento) */}
+          <TimelineSlot
+            onSelect={() => handleColocarCarta(0)}
+            disabled={!esMiTurno || !cartaSeleccionada || procesandoTurno}
+            nextYear={mesa[0]?.yearFormatted}
+          />
 
-          <div ref={mesaBottomRef} className="grid grid-cols-[52px_1fr] gap-2.5 items-center">
-            <div className="text-center text-[9px] font-black text-amber-300/70 leading-tight relative z-10 bg-[#0d1629] py-0.5">
-              ▼
-            </div>
-            <div className="text-[9px] font-black tracking-widest text-amber-300/60 uppercase">
-              Más reciente
-            </div>
+          {mesa.map((event, idx) => (
+            <React.Fragment key={event.id || idx}>
+              <TimelineCard
+                event={event}
+                index={idx}
+                status={justPlacedId === event.id ? "justPlaced" : "default"}
+              />
+
+              <TimelineSlot
+                onSelect={() => handleColocarCarta(idx + 1)}
+                disabled={!esMiTurno || !cartaSeleccionada || procesandoTurno}
+                prevYear={event.yearFormatted}
+                nextYear={mesa[idx + 1]?.yearFormatted}
+              />
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* Marcador Cósmico del Presente */}
+        <div className="flex items-center justify-center mt-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+            <span>PRESENTE HISTÓRICO · ÉPOCA ACTUAL</span>
+            <span>⚡</span>
           </div>
         </div>
       </div>
 
-      {/* ── BANDEJA INFERIOR FIJA: tu mano (cartas completas, deslizables) ── */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 pointer-events-none">
-        <div className="max-w-2xl mx-auto px-2">
-          <div
-            ref={trayRef}
-            className="pointer-events-auto rounded-t-3xl p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-            style={{
-              background: "rgba(8,13,28,0.97)",
-              border: "1px solid rgba(245,158,11,0.3)",
-              borderBottom: "none",
-              boxShadow: "0 -12px 30px rgba(0,0,0,0.55)",
-            }}
-          >
-            <div className="flex items-center justify-between mb-2 px-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black text-white">Tu mano</span>
-                <div className="flex gap-1">
-                  {[1, 2, 3].map((v) => (
-                    <Heart
-                      key={v}
-                      className={`w-4 h-4 ${
-                        v <= misVidas ? "text-red-500 fill-red-500" : "text-slate-700 fill-transparent"
-                      }`}
-                    />
-                  ))}
+      {/* ══════════════════════════════════════════════════════════
+          BANDEJA INFERIOR FLOTANTE DE CARTAS EN MANO DEL JUGADOR
+      ══════════════════════════════════════════════════════════ */}
+      {sala.estado === "jugando" && (
+        <div className="fixed bottom-0 left-0 right-0 z-30 p-2 sm:p-3 bg-gradient-to-t from-slate-950 via-[#070e1c] to-transparent pointer-events-none">
+          <div className="max-w-3xl mx-auto pointer-events-auto">
+            <div className="rounded-3xl bg-[#091326]/95 border-2 border-amber-400/60 shadow-2xl backdrop-blur-xl p-3 space-y-2">
+              
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🎴</span>
+                  <span className="text-xs font-black text-white">
+                    Tus Cartas en Mano ({jugadorLocal.cartasEnMano?.length || 0})
+                  </span>
+                  {esMiTurno ? (
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400 text-emerald-300 animate-pulse">
+                      ¡ES TU TURNO! ({segundosRestantes}s)
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-medium text-slate-400">
+                      Esperando a {jugadorEnTurno?.nombre}...
+                    </span>
+                  )}
                 </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setManoAbierta((v) => !v)}
-                className="flex items-center gap-1 text-[10px] font-bold text-slate-300 px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer"
-              >
-                <span>
-                  {miMano.length} carta{miMano.length === 1 ? "" : "s"} por colocar
-                </span>
-                {manoAbierta ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
-              </button>
-            </div>
 
-            {manoAbierta && (
-              <>
-                {/* Atajos cuando hay una carta elegida */}
-                {mostrarSlots && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <button
-                      type="button"
-                      onClick={() => handleColocarCarta(0)}
-                      className="flex-1 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-400/50 text-emerald-200 text-[11px] font-bold cursor-pointer active:scale-95"
-                    >
-                      ▲ Más antigua de todas
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleColocarCarta(mesa.length)}
-                      className="flex-1 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-400/50 text-emerald-200 text-[11px] font-bold cursor-pointer active:scale-95"
-                    >
-                      ▼ Más reciente de todas
-                    </button>
-                  </div>
-                )}
-
-                <div
-                  className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory pb-1 items-stretch"
-                  style={{ scrollbarWidth: "none" }}
+                <button
+                  type="button"
+                  onClick={() => setManoAbierta(!manoAbierta)}
+                  className="p-1 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs cursor-pointer"
                 >
-                  {miMano.map((cartaMano) => {
-                    const isSelected = cartaSeleccionada?.id === cartaMano.id;
+                  {manoAbierta ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+                </button>
+              </div>
+
+              {manoAbierta && (
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1 max-h-48 overflow-y-auto">
+                  {(jugadorLocal.cartasEnMano || []).map((carta) => {
+                    const seleccionada = cartaSeleccionada?.id === carta.id;
+
                     return (
-                      <motion.div
-                        key={cartaMano.id}
-                        whileTap={{ scale: 0.98 }}
+                      <motion.button
+                        key={carta.id}
+                        type="button"
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => {
                           if (!esMiTurno) {
-                            toast.info("Espera a que tu rival termine su turno.");
+                            toast.info(`Es el turno de ${jugadorEnTurno?.nombre}. ¡Prepárate!`);
                             return;
                           }
                           playSfx("tap");
-                          setCartaSeleccionada(isSelected ? null : cartaMano);
+                          setCartaSeleccionada(seleccionada ? null : carta);
                         }}
-                        className={`snap-center shrink-0 w-[84%] sm:w-[22rem] max-h-[30vh] overflow-y-auto rounded-2xl p-3 flex flex-col transition-all cursor-pointer ${
-                          isSelected
-                            ? "bg-gradient-to-b from-amber-950 via-[#1f1738] to-[#120d24] border-2 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.35)]"
-                            : "bg-[#11182e] border border-white/15"
+                        className={`p-2.5 rounded-2xl border transition-all text-left flex flex-col justify-between cursor-pointer ${
+                          seleccionada
+                            ? "bg-gradient-to-br from-amber-500/30 to-yellow-500/20 border-amber-400 ring-2 ring-amber-400 shadow-lg scale-[1.03]"
+                            : esMiTurno
+                            ? "bg-white/5 border-white/15 hover:border-amber-400/50 hover:bg-white/10"
+                            : "bg-white/5 border-white/10 opacity-70"
                         }`}
                       >
-                        <div className="flex items-center justify-between gap-2 mb-1.5">
-                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 flex items-center gap-1">
-                            <span>{catEmoji(cartaMano.category)}</span>
-                            <span>{catLabel(cartaMano.category)}</span>
-                          </span>
-                          <span className="text-[10px] font-black text-slate-400">🔒 Año oculto</span>
-                        </div>
-
-                        <h5 className="text-[15px] font-extrabold text-white leading-snug m-0">
-                          {cartaMano.title}
-                        </h5>
-                        {cartaMano.description && (
-                          <p className="text-xs text-slate-300 leading-relaxed mt-1.5 mb-0">
-                            {cartaMano.description}
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm">⏳</span>
+                            <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-black/40 text-amber-300 border border-amber-400/30">
+                              ???
+                            </span>
+                          </div>
+                          <p className="text-xs font-black text-white line-clamp-2 leading-tight">
+                            {carta.title}
                           </p>
-                        )}
-
-                        <div className="mt-2 pt-1.5 border-t border-white/10 text-right">
-                          <span
-                            className={`text-[11px] font-black ${isSelected ? "text-amber-300" : "text-slate-400"}`}
-                          >
-                            {isSelected ? "✓ Elegida · colócala en la línea" : "Toca para elegir"}
-                          </span>
                         </div>
-                      </motion.div>
+
+                        <span className="text-[9px] text-amber-300/80 font-bold mt-2 block">
+                          {seleccionada ? "✓ Seleccionada" : "Tocar para usar"}
+                        </span>
+                      </motion.button>
                     );
                   })}
                 </div>
-
-                {miMano.length > 1 && (
-                  <p className="text-center text-[9px] text-slate-500 mt-1.5 mb-0">
-                    ← desliza para ver tus otras cartas →
-                  </p>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* ── MODAL DE FIN DE PARTIDA ── */}
-      {partidaFinalizada && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/85 p-4">
-          <div className="w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#131d3b] to-[#070d1e] border-2 border-amber-400/50 p-6 text-center text-white shadow-2xl space-y-4">
-            <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-3xl mx-auto shadow-lg shadow-amber-500/20">
-              {soyGanador ? "👑" : "💀"}
+              )}
             </div>
-
-            <div>
-              <h2 className="text-xl font-black text-white m-0">
-                {soyGanador ? "¡HAS GANADO EL DUELO!" : "HAS SIDO DERROTADO"}
-              </h2>
-              <p className="text-xs text-slate-300 mt-1">
-                {sala.ultimo_movimiento?.mensaje || "La línea temporal ha quedado sellada."}
-              </p>
-            </div>
-
-            <div className="py-2.5 px-4 bg-black/40 rounded-2xl border border-white/10 flex items-center justify-around">
-              <div>
-                <span className="text-[10px] text-slate-400 block font-bold">Monedas</span>
-                <span className="text-sm font-black text-amber-300 flex items-center justify-center gap-1">
-                  <Coins className="w-3.5 h-3.5" />
-                  <span>+{soyGanador ? 50 : 15}</span>
-                </span>
-              </div>
-              <div className="w-px h-8 bg-white/10" />
-              <div>
-                <span className="text-[10px] text-slate-400 block font-bold">Experiencia</span>
-                <span className="text-sm font-black text-purple-300 flex items-center justify-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>+{soyGanador ? 40 : 15} XP</span>
-                </span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => navigate("/modos-online")}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 hover:from-amber-400 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/25 transition-all cursor-pointer"
-            >
-              Volver al Lobby Online
-            </button>
           </div>
         </div>
       )}
+
+      {/* ══════════════════════════════════════════════════════════
+          PANTALLA DE VICTORIA Y ENTREGA DEL POZO DE APUESTAS
+      ══════════════════════════════════════════════════════════ */}
+      {sala.estado === "finalizado" && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+        >
+          <div className="w-full max-w-md rounded-3xl bg-gradient-to-br from-[#0c182c] via-[#09152a] to-[#040812] border-2 border-amber-400/80 p-6 text-center space-y-5 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 animate-pulse" />
+
+            <div className="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-4xl mx-auto shadow-lg shadow-amber-500/30 animate-bounce">
+              {soyGanador ? "👑" : "🏆"}
+            </div>
+
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-amber-400 text-slate-950 inline-block mb-1.5">
+                {soyGanador ? "¡HAS GANADO LA PARTIDA!" : "PARTIDA FINALIZADA"}
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-white">
+                {soyGanador ? "¡Crononauta Supremo!" : `${ganador?.nombre || "Rival"} es el Campeón`}
+              </h2>
+              <p className="text-xs text-slate-300 mt-1">
+                {soyGanador
+                  ? `Has colocado todas tus cartas y te llevas el Pozo acumulado de la mesa.`
+                  : `Una gran batalla cronológica de ${jugadores.length} jugadores.`}
+              </p>
+            </div>
+
+            {/* PREMIO DEL POZO */}
+            <div className="p-4 rounded-2xl bg-black/50 border border-amber-400/50 shadow-inner space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-wider text-amber-300/80">
+                {soyGanador ? "POZO GANADO" : "POZO DE LA MESA"}
+              </span>
+              <p className="text-3xl font-black text-amber-300 font-mono flex items-center justify-center gap-2">
+                <Coins className="w-7 h-7 text-amber-400" />
+                <span>{pozoTotal.toLocaleString()} 🪙</span>
+              </p>
+            </div>
+
+            <div className="flex gap-2.5">
+              <button
+                type="button"
+                onClick={() => navigate("/modos-online")}
+                className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/25 transition-all cursor-pointer"
+              >
+                Volver al Lobby Online
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ── MENTI ASESOR TEMPORAL FLOTANTE EN ESQUINA INFERIOR ── */}
+      <MentrixMascot
+        layout="floating"
+        customMessage={fraseMenti()}
+      />
     </div>
   );
 }
