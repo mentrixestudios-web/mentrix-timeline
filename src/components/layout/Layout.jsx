@@ -186,7 +186,7 @@ export default function Layout({ children }) {
          ======================================================= */}
       <main className={`flex-1 min-h-screen flex flex-col ${showNav ? "pb-28 lg:pb-8 lg:pl-72" : "pb-4"} overflow-x-hidden relative bg-gradient-to-br from-[#070b16] via-[#091124] to-[#050812]`}>
         <div className="flex-1 w-full max-w-md lg:!max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-6 relative z-10">
-          {showNav && <TopBar />}
+          <TopBar />
           <AppErrorBoundary resetKey={location.pathname + location.search}>
             {children}
           </AppErrorBoundary>
