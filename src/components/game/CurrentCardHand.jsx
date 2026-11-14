@@ -47,6 +47,20 @@ export default function CurrentCardHand({
         </div>
       </div>
 
+      {/* Ilustración / Imagen de la Carta si existe */}
+      {event.image && (
+        <div className="w-full h-32 rounded-2xl overflow-hidden mb-2.5 relative border border-amber-400/30 shadow-md">
+          <img
+            src={event.image}
+            alt={event.title}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+        </div>
+      )}
+
       {/* Título de la carta con icono temático */}
       <div className="flex items-start gap-2 relative z-10">
         <span className="text-xl shrink-0 mt-0.5">{categoryIcon}</span>

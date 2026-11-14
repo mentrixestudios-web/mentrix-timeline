@@ -18,6 +18,7 @@ export const EVENTS_DB = [
     personajeClave: "Faraón Keops e Imhotep",
     description: "Erigida durante el reinado del faraón Keops en el Antiguo Egipto, fue la estructura más alta hecha por el hombre durante más de 3.800 años.",
     datoCurioso: "Se estima que se utilizaron 2,3 millones de bloques de piedra caliza, cada uno con un peso promedio de 2,5 toneladas.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Kheops-Pyramid.jpg/320px-Kheops-Pyramid.jpg",
     icon: "Pyramid"
   },
   {
@@ -582,6 +583,7 @@ export const EVENTS_DB = [
     personajeClave: "Capitán Edward Smith",
     description: "El barco de pasajeros más grande y lujoso de su tiempo chocó contra un iceberg en su viaje inaugural y se hundió en menos de tres horas en el Atlántico Norte.",
     datoCurioso: "Llevaba botes salvavidas solo para 1.178 personas, a pesar de que a bordo viajaban más de 2.220 entre pasajeros y tripulación.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/RMS_Titanic_3.jpg/320px-RMS_Titanic_3.jpg",
     icon: "Ship"
   },
   {
@@ -642,6 +644,7 @@ export const EVENTS_DB = [
     personajeClave: "Winston Churchill y Adolf Hitler",
     description: "Alemania invadió Polonia mediante la guerra relámpago (Blitzkrieg), llevando a Gran Bretaña y Francia a declarar la guerra y desatar el conflicto más mortífero de la historia.",
     datoCurioso: "Más de 100 millones de militares fueron movilizados en todo el mundo durante el conflicto.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Into_the_Jaws_of_Death_23-0455M_edit.jpg/320px-Into_the_Jaws_of_Death_23-0455M_edit.jpg",
     icon: "ShieldAlert"
   },
   {
@@ -654,6 +657,7 @@ export const EVENTS_DB = [
     personajeClave: "General Dwight D. Eisenhower",
     description: "Más de 150.000 soldados aliados cruzaron el canal de la Mancha en la mayor operación anfibia de la historia militar para liberar a Francia.",
     datoCurioso: "La operación de engaño militar 'Guardaespaldas' creó un ejército fantasma inflable en Inglaterra para hacer creer a los nazis que desembarcarían en Calais.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Into_the_Jaws_of_Death_23-0455M_edit.jpg/320px-Into_the_Jaws_of_Death_23-0455M_edit.jpg",
     icon: "Compass"
   },
   {
@@ -1658,6 +1662,7 @@ export const EVENTS_DB = [
     personajeClave: "Sir Isaac Newton",
     description: "Formuló las tres leyes del movimiento universal y la Ley de la Gravitación Universal, unificando la mecánica celeste y terrestre en una sola física.",
     datoCurioso: "El astrónomo Edmond Halley financió de su propio bolsillo la impresión del libro porque la Royal Society se había quedado sin fondos.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/GodfreyKneller-IsaacNewton-1689.jpg/320px-GodfreyKneller-IsaacNewton-1689.jpg",
     icon: "Atom"
   },
   {
@@ -1670,6 +1675,7 @@ export const EVENTS_DB = [
     personajeClave: "Sir Isaac Newton",
     description: "Demostró matemáticamente en los 'Principia' que la misma fuerza que hace caer una fruta mantiene a la Luna en su órbita alrededor de la Tierra.",
     datoCurioso: "Newton confirmó en persona a su biógrafo William Stukeley que la idea le asaltó mientras meditaba en el jardín bajo un manzano en Woolsthorpe.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/GodfreyKneller-IsaacNewton-1689.jpg/320px-GodfreyKneller-IsaacNewton-1689.jpg",
     icon: "Apple"
   },
   {
@@ -1730,6 +1736,7 @@ export const EVENTS_DB = [
     personajeClave: "Charles Darwin",
     description: "Planteó que todas las formas de vida descienden de antepasados comunes mediante el mecanismo biológico de la selección natural.",
     datoCurioso: "Los primeros 1.250 ejemplares impresos de la primera edición se agotaron por completo en el primer día de venta.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Charles_Darwin_seated_crop.jpg/320px-Charles_Darwin_seated_crop.jpg",
     icon: "TreePine"
   },
   {
@@ -1838,6 +1845,7 @@ export const EVENTS_DB = [
     personajeClave: "Marie Curie y Pierre Curie",
     description: "Aislaron elementos químicos altamente radiactivos a partir de toneladas de pechblenda en un cobertizo precario de París.",
     datoCurioso: "Marie Curie fue la primera mujer en ganar un Premio Nobel y la única persona en la historia en ganarlo en dos disciplinas científicas distintas (Física y Química).",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Marie_Curie_c._1920s.jpg/320px-Marie_Curie_c._1920s.jpg",
     icon: "Activity"
   },
   {
@@ -1874,6 +1882,7 @@ export const EVENTS_DB = [
     personajeClave: "Albert Einstein",
     description: "Demostró que el tiempo y el espacio son relativos a la velocidad del observador y que la masa y la energía son equivalentes (E = mc²).",
     datoCurioso: "En ese mismo año 1905, trabajando como examinador de tercera clase en una oficina de patentes, publicó cuatro artículos revolucionarios.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Albert_Einstein_Head.jpg/320px-Albert_Einstein_Head.jpg",
     icon: "Zap"
   },
   {
@@ -2574,6 +2583,7 @@ export const EVENTS_DB = [
     personajeClave: "Billie Holiday",
     description: "Valiente canción protesta contra los linchamientos raciales en el sur de EE.UU. que sacudió la conciencia política de una época.",
     datoCurioso: "Su discográfica habitual se negó en redondo a editarla por miedo a represalias, teniéndola que grabar en un sello independiente clandestino.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Billie_Holiday_in_1947.jpg/320px-Billie_Holiday_in_1947.jpg",
     icon: "Mic"
   },
   {
@@ -5228,6 +5238,7 @@ export const EVENTS_DB = [
     personajeClave: "Dr. Robert Ballard y Jean-Louis Michel",
     description: "Con el robot submarino 'Argo' halló el transatlántico partido en dos a 3.800 metros de profundidad en el Atlántico Norte tras 73 años de misterio.",
     datoCurioso: "La expedición fue una tapadera oficial de la Marina de EE.UU. que en realidad buscaba investigar dos submarinos nucleares hundidos durante la Guerra Fría.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/RMS_Titanic_3.jpg/320px-RMS_Titanic_3.jpg",
     icon: "Ship"
   },
   {

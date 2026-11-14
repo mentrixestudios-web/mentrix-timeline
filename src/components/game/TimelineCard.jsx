@@ -122,6 +122,21 @@ export default function TimelineCard({
             transition={{ duration: 0.22, ease: "easeInOut" }}
             className="px-3 pb-3 pt-1 border-t border-white/10 space-y-2 relative z-10 text-left"
           >
+            {/* Ilustración o Imagen de la Carta si existe */}
+            {event.image && (
+              <div className="w-full h-32 rounded-2xl overflow-hidden relative border border-white/10 shadow-md">
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
+            )}
+
             {/* Descripción Completa */}
             {event.description && (
               <p className="text-xs text-slate-200/95 leading-relaxed font-normal bg-black/35 p-2.5 rounded-2xl border border-white/10">
