@@ -127,7 +127,8 @@ export const EVENTS_DB = [
     personajeClave: "Sócrates y Platón",
     description: "El maestro de la mayéutica y padre de la ética ateniense fue condenado a beber cicuta acusado de corromper a la juventud.",
     datoCurioso: "Rechazó un plan de fuga organizado por sus discípulos porque consideraba que violar las leyes de la polis destruiría la justicia.",
-    icon: "BookOpen"
+    icon: "BookOpen",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/David_-_The_Death_of_Socrates.jpg/500px-David_-_The_Death_of_Socrates.jpg"
   },
   {
     id: "h-alejandro-magno",
@@ -139,7 +140,8 @@ export const EVENTS_DB = [
     personajeClave: "Alejandro Magno",
     description: "El joven rey macedonio derrotó a Darío III y expandió su imperio desde Grecia hasta Egipto y las fronteras de la India.",
     datoCurioso: "Nunca perdió una sola batalla en 15 años de campañas militares consecutivas.",
-    icon: "Crown"
+    icon: "Crown",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Alexander_the_Great_mosaic_%28cropped%29.jpg/500px-Alexander_the_Great_mosaic_%28cropped%29.jpg"
   },
   {
     id: "h-biblioteca-alejandria",
@@ -187,7 +189,8 @@ export const EVENTS_DB = [
     personajeClave: "Cleopatra VII y Julio César",
     description: "La joven reina egipcia recuperó su trono pactando una alianza política y militar con el comandante supremo de Roma.",
     datoCurioso: "Cleopatra burló la vigilancia de su hermano entrando de incógnito al palacio real envuelta dentro de un saco de ropa de cama.",
-    icon: "Crown"
+    icon: "Crown",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Kleopatra-VII.-Altes-Museum-Berlin1.jpg/500px-Kleopatra-VII.-Altes-Museum-Berlin1.jpg"
   },
   {
     id: "h-julio-cesar",
@@ -199,7 +202,8 @@ export const EVENTS_DB = [
     personajeClave: "Julio César y Bruto",
     description: "Un grupo de más de 60 senadores apuñaló al dictador perpetuo en la Curia de Pompeyo, precipitando el fin de la República Romana.",
     datoCurioso: "César recibió 23 puñaladas, pero según el médico Antistio, solo una (la segunda en el pecho) fue mortal de necesidad.",
-    icon: "Sword"
+    icon: "Sword",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Retrato_de_Julio_C%C3%A9sar_%282672409310%29_%28cropped%29.jpg/500px-Retrato_de_Julio_C%C3%A9sar_%282672409310%29_%28cropped%29.jpg"
   },
   {
     id: "h-batalla-accio",
@@ -547,7 +551,8 @@ export const EVENTS_DB = [
     personajeClave: "Napoleón Bonaparte",
     description: "En la catedral de Notre Dame de París, Napoleón tomó la corona de manos del papa Pío VII y se la colocó él mismo en la cabeza para demostrar que su poder no dependía de la Iglesia.",
     datoCurioso: "Estableció el Código Civil Napoleónico, que sigue siendo la base legal de gran parte de Europa y América Latina.",
-    icon: "Crown"
+    icon: "Crown",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg/500px-Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg"
   },
   {
     id: "h-waterloo",
@@ -559,7 +564,8 @@ export const EVENTS_DB = [
     personajeClave: "Duque de Wellington y Napoleón",
     description: "Las fuerzas británicas y prusianas vencieron al ejército de Napoleón en Bélgica, poniendo fin a las Guerras Napoleónicas y enviándolo al exilio en Santa Elena.",
     datoCurioso: "La lluvia torrencial de la noche previa impidió a Napoleón mover su artillería temprano en la mañana, retraso que fue decisivo para su derrota.",
-    icon: "Swords"
+    icon: "Swords",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Battle_of_Waterloo_1815.PNG/500px-Battle_of_Waterloo_1815.PNG"
   },
   {
     id: "h-lincoln-emancipacion",
@@ -571,7 +577,8 @@ export const EVENTS_DB = [
     personajeClave: "Abraham Lincoln",
     description: "En plena Guerra Civil estadounidense, el presidente Lincoln declaró libres para siempre a más de 3,5 millones de personas esclavizadas en los estados confederados.",
     datoCurioso: "Lincoln afirmó: 'Si mi nombre alguna vez pasa a la historia, será por este acto, y mi alma entera está puesta en él'.",
-    icon: "Unlock"
+    icon: "Unlock",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Abraham_Lincoln_O-77_matte_finish_cleaned.jpg/500px-Abraham_Lincoln_O-77_matte_finish_cleaned.jpg"
   },
   {
     id: "h-titanic",
@@ -1542,7 +1549,8 @@ export const EVENTS_DB = [
     personajeClave: "Arquímedes de Siracusa",
     description: "Al sumergirse en una tina de baño observó que el agua derramada era proporcional al volumen de su cuerpo, saliendo desnudo por la calle gritando '¡Eureka!' (¡Lo encontré!).",
     datoCurioso: "El rey Hierón II le había encargado verificar si su corona era de oro puro o si el orfebre había mezclado plata sin fundir la corona.",
-    icon: "Sparkles"
+    icon: "Sparkles",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Domenico-Fetti_Archimedes_1620.jpg/500px-Domenico-Fetti_Archimedes_1620.jpg"
   },
   {
     id: "c-papel-cailun",
@@ -1602,7 +1610,8 @@ export const EVENTS_DB = [
     personajeClave: "Johannes Gutenberg",
     description: "Creó tipos individuales fundidos en aleación metálica reutilizable y una prensa de madera de uvas, permitiendo reproducir libros en serie velozmente.",
     datoCurioso: "La Biblia de Gutenberg de 42 líneas fue su obra maestra: imprimió unos 180 ejemplares, de los cuales sobreviven solo 49 en todo el mundo.",
-    icon: "BookOpen"
+    icon: "BookOpen",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Gutenberg.jpg/500px-Gutenberg.jpg"
   },
   {
     id: "c-copernico-heliocentrico",
@@ -1614,7 +1623,8 @@ export const EVENTS_DB = [
     personajeClave: "Nicolás Copérnico",
     description: "En 'De revolutionibus orbium coelestium' demostró matemáticamente que el Sol, y no la Tierra, es el centro del sistema planetario.",
     datoCurioso: "Copérnico vio la primera copia impresa de su libro en su lecho de muerte, el mismo día en que falleció.",
-    icon: "Sun"
+    icon: "Sun",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Nikolaus_Kopernikus.jpg/500px-Nikolaus_Kopernikus.jpg"
   },
   {
     id: "c-anatomia-vesalio",
@@ -1638,7 +1648,8 @@ export const EVENTS_DB = [
     personajeClave: "Galileo Galilei",
     description: "Descubrió los cráteres lunares, las cuatro lunas mayores de Júpiter y las fases de Venus, derribando para siempre la física aristotélica geocéntrica.",
     datoCurioso: "Galileo pulía a mano sus propias lentes de cristal en Venecia logrando hasta 30 aumentos, muy superior a los catalejos holandeses.",
-    icon: "Eye"
+    icon: "Eye",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Galileo_by_leoni.jpg/500px-Galileo_by_leoni.jpg"
   },
   {
     id: "c-microscopio-leeuwenhoek",
@@ -1797,7 +1808,8 @@ export const EVENTS_DB = [
     personajeClave: "Nikola Tesla y George Westinghouse",
     description: "Desarrolló el motor de inducción y el sistema de corriente alterna polifásico que electrificó las ciudades y fábricas del planeta entero.",
     datoCurioso: "Su sistema derrotó comercialmente a la corriente continua de Edison al iluminar de forma espectacular la Exposición Universal de Chicago en 1893.",
-    icon: "Zap"
+    icon: "Zap",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/N.Tesla.JPG/500px-N.Tesla.JPG"
   },
   {
     id: "c-cinematografo-edison-kinetoscopio",
@@ -1809,7 +1821,8 @@ export const EVENTS_DB = [
     personajeClave: "Thomas Edison y William K.L. Dickson",
     description: "Primer dispositivo individual para contemplar imágenes en movimiento continuo mediante una película de celuloide perforada.",
     datoCurioso: "Edison creía que el cine era un entretenimiento individual y no apostó inicialmente por proyectarlo en pantallas frente a salas colectivas.",
-    icon: "Film"
+    icon: "Film",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Thomas_Edison2.jpg/500px-Thomas_Edison2.jpg"
   },
   {
     id: "c-rayos-x",
@@ -2307,7 +2320,8 @@ export const EVENTS_DB = [
     personajeClave: "Leonardo da Vinci y Lisa Gherardini",
     description: "Inició el retrato en Florencia empleando su técnica revolucionaria de 'sfumato' para difuminar contornos y crear su enigmática sonrisa.",
     datoCurioso: "Leonardo nunca entregó el cuadro a su cliente y lo llevó consigo a Francia hasta el final de sus días.",
-    icon: "Palette"
+    icon: "Palette",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/500px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
   },
   {
     id: "m-capilla-sixtina",
@@ -2319,7 +2333,8 @@ export const EVENTS_DB = [
     personajeClave: "Miguel Ángel Buonarroti",
     description: "Pintó más de 300 figuras colosales al fresco en el techo del Vaticano, incluyendo la célebre escena de 'La Creación de Adán'.",
     datoCurioso: "Pintó de pie mirando hacia arriba durante cuatro años en andamios especiales, causándole problemas crónicos en la vista y cuello.",
-    icon: "Brush"
+    icon: "Brush",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/500px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg"
   },
   {
     id: "m-monteverdi-orfeo",
@@ -2403,7 +2418,8 @@ export const EVENTS_DB = [
     personajeClave: "Wolfgang Amadeus Mozart",
     description: "Un cuento de hadas alegórico con el aria imposible de la 'Reina de la Noche', estrenado en Viena apenas dos meses antes de la prematura muerte del compositor.",
     datoCurioso: "Mozart la escribió para un teatro popular de barrio y él mismo dirigió la orquesta la noche del estreno.",
-    icon: "Music"
+    icon: "Music",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Wolfgang-amadeus-mozart_1.jpg/500px-Wolfgang-amadeus-mozart_1.jpg"
   },
   {
     id: "m-clarinete-mozart",
@@ -2415,7 +2431,8 @@ export const EVENTS_DB = [
     personajeClave: "Wolfgang Amadeus Mozart y Anton Stadler",
     description: "Una de las últimas y más luminosas creaciones completadas por Mozart escasas semanas antes de su prematuro deceso a los 35 años.",
     datoCurioso: "La compuso exclusivamente para el clarinete di bassetto ideado por su entrañable amigo virtuoso Anton Stadler.",
-    icon: "Music"
+    icon: "Music",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Wolfgang-amadeus-mozart_1.jpg/500px-Wolfgang-amadeus-mozart_1.jpg"
   },
   {
     id: "m-novena-beethoven",
@@ -2427,7 +2444,8 @@ export const EVENTS_DB = [
     personajeClave: "Ludwig van Beethoven",
     description: "Completamente sordo, Beethoven revolucionó la historia de la música incorporando cantantes solistas y coro con el 'Himno a la Alegría'.",
     datoCurioso: "Al finalizar el concierto, la solista Caroline Unger tuvo que girarlo suavemente hacia el público para que pudiera ver los aplausos que no podía oír.",
-    icon: "Volume2"
+    icon: "Volume2",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Beethoven.jpg/500px-Beethoven.jpg"
   },
   {
     id: "m-chopin-nocturnos",
@@ -2439,7 +2457,8 @@ export const EVENTS_DB = [
     personajeClave: "Frédéric Chopin",
     description: "Elevó la miniatura pianística a la máxima cima de la poesía romántica con su lirismo de ensueño y melancolía polaca.",
     datoCurioso: "Chopin repudiaba los teatros multitudinarios y prefería interpretar sus nocturnos en pequeños salones bohemios a la tenue luz de las velas.",
-    icon: "Piano"
+    icon: "Piano",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Frederic_Chopin_photo.jpeg/500px-Frederic_Chopin_photo.jpeg"
   },
   {
     id: "m-carmen-bizet",
@@ -5226,7 +5245,8 @@ export const EVENTS_DB = [
     personajeClave: "Neil Armstrong, Buzz Aldrin y Michael Collins",
     description: "El módulo lunar 'Eagle' se posó en el Mar de la Tranquilidad ante la mirada de 600 millones de espectadores en televisión.",
     datoCurioso: "Al apoyar su bota izquierda en el polvo lunar Armstrong pronunció: 'Es un pequeño paso para un hombre, pero un gran salto para la humanidad'.",
-    icon: "Moon"
+    icon: "Moon",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Aldrin_Apollo_11_original.jpg/500px-Aldrin_Apollo_11_original.jpg"
   },
   {
     id: "ex-ballard-titanic",
@@ -5532,7 +5552,8 @@ export const EVENTS_DB = [
     personajeClave: "Leonardo da Vinci y Ludovico Sforza",
     description: "Mural magistral en el refectorio de Santa Maria delle Grazie que capta con perspectiva lineal el momento exacto en que Jesús dice: 'Uno de vosotros me traicionará'.",
     datoCurioso: "Leonardo pasaba días enteros mirando fijamente la pared sin dar una sola pincelada; cuando el prior del convento se quejó, amenazó con usar el rostro del prior para Judas.",
-    icon: "Palette"
+    icon: "Palette",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/%C3%9Altima_Cena_-_Da_Vinci_5.jpg/500px-%C3%9Altima_Cena_-_Da_Vinci_5.jpg"
   },
   {
     id: "ar-mona-lisa-gioconda",
@@ -5544,7 +5565,8 @@ export const EVENTS_DB = [
     personajeClave: "Leonardo da Vinci y Lisa Gherardini",
     description: "El retrato pictórico más célebre y enigmático del mundo, célebre por su técnica del 'sfumato' y su sonrisa sutil que parece cambiar según el ángulo de observación.",
     datoCurioso: "Leonardo jamás entregó el cuadro a quien se lo encargó; viajó con él por toda Italia y Francia retocando capas microscópicas de barniz hasta su muerte.",
-    icon: "Palette"
+    icon: "Palette",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/500px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
   },
   {
     id: "ar-david-miguel-angel",
@@ -5556,7 +5578,8 @@ export const EVENTS_DB = [
     personajeClave: "Miguel Ángel Buonarroti",
     description: "Escultura en mármol de más de cinco metros que retrata a David en tensión psicológica con la honda al hombro instantes antes de arrojar la piedra contra Goliat.",
     datoCurioso: "El gigantesco bloque de mármol blanco había sido apodado 'El Gigante' y yacía abandonado e inutilizado durante 40 años porque otros escultores lo consideraban defectuoso.",
-    icon: "Palette"
+    icon: "Palette",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Michelangelo%27s_David_-_original_in_the_Galleria_dell%27Accademia_in_Florence.jpg/500px-Michelangelo%27s_David_-_original_in_the_Galleria_dell%27Accademia_in_Florence.jpg"
   },
   {
     id: "ar-escuela-atenas-rafael",
@@ -5568,7 +5591,8 @@ export const EVENTS_DB = [
     personajeClave: "Rafael Sanzio",
     description: "Fresco renacentista en las Estancias Vaticanas que reúne a los sabios de la antigüedad con Platón señalando hacia el cielo ideal y Aristóteles con la palma hacia la tierra terrenal.",
     datoCurioso: "Rafael usó el rostro de su contemporáneo Leonardo da Vinci para pintar a Platón y el de Miguel Ángel sentado en primer plano como Heráclito.",
-    icon: "Palette"
+    icon: "Palette",
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg?width=400"
   },
   {
     id: "ar-boveda-sixtina",
@@ -5580,7 +5604,8 @@ export const EVENTS_DB = [
     personajeClave: "Miguel Ángel y el Papa Julio II",
     description: "Más de 500 metros cuadrados de frescos bíblicos en el techo del Vaticano culminados por el célebre 'Toque de la Creación' entre los dedos de Dios y Adán.",
     datoCurioso: "Miguel Ángel pintó de pie sobre andamios de madera diseñados por él mismo con la cabeza inclinada hacia atrás durante cuatro extenuantes años.",
-    icon: "Palette"
+    icon: "Palette",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/500px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg"
   },
   {
     id: "ar-el-principe-maquiavelo",
